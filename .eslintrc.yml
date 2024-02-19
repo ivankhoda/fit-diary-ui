@@ -1,0 +1,133 @@
+env:
+  browser: true
+  es6: true
+extends:
+  - 'eslint:all'
+  - 'plugin:react/recommended'
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+  subject: true
+  context: true
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+    legacyDecorators: true
+  ecmaVersion: 2018
+  sourceType: module
+plugins:
+  - react
+  - '@typescript-eslint'
+rules: &rules
+  indent:
+    - error
+    - 4
+    - { ignoredNodes: ['TemplateLiteral'] }
+  object-property-newline:
+    - error
+    - allowAllPropertiesOnSameLine: true
+  linebreak-style:
+    - error
+    - unix
+  no-console: off
+  padding-line-between-statements:
+    - error
+    - blankLine: always
+      prev: block-like
+      next: const
+    - blankLine: always
+      prev: const
+      next: block-like
+  quotes:
+    - error
+    - single
+  'react/prop-types': 0
+  semi:
+    - error
+    - always
+  'template-curly-spacing': 'off'
+  #new
+  padded-blocks:
+    - error
+    - never
+  quote-props:
+    - error
+    - as-needed
+  arrow-parens:
+    - error
+    - as-needed
+  dot-location:
+    - error
+    - property
+  newline-per-chained-call:
+    - off
+    - ignoreChainWithDepth: 2
+  space-before-function-paren:
+    - error
+    - never
+  camelcase: off
+  sort-imports: off
+  id-length: off
+  no-invalid-this: off
+  max-len:
+    - error
+    - code: 120
+  no-magic-numbers:
+    - error
+    - ignore:
+        - 0
+        - 1
+        - 100
+  array-element-newline:
+    - error
+    - minItems: 3
+  no-ternary: off
+  one-var: off
+  no-unused-expressions:
+    - error
+    - allowShortCircuit: true
+  function-paren-newline:
+    - error
+    - consistent
+  function-call-argument-newline:
+    - error
+    - consistent
+  func-names: off
+  require-jsdoc: off
+  multiline-ternary:
+    - error
+    - always-multiline
+  no-mixed-operators: off
+  no-confusing-arrow: off
+  no-use-before-define: off
+  max-lines-per-function:
+    - error
+    - max: 200
+  class-methods-use-this: off
+  'react/display-name': off
+  'react/jsx-no-bind': off
+  no-shadow: off
+  '@typescript-eslint/no-shadow': warn
+settings:
+  react:
+    version: detect
+overrides:
+  - files:
+      - '*.ts'
+      - '*.tsx'
+    extends:
+      - 'eslint:all'
+      - 'plugin:react/recommended'
+      - 'plugin:@typescript-eslint/recommended'
+    rules:
+      <<: *rules
+      semi: 'off'
+      '@typescript-eslint/semi': 'error'
+      '@typescript-eslint/no-unused-vars': 'error'
+      '@typescript-eslint/explicit-module-boundary-types': 'error'
+      '@typescript-eslint/no-explicit-any': 'error'
+  - files:
+      - '**/*.spec.js'
+    env:
+      jest: true

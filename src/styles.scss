@@ -1,0 +1,193 @@
+@import "../styles/mobile.scss";
+
+$primary-color: #0e7dde; // Pantone 286 C
+$secondary-color: #4F5B66; // Pantone 425 C
+$accent-color: #C93E4D; // Pantone 186 C
+$background-color: #FFFFFF; // Белый цвет
+
+$color-light-gray: #BDBDBA;//
+$color-dark-gray: #464748;
+$color-blue: #009EDB;
+$white-color: #FFFFFF;
+
+// Шрифты
+$body-font-family: "Open Sans", sans-serif;
+$heading-font-family: "Montserrat", sans-serif;
+$base-font-size: 16px;
+$heading-font-size: 24px;
+$line-height: 1.5;
+
+// Заголовки
+$h1-font-size: 36px;
+$h2-font-size: 30px;
+$h3-font-size: 24px;
+$h4-font-size: 18px;
+$h5-font-size: 16px;
+$h6-font-size: 14px;
+
+// Основной контент
+$content-padding: 20px;
+
+// Кнопки
+$button-background-color: $accent-color;
+$button-color: $background-color;
+$button-padding: 10px 20px;
+$button-border-radius: 5px;
+
+// Ссылки
+$link-color: $primary-color;
+
+// Таблицы
+$table-header-background-color: $secondary-color;
+$table-header-color: $background-color;
+$table-row-background-color: $background-color;
+$table-row-hover-color: $secondary-color;
+$table-border: 1px solid $secondary-color;
+
+// Формы
+$form-input-padding: 10px;
+$form-input-border: 1px solid $secondary-color;
+$form-input-focus-border-color: $accent-color;
+
+// Навигация
+$nav-background-color: $secondary-color;
+$nav-color: $background-color;
+$nav-height: 50px;
+$nav-link-padding: 0 20px;
+
+// Футер
+$footer-background-color: $secondary-color;
+$footer-color: $background-color;
+$footer-padding: 20px;
+
+// Основной контейнер
+$container-max-width: 1200px;
+
+// Главный стиль
+body {
+  font-family: $body-font-family;
+  font-size: $base-font-size;
+  line-height: $line-height;
+  color: $secondary-color;
+  background-color: $background-color;
+}
+
+html, body, #root {
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $heading-font-family;
+  line-height: $line-height;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: $primary-color;
+}
+
+h1 {
+  font-size: $h1-font-size;
+}
+
+h2 {
+  font-size: $h2-font-size;
+}
+
+h3 {
+  font-size: $h3-font-size;
+}
+
+h4 {
+  font-size: $h4-font-size;
+}
+
+h5 {
+  font-size: $h5-font-size;
+}
+
+h6 {
+  font-size: $h6-font-size;
+}
+
+.content {
+  padding: $content-padding;
+}
+
+button {
+  background-color: $button-background-color;
+  color: $button-color;
+  padding: $button-padding;
+  border-radius: $button-border-radius;
+}
+
+.button {
+  background-color: $button-background-color;
+  color: $button-color;
+  padding: $button-padding;
+  border-radius: $button-border-radius;
+}
+
+a {
+  color: $button-color;;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: lighten($link-color, 10%);
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  background-color: $table-header-background-color;
+  color: $table-header-color;
+}
+
+tr {
+  background-color: $table-row-background-color;
+  &:hover {
+    background-color: $table-row-hover-color;
+  }
+}
+
+.nav-link {
+  padding: $nav-link-padding;
+  color: $background-color;
+  text-decoration: none;
+}
+
+.footer {
+  background-color: $footer-background-color;
+  color: $footer-color;
+  padding: $footer-padding;
+}
+
+.container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+}
+
+.link-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10%;
+  row-gap: 10%;
+
+  .link-box {
+    min-width: 150px;
+    min-height: 50px;
+    background-color: $primary-color;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "hello": "Hello, world!",
+  "buttonLabel": "Click me!",
+  "login": "Login",
+  "password": "Password",
+  "login_first": "Please login first",
+  "button_ok": "OK",
+  "search": "Search...",
+  "find": "Find",
+  "locations": "Locations",
+  "name": "Name",
+  "code": "Code",
+  "child_slots": "Child Slots",
+  "items": "Items"
+
+}

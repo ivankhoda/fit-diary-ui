@@ -1,0 +1,31 @@
+
+$mobile-breakpoint: 768px;
+$mobile-font-size: 14px;
+
+@media (max-width: $mobile-breakpoint) {
+  .content {
+    padding: 10px;
+  }
+
+  .button {
+    padding: 8px 16px;
+  }
+
+  .nav {
+    height: 50px;
+    justify-content: space-between;
+    padding: 0 10px;
+  }
+
+  .nav-logo {
+    max-height: 30px;
+  }
+
+  .nav-link {
+    padding: 8px;
+  }
+
+  .footer {
+    padding: 10px;
+  }
+}

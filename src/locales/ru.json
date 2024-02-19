@@ -1,0 +1,15 @@
+{
+  "hello": "Hello, world!",
+  "buttonLabel": "Click me!",
+  "login": "Логин",
+  "password": "Пароль",
+  "login_first": "Пожалуйста войдите",
+  "button_ok": "OK",
+  "search": "Поиск...",
+  "find": "Найти",
+  "locations": "Локации",
+  "name": "Название",
+  "code": "Код",
+  "child_slots": "Вложенные локации",
+  "items": "Предметы"
+}
