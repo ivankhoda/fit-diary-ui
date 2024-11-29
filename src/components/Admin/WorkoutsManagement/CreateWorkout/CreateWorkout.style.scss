@@ -1,0 +1,18 @@
+
+
+.create-workout .exercise-list .user-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+.create-workout .exercise-item {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.create-workout .exercise-item.selected {
+  background-color: #cce5ff;
+}

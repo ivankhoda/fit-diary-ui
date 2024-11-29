@@ -1,61 +1,96 @@
-import React, {useEffect, useState} from 'react';
-import {HashRouter, Route, Routes} from 'react-router-dom';
-import {Provider} from "mobx-react";
+import React, { useState } from 'react';
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import './App.style.scss';
+import { Header } from './User/Header/Header';
+import { observer, Provider } from 'mobx-react';
+import { ConfirmRegistrationWithToken, ResetPasswordWithToken, routes } from '../routes/routes';
+import { Login } from './Auth/Login';
+import { Registration } from './Auth/Registration';
+import { useToken } from './Auth/useToken';
+import { WorkingPanel } from './User/WorkingPanel/WorkingPanel';
+import { PasswordRecovery } from './Auth/PasswordRecovery';
+import { adminRoutes } from './Admin/routes/routes';
+import adminStores from './Admin/store/stores';
+import adminControllers from './Admin/controllers/controllers';
 
-import {UserStore} from '../store/userStore';
-import {Header} from "./Header/Header";
-import {WorkingPanel} from "./WorkingPanel/WorkingPanel";
-import {Commands} from "./Commands/Commands";
-import {MenuLink} from "./Link/Link";
-import {botCommandsStore} from "../store/global";
-import {Statistics} from "./Statistics/Statistics";
 
+export const App = observer((): JSX.Element => {
+    const { token, setToken, isAdmin } = useToken();
+    const [isLogin, setIsLogin] = useState(true);
 
-export const App = (): JSX.Element => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const {WebApp} = window.Telegram;
-    const userStore = new UserStore(WebApp);
+    const toggleForm = () => {
+        setIsLogin(prevIsLogin => !prevIsLogin);
+    };
 
-    const routes = [
-        {Component:  <Provider botCommandsStore={botCommandsStore}><Commands /></Provider>,
-                name: 'Commands', path: '/commands'},
-        {Component:  <Provider><Statistics {...userStore?.shortStat}/></Provider>,
-            name: 'Stats', path: '/stats'}
-    ];
+    return (
+        <Router>
+            <Routes>
+                <Route path="/password/reset" element={<ResetPasswordWithToken />} />
+                <Route path="/password/recovery" element={<PasswordRecovery />} />
+                <Route path="/users/confirmation/*" element={<ConfirmRegistrationWithToken />} />
+                {token ? (
+                    <>
+                        {isAdmin() && <Route path="/admin/*" element={<AdminRoutes />} />}
+                        <Route path="/me/*" element={<MainAppRoutes token={token} />} />
+                    </>
+                ) : (
+                    <Route path="/*" element={<AuthRoutes isLogin={isLogin} setIsLogin={toggleForm} setToken={setToken} isAdmin={isAdmin} />} />
+                )}
+            </Routes>
+        </Router>
+    );
+});
 
-    const links = [
-        {linkTo: '/stats', text:'Статистика'},
-        {linkTo: '/info', text:'Информация'}
-    ]
+const AdminRoutes = (): JSX.Element => {
+    const store = Object.assign(adminStores, adminControllers);
+   return (<>
+            <Provider {...store}>
+                <Routes>
+                    {adminRoutes.map(({ path, Component }) => (<Route key={path} path={path} element={Component} />))}
+                </Routes>
+            </Provider>
 
-    useEffect(() => {
-
-        WebApp.ready()
-        WebApp.expand()
-        // @ts-ignore
-        // WebApp.MainButton.show()
-        // WebApp.onEvent('mainButtonClicked', ()=>userStore.getShortStat(WebApp.initData))
-        userStore.getShortStat(WebApp.initData)
-
-    }, [WebApp]);
-
-    return <div className="paper">
-        <HashRouter>
-            <div>
-                <Header {...userStore.webAppUser} />
-                <div className="link-container">{links.map((l, i) =>
-                    <MenuLink linkTo={l.linkTo} text={l.text}/>
-                )}</div>
-
-                <WorkingPanel>
-                    <Routes>
-                        {routes
-                            .map(({path, Component}) => <Route key={path} path={path} element={Component} />)}
-                    </Routes>
-                </WorkingPanel>
-            </div>
-        </HashRouter>
-    </div>;
+    </>)
 };
 
+
+const MainAppRoutes = ({ token }: { token: string }) => (
+    <>
+        <Header />
+        <WorkingPanel>
+            <Routes>
+                {routes.map(({ path, Component }) => (<Route key={path} path={path} element={Component} />))}
+            </Routes>
+        </WorkingPanel>
+    </>
+);
+
+const AuthRoutes = ({
+    isLogin,
+    setIsLogin,
+    setToken,
+    isAdmin
+}: {
+    isLogin: boolean;
+    setIsLogin: () => void;
+    setToken: (token: string) => void;
+    isAdmin: () => boolean;
+}) => (
+    <div className="auth-container">
+        {isLogin ? (
+            <>
+                <Login setToken={setToken} isAdmin={isAdmin}/>
+                <button className="toggle-button" onClick={setIsLogin}>
+                    Нет аккаунта? Зарегистрируйтесь
+                </button>
+            </>
+        ) : (
+            <>
+                <Registration setToken={setToken} />
+                <button className="toggle-button" onClick={setIsLogin}>
+                    Уже есть аккаунт? Войдите
+                </button>
+            </>
+        )}
+    </div>
+);

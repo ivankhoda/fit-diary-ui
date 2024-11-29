@@ -1,0 +1,16 @@
+.inputs-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  input {
+    max-width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+}
+
+.add-exercise-btn{
+  width: 100%
+}

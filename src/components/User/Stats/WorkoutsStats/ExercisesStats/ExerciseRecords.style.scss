@@ -1,0 +1,89 @@
+.exercise-records {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  padding: 20px;
+
+  .search-filter-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .search-bar {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  }
+
+  .records-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .exercise-list {
+      border-right: 1px solid #eee;
+      padding-right: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+
+      .exercise-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #f9f9f9;
+        }
+
+        .exercise-name {
+          font-weight: bold;
+          font-size: 16px;
+        }
+
+        .last-session {
+          font-size: 12px;
+          color: #888;
+        }
+      }
+    }
+
+    .exercise-progress {
+      width: 100%;
+
+      h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      .exercise-log {
+        margin-top: 20px;
+        color: black;
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+
+          th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            color: black;
+          }
+
+          th {
+            background-color: #f4f4f4;
+          }
+        }
+      }
+    }
+  }
+}

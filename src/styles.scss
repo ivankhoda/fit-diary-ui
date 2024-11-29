@@ -1,9 +1,11 @@
 @import "../styles/mobile.scss";
+@import "../styles/mixins.scss";
 
 $primary-color: #0e7dde; // Pantone 286 C
 $secondary-color: #4F5B66; // Pantone 425 C
-$accent-color: #C93E4D; // Pantone 186 C
+$accent-color: #f8f9fa; // Pantone 186 C
 $background-color: #FFFFFF; // Белый цвет
+$button-dark: #242c34;
 
 $color-light-gray: #BDBDBA;//
 $color-dark-gray: #464748;
@@ -11,11 +13,19 @@ $color-blue: #009EDB;
 $white-color: #FFFFFF;
 
 // Шрифты
-$body-font-family: "Open Sans", sans-serif;
+$body-font-family: "Caveat", sans-serif;
 $heading-font-family: "Montserrat", sans-serif;
 $base-font-size: 16px;
 $heading-font-size: 24px;
 $line-height: 1.5;
+
+$large-screen: 1440px;
+$large-pc: 1279px;
+$medium-pc: 1180px;
+$small-pc: 1025px;
+$desktop: 979px;
+$tablet: 978px;
+$mobile: 480px;
 
 // Заголовки
 $h1-font-size: 36px;
@@ -30,8 +40,8 @@ $content-padding: 20px;
 
 // Кнопки
 $button-background-color: $accent-color;
-$button-color: $background-color;
-$button-padding: 10px 20px;
+$button-color: #0077c2;;
+$button-padding: 8px 8px;
 $button-border-radius: 5px;
 
 // Ссылки
@@ -79,8 +89,14 @@ html, body, #root {
 
 #root {
   display: flex;
-  justify-content: center;
-  align-items: baseline;
+  flex-direction: column;
+  min-height: 100vh; // Make root take full viewport height
+  align-items: center;
+
+  // Mobile-specific adjustments
+  @include apply-to(less-than, $mobile) {
+    align-items: baseline;
+  }
 }
 
 
@@ -90,7 +106,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 1rem;
   font-weight: 600;
-  color: $primary-color;
+  color: $button-dark;
+  font-family: 'Caveat';
 }
 
 h1 {
@@ -123,7 +140,7 @@ h6 {
 
 button {
   background-color: $button-background-color;
-  color: $button-color;
+  color: $button-dark;
   padding: $button-padding;
   border-radius: $button-border-radius;
 }
@@ -136,8 +153,8 @@ button {
 }
 
 a {
-  color: $button-color;;
-  text-decoration: underline;
+  color: $button-color;
+  text-decoration: none;
 }
 
 a:hover {
@@ -158,7 +175,7 @@ th {
 tr {
   background-color: $table-row-background-color;
   &:hover {
-    background-color: $table-row-hover-color;
+    background-color: $color-light-gray;
   }
 }
 

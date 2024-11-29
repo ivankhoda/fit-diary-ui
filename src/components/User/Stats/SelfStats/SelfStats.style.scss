@@ -1,0 +1,45 @@
+@import '../../../../styles';
+
+
+.notebook {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  line-height: 1.6;
+  font-family: 'Caveat';
+  position: relative;
+  background: linear-gradient(transparent 24px, #e0e0e0 25px);
+  background-size: 100% 25px;
+}
+
+
+.notebook ul {
+  list-style-type: none;
+
+}
+
+.notebook li {
+  position: relative;
+}
+
+
+
+.notebook li span.date {
+  font-weight: bold;
+  color: #2a2a2a;
+}
+
+.notebook li span.weight {
+  color: #555;
+  margin-left: 10px;
+}
+
+.delete-button {
+  cursor: pointer;
+  margin-left: 20px;
+  font-weight: bold;
+}

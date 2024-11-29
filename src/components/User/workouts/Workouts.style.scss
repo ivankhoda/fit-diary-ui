@@ -1,0 +1,90 @@
+.workouts-section {
+  background-color: #f8f9fa; /* Light Pantone background color */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+
+  h2 {
+    color: #000; /* Pantone text color */
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  /* Style for individual workout items */
+  .workout-item {
+    border: 1px solid #ccc; /* Light border */
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+
+    /* Style for workout header/title */
+    .workout-header {
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      color: #344b5a; /* Primary Pantone text color */
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #2a3d4e; /* Darker shade on hover */
+      }
+    }
+
+    /* Container for workout details */
+    .workout-details {
+      margin-top: 10px;
+      background-color: #f9f9f9; /* Light gray for detail background */
+      padding: 10px;
+      border-radius: 5px;
+
+      /* Style for individual exercise items */
+      .exercise-item {
+        margin-bottom: 15px;
+
+        p {
+          margin: 5px 0;
+          color: #555; /* Slightly muted text for exercise descriptions */
+        }
+
+        /* List for sets inside each exercise */
+        .sets-list {
+          margin-top: 10px;
+
+          ul {
+            padding-left: 20px;
+
+            li {
+              margin-bottom: 5px;
+              color: #333; /* Darker text color for sets */
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Create workout button styles */
+  .create-workout-btn {
+    background-color: #344b5a; /* Primary Pantone button color */
+    color: #fff; /* White text */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    display: inline-block;
+    margin-top: 10px;
+
+    &:hover {
+      background-color: #2a3d4e; /* Darker shade on hover */
+      transform: translateY(-2px); /* Slight lift on hover */
+    }
+
+    &:active {
+      transform: translateY(0); /* Reset on click */
+    }
+  }
+}

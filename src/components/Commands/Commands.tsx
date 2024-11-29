@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {observer, inject} from 'mobx-react';
-import {BotCommandsStore} from '../../store/botCommandsStore';
+import { inject, observer } from 'mobx-react';
+import React, { Component } from 'react';
+
 
 export interface BotCommandInterface {
     command: string;
@@ -11,7 +11,7 @@ export interface BotCommandsInterface {
 
 export interface CommandsComponentInterface {
     commands?: BotCommandsInterface[];
-    botCommandsStore?: BotCommandsStore;
+
 }
 
 interface CommandsComponentState {
@@ -21,10 +21,8 @@ interface CommandsComponentState {
 @observer
 export class Commands extends Component<CommandsComponentInterface, CommandsComponentState> {
     render(): JSX.Element {
-        const {commands} = this.props.botCommandsStore;
         return <div className="commands">
-            <h2 className="commands__title">{'Команды'}</h2>
-            {commands && commands.map((c, i) => <li key={i}>{`Команда:${c}`}</li>)}
+            {'sss'}
         </div>;
     }
 }

@@ -1,0 +1,25 @@
+.workout-exercises {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    td {
+      button {
+        margin-right: 5px;
+        cursor: pointer;
+      }
+    }
+  }
+}

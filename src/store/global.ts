@@ -1,14 +1,12 @@
-/*
- * Import {UserStore} from './userStore';
- *
- * export const userStore = new UserStore();
- */
+import ExercisesStore from './exercisesStore';
+import WorkoutsStore from './workoutStore';
+import UserStore from './userStore';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const {WebApp} = window.Telegram;
 
-import {BotCommandsStore} from './botCommandsStore';
+const exercisesStore = new ExercisesStore();
+const workoutsStore = new WorkoutsStore();
+const userStore = new UserStore();
 
-export const botCommandsStore = new BotCommandsStore(WebApp);
+export { exercisesStore, workoutsStore, userStore };
+
 

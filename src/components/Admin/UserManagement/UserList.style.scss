@@ -1,0 +1,66 @@
+/* UserList.css */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  list-style: none;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination a {
+  text-decoration: none;
+  color: #007bff; /* Bootstrap primary color */
+  padding: 10px 15px;
+  border: 1px solid #007bff; /* Bootstrap primary border color */
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination a:hover {
+  background-color: #007bff;
+  color: white; /* Change text color on hover */
+}
+
+.pagination a.active {
+  background-color: #007bff; /* Active page color */
+  color: white; /* Active page text color */
+  border: 1px solid #007bff; /* Keep the border consistent */
+}
+
+.pagination .break-me {
+  padding: 10px 15px;
+  color: #007bff; /* Same color for ellipsis */
+  cursor: default; /* Show pointer as default */
+}
+
+.pagination .break-me:hover {
+  background-color: transparent; /* No hover effect for ellipsis */
+}
+
+/* Center-align table content */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: center; /* Center-align all table headers and cells */
+  padding: 10px;
+  border: 1px solid #ddd; /* Optional border */
+}
+
+th {
+  background-color: #5d666e; /* Optional header background color */
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2; /* Optional row striping */
+}
+

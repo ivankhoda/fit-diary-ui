@@ -7,6 +7,7 @@ module.exports = merge(common, {
     devtool: 'source-map',
     devServer: {
         static: './dist',
+        historyApiFallback: true,
         allowedHosts: ['.ru.tuna.am']
     }
 });

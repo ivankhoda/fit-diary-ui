@@ -1,0 +1,33 @@
+@mixin apply-to($comparator, $device) {
+  $extrema: null;
+
+  @if $comparator == less-than {
+      $extrema: max;
+  }
+
+  @if $comparator == greater-than {
+      $extrema: min;
+  }
+
+  @if $device == $mobile {
+      @media only screen and (#{$extrema}-width: $mobile) { @content; }
+  }
+
+  @else if $device == $tablet {
+      @media only screen and (#{$extrema}-width: $tablet) { @content; }
+  }
+
+  @else if $device == $desktop {
+      @media only screen and (#{$extrema}-width: $desktop) { @content; }
+  }
+
+  @else if $device == large-pc {
+      @media only screen and (orientation: landscape) and (max-width: $mobile) {
+          @content;
+      }
+  }
+
+  @else {
+      @media only screen and (#{$extrema}-width: $device) { @content; }
+  }
+}

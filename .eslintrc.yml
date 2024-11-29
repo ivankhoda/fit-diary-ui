@@ -1,5 +1,6 @@
 env:
   browser: true
+  node: true
   es6: true
 extends:
   - 'eslint:all'
@@ -39,6 +40,9 @@ rules: &rules
     - blankLine: always
       prev: const
       next: block-like
+  max-statements:
+    - error
+    - 15
   quotes:
     - error
     - single
@@ -72,13 +76,13 @@ rules: &rules
   no-invalid-this: off
   max-len:
     - error
-    - code: 120
+    - code: 150
   no-magic-numbers:
     - error
     - ignore:
-        - 0
-        - 1
-        - 100
+      - 0
+      - 1
+      - 100
   array-element-newline:
     - error
     - minItems: 3
@@ -104,11 +108,15 @@ rules: &rules
   max-lines-per-function:
     - error
     - max: 200
+  max-lines:
+    - error
+    - max : 500
   class-methods-use-this: off
   'react/display-name': off
-  'react/jsx-no-bind': off
+  'react/jsx-no-bind': warn
   no-shadow: off
   '@typescript-eslint/no-shadow': warn
+  '@typescript-eslint/ban-ts-comment': off
 settings:
   react:
     version: detect
@@ -122,6 +130,11 @@ overrides:
       - 'plugin:@typescript-eslint/recommended'
     rules:
       <<: *rules
+      indent :
+        - "error"
+        - 4
+        - ignoredNodes :
+            - "PropertyDefinition"
       semi: 'off'
       '@typescript-eslint/semi': 'error'
       '@typescript-eslint/no-unused-vars': 'error'

@@ -8,9 +8,234 @@
   "search": "Search...",
   "find": "Find",
   "locations": "Locations",
-  "name": "Name",
+
   "code": "Code",
   "child_slots": "Child Slots",
-  "items": "Items"
+  "items": "Items",
+  "cardio": "Cardio",
+  "strength": "Strengh",
+  "flexibility": "Flexibility",
+  "balance": "Balance",
+  "begginer": "Begginer",
+  "intermadiate": "Intermadiate",
+  "advanced": "Advanced",
+  "createNewExercise": "Create New Exercise",
+  "exerciseInformation": "Exercise Information",
+  "name": "Name",
+  "description": "Description",
+  "category": "Category",
+  "selectCategory": "Select Category",
+  "difficulty": "Difficulty",
+  "selectDifficulty": "Select Difficulty",
+  "muscleGroups": "Muscle Groups",
+  "duration": "Duration (in minutes)",
+  "createdAt": "Created At",
+  "updatedAt": "Updated At",
+
+  "beginner": "Beginner",
+  "intermediate": "Intermediate",
+
+  "chest": "Chest",
+  "back": "Back",
+  "legs": "Legs",
+  "arms": "Arms",
+  "pleaseFillAllFields": "Please fill all required fields",
+  "createExercise": "Create Exercise",
+
+  "exerciseDetails": "Exercise Details",
+  "editExercise": "Edit Exercise",
+  "updateExercise": "Update Exercise",
+  "cancel": "Cancel",
+  "notProvided": "Not Provided",
+  "muscleGroup": {
+        "chest": "Chest",
+        "biceps": "Biceps",
+        "triceps": "Triceps",
+        "back": "Back",
+        "upper_back": "Upper Back",
+        "lats": "Lats",
+        "shoulders": "Shoulders",
+        "forearms": "Forearms",
+        "abs": "Abs",
+        "obliques": "Obliques",
+        "lower_back": "Lower Back",
+        "quads": "Quadriceps",
+        "hamstrings": "Hamstrings",
+        "calves": "Calves",
+        "glutes": "Glutes",
+        "hip_flexors": "Hip Flexors",
+        "adductors": "Adductors",
+        "abductors": "Abductors"
+    },
+    "exerciseListTitle": "Exercise List Management",
+
+  "searchByName": "Search by name",
+  "allCategories": "All Categories",
+  "allDifficulties": "All Difficulties",
+  "allMuscleGroups": "All Muscle Groups",
+  "clearFilters": "Clear Filters",
+  "id": "ID",
+  "actions": "Actions",
+  "delete": "Delete",
+  "previous": "Previous",
+  "next": "Next",
+  "workoutList": {
+    "title": "Workout Management List",
+    "searchPlaceholder": "Search by name",
+    "allCategories": "All Categories",
+    "categoryCardio": "Cardio",
+    "categoryStrength": "Strength",
+    "clearFilters": "Clear Filters",
+    "columnID": "ID",
+    "columnName": "Name",
+    "columnActions": "Actions"
+  },
+  "workoutData": {
+    "exercises": "Exercises ",
+    "createNewWorkout": "Create New Workout",
+    "workoutInformation": "Workout Information",
+    "name": "Name",
+    "description": "Description",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "exerciseName": "Exercise Name",
+    "weight": "Weight",
+    "repetitions": "Repetitions",
+    "sets": "Sets",
+    "noExercises": "No exercises available",
+    "workoutNamePlaceholder": "Workout Name",
+    "workoutDescriptionPlaceholder": "Workout Description",
+    "fillAllFields": "Fill All Fields",
+    "workoutUpdated": "Workout Updated",
+    "updateError": "Error",
+    "editWorkout": "Edit workout",
+    "searchExercises": "Search exercises",
+    "selectedExercises": "Selected exercises",
+    "exercise": "Exercise",
+    "searchUsers": "Search users",
+    "updateWorkoutButton": "Update workout"
+
+
+
+  },
+  "permissionManagement": "Permission Management",
+  "searchUser": "Search by user",
+  "searchInstance": "Search by type (e.g., 'workout')",
+  "resetFilters": "Reset filters",
+  "user": "User",
+  "resourceType": "Resource Type",
+  "canAssign": "Can Assign",
+  "canAccess": "Can Access",
+  "yes": "Yes",
+  "no": "No",
+  "paginationPrevious": "← Previous",
+  "paginationNext": "Next →",
+  "workout": "Workout",
+
+  "createNewPermission": "Create New Permission",
+  "noPermissions": "No permissions available",
+
+  "edit": "Edit",
+  "exercises": {
+      "title": "Exercises",
+      "searchPlaceholder": "Search by name...",
+      "allMuscleGroups": "All Muscle Groups",
+      "muscleGroups": {
+        "chest": "Chest",
+        "biceps": "Biceps",
+        "triceps": "Triceps",
+        "back": "Back",
+        "legs": "Legs",
+        "shoulders": "Shoulders"
+      },
+      "sortBy": "Sort By",
+      "sortOptions": {
+        "name": "Name",
+        "duration": "Duration",
+        "category": "Category"
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page",
+        "of": "of"
+      }
+    },
+    "workouts": {
+    "title": "Workouts",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "createWorkoutButton": "Create New Workout"
+  },
+  "exercise": {
+    "loading": "Loading...",
+    "back": "Back",
+    "category": "Category",
+    "difficulty": "Difficulty",
+    "duration": "Duration",
+    "minutes": "minutes",
+    "muscleGroups": "Muscle Groups",
+    "description": "Description",
+    "name": "Exercise",
+    "reps": "Reps",
+    "sets": "Sets",
+    "weight": "Weight",
+    "kg": "kg",
+    "categories": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "flexibility": "Flexibility",
+      "balance": "Balance"
+    },
+    "difficulties": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "muscleGroupsList": {
+      "2": "Chest",
+      "4": "Biceps",
+      "triceps": "Triceps",
+      "back": "Back",
+      "legs": "Legs",
+      "shoulders": "Shoulders"
+    }
+  },
+  "exerciseItem": {
+    "viewDetails": "View Details",
+    "category": "Category",
+    "difficulty": "Difficulty",
+    "duration": "Duration",
+    "minutes": "minutes",
+    "description": "Description",
+    "muscleGroups": "Muscle Groups",
+    "categories": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "flexibility": "Flexibility",
+      "balance": "Balance"
+    },
+    "difficulties": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+
+  },
+  "workout": {
+    "name": "Workout Name",
+    "date": "Date",
+    "createdAt": "Created At",
+    "start": "Start",
+    "edit": "Edit",
+    "archive": "Archive",
+    "finish": "Finish",
+    "resume": "Resume",
+    "showExercises": "Show Exercises",
+    "hideExercises": "Hide Exercises",
+    "exercises": "Exercises"
+  }
 
 }

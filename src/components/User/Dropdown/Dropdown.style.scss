@@ -1,0 +1,115 @@
+// General styles for the dropdown container
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    outline: none;
+
+    svg {
+      fill: #333;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+      &.rotate {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+// Main dropdown menu container
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 150px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 0;
+}
+
+// Dropdown menu item
+.dropdown-item {
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Caveat';
+
+  &:hover {
+    background-color: #f7f7f7;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .dropdown-link {
+    display: block;
+    color: #333;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #007bff; // Change color on hover
+    }
+  }
+
+  .dropdown-submenu-trigger {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f7f7f7;
+    }
+  }
+}
+
+// Styles for the sub-menu
+.dropdown-submenu {
+  position: absolute;
+  top: 0;
+  left: 150px;
+  min-width: 150px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 200;
+  padding: 0;
+
+  .dropdown-link {
+    padding: 10px 15px;
+    white-space: nowrap;
+    border-bottom: 1px dashed #bfb9a4;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .dropdown-menu, .dropdown-submenu {
+    min-width: 100%;
+  }
+
+  .dropdown-submenu {
+    left: 0;
+    top: 100%;
+  }
+}
