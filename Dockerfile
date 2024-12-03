@@ -1,0 +1,38 @@
+# Stage 1: Build Stage
+FROM node:21 AS build
+
+# Set the working directory inside the container
+WORKDIR /frontend
+
+# Copy package files for dependency installation
+COPY package.json package-lock.json ./
+
+# Install all dependencies (including devDependencies for build tools)
+RUN npm ci
+
+# Copy the rest of the application source code
+COPY . .
+
+# Build the production-ready application
+RUN npm run build
+
+# Stage 2: Serve Stage
+FROM nginx:alpine
+
+# Set environment variable for Nginx logs to output to Docker logs
+ENV NGINX_LOG_LEVEL=info
+
+# Remove the default Nginx configuration file
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy the custom Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy the built application from the build stage
+COPY --from=build /frontend/dist /usr/share/nginx/html
+
+# Expose the port on which Nginx will serve the app
+EXPOSE 80
+
+# Use Nginx to serve the production app
+CMD ["nginx", "-g", "daemon off;"]

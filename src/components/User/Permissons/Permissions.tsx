@@ -23,7 +23,6 @@ const Permissions: React.FC<PermissionsInterface> = ({
     const { t } = useTranslation();
 
     useEffect(() => {
-        console.log('permissions');
         userController.getPermissions();
     }, [userController]);
 

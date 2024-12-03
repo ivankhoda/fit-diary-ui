@@ -37,8 +37,6 @@ const Exercise: React.FC<ExerciseDetailProps> = ({ exercisesStore, exercisesCont
     if (!exercise) {
         return <div>{t('exercise.loading')}</div>;
     }
-    console.log(exercise.muscle_groups);
-    console.log(t(`exercise.muscleGroupsList.${2}`));
     return (
         <div className="exercise-detail-container">
             <button onClick={handleBack}>{t('exercise.back')}</button>

@@ -1,9 +1,9 @@
-@import "../../styles.scss";
+@use "../../styles.scss" as styles;
 
 .toggle-button {
   background-color: transparent;
   border: none;
-  color: $button-dark;
+  color: styles.$button-dark;
   cursor: pointer;
   text-decoration: underline;
   margin-top: 10px;

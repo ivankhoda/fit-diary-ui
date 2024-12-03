@@ -1,4 +1,4 @@
-@import '../../../styles';
+@use '../../../styles' as styles;
 
 .header {
   display: flex;
@@ -7,7 +7,7 @@
   margin-bottom: 10px;
   justify-content: space-between;
   height: 60px;
-  background-color: $accent-color;
+  background-color: styles.$accent-color;
 
   p {
     color: white
@@ -16,7 +16,7 @@
   .header__logo {
     display: flex;
     align-items: center;
-    color: $white-color;
+    color: styles.$white-color;
     font-weight: bold;
     font-size: 20px;
     text-decoration: none;
@@ -37,15 +37,15 @@
     &__input {
       padding: 0.5rem;
       border: none;
-      background-color: $background-color;
+      background-color: styles.$background-color;
       border-radius: 2rem;
       font-size: 1rem;
-      color: $color-dark-gray;
+      color: styles.$color-dark-gray;
       width: 15rem;
 
       &:focus {
         outline: none;
-        box-shadow: 0 0 0.5rem $color-blue;
+        box-shadow: 0 0 0.5rem styles.$color-blue;
       }
     }
 
@@ -53,15 +53,11 @@
       padding: 0.5rem;
       margin-left: 0.5rem;
       border: none;
-      background-color: $color-blue;
+      background-color: styles.$color-blue;
       border-radius: 2rem;
       color: white;
       font-size: 1rem;
       cursor: pointer;
-
-      &:hover {
-        background-color: darken($color-blue, 10%);
-      }
     }
   }
 
@@ -84,7 +80,7 @@
         a {
           display: flex;
           align-items: center;
-          color: $white-color;
+          color: styles.$white-color;
           font-size: 16px;
           text-decoration: none;
 

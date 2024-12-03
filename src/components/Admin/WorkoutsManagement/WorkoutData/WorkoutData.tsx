@@ -173,7 +173,6 @@ const WorkoutData: React.FC = () => {
                         )}
                     </div>
 
-                    {/* Exercises Section */}
                     <div>
                         <label><strong>{i18n.t('workoutData.searchExercises')}:</strong></label>
                         <input

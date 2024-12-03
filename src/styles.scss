@@ -1,5 +1,5 @@
-@import "../styles/mobile.scss";
-@import "../styles/mixins.scss";
+@use "../styles/mobile.scss" as mobile;
+@use "../styles/mixins.scss" as mixins;
 
 $primary-color: #0e7dde; // Pantone 286 C
 $secondary-color: #4F5B66; // Pantone 425 C
@@ -93,8 +93,7 @@ html, body, #root {
   min-height: 100vh; // Make root take full viewport height
   align-items: center;
 
-  // Mobile-specific adjustments
-  @include apply-to(less-than, $mobile) {
+  @include mixins.apply-to(less-than, mobile.$mobile) {
     align-items: baseline;
   }
 }
@@ -157,10 +156,6 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: lighten($link-color, 10%);
-  text-decoration: none;
-}
 
 table {
   border-collapse: collapse;
@@ -206,5 +201,6 @@ tr {
     min-width: 150px;
     min-height: 50px;
     background-color: $primary-color;
+
   }
 }

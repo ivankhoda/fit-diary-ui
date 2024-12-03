@@ -1,3 +1,5 @@
+@use "./mobile.scss" as mobile;
+
 @mixin apply-to($comparator, $device) {
   $extrema: null;
 
@@ -9,8 +11,8 @@
       $extrema: min;
   }
 
-  @if $device == $mobile {
-      @media only screen and (#{$extrema}-width: $mobile) { @content; }
+  @if $device == mobile.$mobile {
+      @media only screen and (#{$extrema}-width: mobile.$mobile) { @content; }
   }
 
   @else if $device == $tablet {

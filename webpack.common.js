@@ -36,14 +36,19 @@ module.exports = {
                     process.env.NODE_ENV !== 'production'
                         ? 'style-loader'
                         : MiniCssExtractPlugin.loader,
-                    'css-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true,  // Enable source maps for CSS for better debugging
+                        },
+                    },
                     {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: true
-                        }
-                    }
-                ]
+                            sourceMap: true,  // Enable source maps for Sass
+                        },
+                    },
+                ],
             }
         ]
     },
