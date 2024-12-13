@@ -33,6 +33,17 @@ export default class AdminUsersController extends BaseController {
     }
 
     @action
+    sendEmail(id:number): void {
+        new Get({ url: `http://localhost:3000/admin/users/${id}/resend_confirmation_instruction` }).execute();
+    }
+
+    @action
+    confirm(id:number): void {
+        new Get({ url: `http://localhost:3000/admin/users/${id}/confirm` }).execute();
+    }
+
+
+    @action
     getWorkoutsByUser(id: string): void {
         new Get({ url: `http://localhost:3000/admin/users/${id}/workouts` }).execute()
             .then(r => r.json())

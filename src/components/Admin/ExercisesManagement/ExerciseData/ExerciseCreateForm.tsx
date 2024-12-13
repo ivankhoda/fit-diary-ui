@@ -86,7 +86,7 @@ const ExerciseData: React.FC = () => {
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
-        // Handle category change by mapping to the internal key
+
         if (name === 'category') {
             const key = Object.keys(categoryMap).find(key => categoryMap[key as keyof typeof categoryMap] === value) as CategoryKey;
             setFormData(prevState => ({
@@ -94,7 +94,7 @@ const ExerciseData: React.FC = () => {
                 [name]: key || '',
             }));
         }
-        // Handle difficulty change by mapping to the internal key
+
         else if (name === 'difficulty') {
             const key = Object.keys(difficultyMap).find(key => difficultyMap[key as keyof typeof difficultyMap] === value) as DifficultyKey;
 
@@ -103,7 +103,7 @@ const ExerciseData: React.FC = () => {
                 [name]: key || '',
             }));
         }
-        // Handle other fields
+
         else {
             setFormData(prevState => ({
                 ...prevState,

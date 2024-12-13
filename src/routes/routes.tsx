@@ -12,7 +12,6 @@ import { PasswordRecovery } from '../components/Auth/PasswordRecovery';
 import { ResetPassword } from '../components/Auth/ResetPassword';
 import { useLocation } from 'react-router';
 import SelfStats from '../components/User/Stats/SelfStats/SelfStats';
-import UserWorkoutsStats from '../components/User/Stats/WorkoutsStats/UserWorkoutsStats';
 import ExercisesStats from '../components/User/Stats/WorkoutsStats/ExercisesStats/ExercisesStats';
 import Exercise from '../components/User/Exercises/Exercise/Exercise';
 import { ConfirmRegistration } from '../components/Auth/ConfirmationRegistration/ConfirmRegistration';
@@ -52,7 +51,6 @@ export const routes = [
     {Component:  <UserWorkout />, name: 'UserWorkout', path: '/workout/current'},
     {Component:  <PasswordRecovery />, name: 'PasswordRecovery', path: '/password/recovery'},
     {Component:  <SelfStats />, name: 'SelfStats', path: '/self-stats'},
-    {Component: <UserWorkoutsStats/>, name: 'UserWorkoutsStats', path: '/workouts-stats'},
     {Component: <Permissions/>, name: 'UserPermissions', path: '/permissions'},
     {Component: <NewPermission/>, name: 'NewUserPermissions', path: '/permissions/new'},
     {Component: <ExercisesStats/>, name: 'ExercisesStats', path: '/exercises-stats'},

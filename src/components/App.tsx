@@ -12,14 +12,20 @@ import { PasswordRecovery } from './Auth/PasswordRecovery';
 import { adminRoutes } from './Admin/routes/routes';
 import adminStores from './Admin/store/stores';
 import adminControllers from './Admin/controllers/controllers';
-
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const App = observer((): JSX.Element => {
     const { token, setToken, isAdmin } = useToken();
     const [isLogin, setIsLogin] = useState(true);
+    const [isDescriptionVisible, setIsDescriptionVisible] = useState(true);
 
     const toggleForm = () => {
         setIsLogin(prevIsLogin => !prevIsLogin);
+    };
+
+    const proceedToAuth = () => {
+        setIsDescriptionVisible(false);
     };
 
     return (
@@ -34,32 +40,62 @@ export const App = observer((): JSX.Element => {
                         <Route path="/me/*" element={<MainAppRoutes token={token} />} />
                     </>
                 ) : (
-                    <Route path="/*" element={<AuthRoutes isLogin={isLogin} setIsLogin={toggleForm} setToken={setToken} isAdmin={isAdmin} />} />
+                    <Route
+                        path="/*"
+                        element={
+                            isDescriptionVisible ? (
+                                <DescriptionScreen proceedToAuth={proceedToAuth} />
+                            ) : (
+                                <AuthRoutes isLogin={isLogin} setIsLogin={toggleForm} setToken={setToken} isAdmin={isAdmin} />
+                            )
+                        }
+                    />
                 )}
             </Routes>
         </Router>
     );
 });
 
-const AdminRoutes = (): JSX.Element => {
-    const store = Object.assign(adminStores, adminControllers);
-   return (<>
-            <Provider {...store}>
-                <Routes>
-                    {adminRoutes.map(({ path, Component }) => (<Route key={path} path={path} element={Component} />))}
-                </Routes>
-            </Provider>
-
-    </>)
+const DescriptionScreen = ({ proceedToAuth }: { proceedToAuth: () => void }) => {
+    const { t } = useTranslation();
+    const textWithLineBreaks = t('desc.text').split("\n").map((item, index) => (
+        <React.Fragment key={index}>
+            {item}
+            <br />
+        </React.Fragment>
+    ));
+    return (
+        <div className="description-container">
+            <h1>{t('desc.title')}</h1>
+            <div>{textWithLineBreaks}</div>
+            <button className="proceed-button" onClick={proceedToAuth}>
+                {t('desc.proceed')}
+            </button>
+        </div>
+    );
 };
 
+const AdminRoutes = (): JSX.Element => {
+    const store = Object.assign(adminStores, adminControllers);
+    return (
+        <Provider {...store}>
+            <Routes>
+                {adminRoutes.map(({ path, Component }) => (
+                    <Route key={path} path={path} element={Component} />
+                ))}
+            </Routes>
+        </Provider>
+    );
+};
 
 const MainAppRoutes = ({ token }: { token: string }) => (
     <>
         <Header />
         <WorkingPanel>
             <Routes>
-                {routes.map(({ path, Component }) => (<Route key={path} path={path} element={Component} />))}
+                {routes.map(({ path, Component }) => (
+                    <Route key={path} path={path} element={Component} />
+                ))}
             </Routes>
         </WorkingPanel>
     </>
@@ -79,16 +115,16 @@ const AuthRoutes = ({
     <div className="auth-container">
         {isLogin ? (
             <>
-                <Login setToken={setToken} isAdmin={isAdmin}/>
+                <Login setToken={setToken} isAdmin={isAdmin} />
                 <button className="toggle-button" onClick={setIsLogin}>
-                    Нет аккаунта? Зарегистрируйтесь
+                {t('auth.no_account')}
                 </button>
             </>
         ) : (
             <>
                 <Registration setToken={setToken} />
                 <button className="toggle-button" onClick={setIsLogin}>
-                    Уже есть аккаунт? Войдите
+                {t('auth.have_account')}
                 </button>
             </>
         )}

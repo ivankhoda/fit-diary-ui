@@ -236,6 +236,15 @@
     "showExercises": "Show Exercises",
     "hideExercises": "Hide Exercises",
     "exercises": "Exercises"
+  },
+  "desc": {
+  "title": "Welcome to Planka",
+  "text": "Planka is a simple app for logging workouts and tracking progress. I made it as simple as possible because I love simplicity and efficiency. There are no unnecessary features, just what you need. Registration and use are free, and you don't need to provide more information than your email address. The app is intuitive and ready to help you achieve your fitness goals without any complicated settings or menus. I invite you to start your workouts with Planka and track your progress together!",
+  "proceed": "Continue"
+},
+  "auth": {
+    "no_account": "Don't have an account? Sign Up",
+    "have_account": "Already have an account? Sign In"
   }
 
 }

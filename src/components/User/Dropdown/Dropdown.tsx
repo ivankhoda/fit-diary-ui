@@ -15,9 +15,7 @@ const options: OptionInterface[] = [
     {
         linkTo: '/me/info',
         subOptions: [
-            { linkTo: '/me/exercises-stats', text: 'Стастистика упражнений' },
-            { linkTo: '/me/workouts-stats', text: 'Статистика тренировок' },
-            { linkTo: '/me/self-stats', text: 'Собственные показатели' }
+            { linkTo: '/me/exercises-stats', text: 'Стастистика упражнений' }, { linkTo: '/me/self-stats', text: 'Собственные показатели' }
         ],
         text: 'Статистика'
     },

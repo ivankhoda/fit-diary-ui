@@ -67,7 +67,8 @@ module.exports = {
         }),
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: './public/index.html',
+            favicon: './public/plank.png'
         }),
         new ForkTsCheckerWebpackPlugin(),
         new ESLintPlugin({

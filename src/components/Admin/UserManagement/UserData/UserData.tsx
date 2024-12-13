@@ -22,6 +22,7 @@ interface User {
     membershipExpiry?: string;
     group?: string;
     activityHistory?: string[];
+    confirmed_at?: string;
 }
 
 // eslint-disable-next-line max-statements
@@ -68,11 +69,19 @@ const UserData: React.FC = () => {
         navigate(`/admin/users/${userId}/workouts`);
     }, [navigate]);
 
+    const handleSendEmail = useCallback(() => {
+        adminUsersController?.sendEmail(parseInt(userId, 10));
+    }, [navigate]);
+
+    const handleConfirm = useCallback(() => {
+        adminUsersController?.confirm(parseInt(userId, 10));
+    }, [navigate]);
+
     const handlePermissonsClick = useCallback(() => {
         navigate(`/admin/users/${userId}/permissions`);
     }, [navigate]);
 
-
+    console.log(currentUser);
 
 
     return (
@@ -91,7 +100,10 @@ const UserData: React.FC = () => {
 
                             <p><strong>Email:</strong> {currentUser?.email || 'x'}</p>
 
-                            <p><strong>Role:</strong> {currentUser?.role || 'x'}</p>
+                            <p><strong>Роль:</strong> {currentUser?.role || 'x'}</p>
+                            <p><strong>Дата подтверждения:</strong> {currentUser?.confirmed_at}</p>
+                            <button onClick={handleSendEmail}>Отправить письмо с подтверждением</button>
+                            <button onClick={handleConfirm}>Подтвердить</button>
                         </div>
                     )}
                 </div>
@@ -105,6 +117,7 @@ const UserData: React.FC = () => {
                             <p><strong>Статус:</strong> {currentUser?.status || 'Not Specified'}</p>
                             <p><strong>Последний вход:</strong> {currentUser?.lastLogin || 'Not Available'}</p>
                             <p><strong>Дата создания:</strong> {currentUser?.accountCreated || 'Not Available'}</p>
+                            <p><strong>Дата подтверждения:</strong> {currentUser?.confirmed_at || 'Not Available'}</p>
                         </div>
                     )}
                 </div>
