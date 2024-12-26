@@ -14,7 +14,7 @@ export const ConfirmRegistration: React.FC<ConfirmRegistrationProps> = ({ token,
 
     const handleConfirm = useCallback(async() => {
         try {
-            const url = `http://localhost:3000/users/confirmation?confirmation_token=${token}`;
+            const url = `http://localhost:3000/api/users/confirmation?confirmation_token=${token}`;
 
             const response = await fetch(url, {
                 headers: {

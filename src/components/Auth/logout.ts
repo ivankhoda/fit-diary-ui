@@ -6,7 +6,7 @@ export const useLogout = (): (() => void) => {
     const navigate = useNavigate();
 
     return useCallback((): void => {
-        new Delete({ url: 'http://localhost:3000/users/sign_out' })
+        new Delete({ url: 'http://localhost:3000/api/users/sign_out' })
             .execute()
             .then((r: Response) => {
                 if (r.ok) {

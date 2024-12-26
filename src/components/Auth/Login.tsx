@@ -22,7 +22,7 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
 
     const loginUser = async (credentials: { user: { email: string; password: string } }) => {
         try {
-            const response = await fetch('http://localhost:3000/users/sign_in', {
+            const response = await fetch('http://localhost:3000/api/users/sign_in', {
                 body: JSON.stringify(credentials),
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
@@ -70,7 +70,7 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
         async (event: React.FormEvent) => {
             event.preventDefault();
 
-            const response = await fetch('http://localhost:3000/users/password', {
+            const response = await fetch('http://localhost:3000/api/users/password', {
                 body: JSON.stringify({ user: { email } }),
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',

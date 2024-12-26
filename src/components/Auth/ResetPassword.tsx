@@ -27,7 +27,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ token, setToken })
         }
 
 
-        const response = await fetch('http://localhost:3000/users/password', {
+        const response = await fetch('http://localhost:3000/api/users/password', {
             body: JSON.stringify({
                 user: {
                     password,

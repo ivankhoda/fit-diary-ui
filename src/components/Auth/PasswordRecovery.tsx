@@ -24,7 +24,7 @@ export const PasswordRecovery: React.FC = () => {
     const handleSubmit = async(event: React.FormEvent) => {
         event.preventDefault();
 
-        const response = await fetch('http://localhost:3000/users/password', {
+        const response = await fetch('http://localhost:3000/api/users/password', {
             body: JSON.stringify({ user: { email } }),
             headers: {
                 'Content-Type': 'application/json',

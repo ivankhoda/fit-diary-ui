@@ -22,7 +22,7 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
             password_confirmation: string | undefined;
         };
     }) => {
-        const response = await fetch('http://localhost:3000/users', {
+        const response = await fetch('http://localhost:3000/api/users', {
             body: JSON.stringify(credentials),
             headers: {
                 'Content-Type': 'application/json',
