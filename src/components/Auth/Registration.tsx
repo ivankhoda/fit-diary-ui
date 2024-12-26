@@ -1,6 +1,7 @@
 import React, { ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Registration.style.scss';
+import getApiBaseUrl from '../../utils/apiUrl';
 
 type Form = {
     setToken: (token: string | null) => void;
@@ -22,7 +23,7 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
             password_confirmation: string | undefined;
         };
     }) => {
-        const response = await fetch('http://localhost:3000/api/users', {
+        const response = await fetch(`${getApiBaseUrl()}/users`, {
             body: JSON.stringify(credentials),
             headers: {
                 'Content-Type': 'application/json',
