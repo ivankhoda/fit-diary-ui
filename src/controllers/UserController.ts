@@ -6,6 +6,7 @@ import Patch from '../utils/PatchRequest';
 import Post from '../utils/PostRequest';
 import { BaseController } from './BaseController';
 import Delete from '../utils/DeleteRequest';
+import getApiBaseUrl from '../utils/apiUrl';
 
 export default class UserController extends BaseController {
     userStore: UserStore;
@@ -17,7 +18,7 @@ export default class UserController extends BaseController {
 
     @action
     getUser(): void {
-        new Get({ url: 'http://localhost:3000/api/users/current' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/users/current` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setUserProfile(res);
@@ -27,7 +28,7 @@ export default class UserController extends BaseController {
 
     @action
     updateUser(userData: { username?: string; email?: string }): void {
-        new Patch({ params: { user: userData }, url: `http://localhost:3000/api/users/${this.userStore.userProfile.id}` }).execute()
+        new Patch({ params: { user: userData }, url: `${getApiBaseUrl()}/users/${this.userStore.userProfile.id}` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setUserProfile(res);
@@ -37,7 +38,7 @@ export default class UserController extends BaseController {
 
     @action
     getUserWorkoutStats(): void {
-        new Get({ url: 'http://localhost:3000/api/users/users-statistics' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/users/users-statistics` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setWorkoutsStats(res);
@@ -46,7 +47,7 @@ export default class UserController extends BaseController {
 
     @action
     getUserExercisesStats(): void {
-        new Get({ url: 'http://localhost:3000/api/users/exercise-statistics' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/users/exercise-statistics` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setUserExerciseStats(res);
@@ -56,7 +57,7 @@ export default class UserController extends BaseController {
     @action
     addWeightMeasurement(weight: number, recorded_at: string): void {
         const params = { recorded_at,  weight };
-        new Post({ params: { measurement: params }, url: 'http://localhost:3000/api/users/user_measurements' }).execute()
+        new Post({ params: { measurement: params }, url: `${getApiBaseUrl()}/users/user_measurements` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.addMeasurement(res);
@@ -66,7 +67,7 @@ export default class UserController extends BaseController {
     @action
     deleteWeightMeasurement(id: number): void {
         const params = { id};
-        new Delete({ params: { measurement: params }, url: `http://localhost:3000/api/users/user_measurements/${id}` }).execute()
+        new Delete({ params: { measurement: params }, url: `${getApiBaseUrl()}/users/user_measurements/${id}` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.deleteMeasurement(res.id);
@@ -76,7 +77,7 @@ export default class UserController extends BaseController {
 
     @action
     getWeightMeasurements(): void {
-        new Get({ url: 'http://localhost:3000/api/users/user_measurements' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/users/user_measurements` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setMeasurements(res);
@@ -86,7 +87,7 @@ export default class UserController extends BaseController {
     // Fetch exercise statistics
     @action
     getExerciseStatistics(): void {
-        new Get({ url: 'http://localhost:3000/api/user_exercise_statistics' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/user_exercise_statistics` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setExerciseStatistics(res);
@@ -95,7 +96,7 @@ export default class UserController extends BaseController {
 
     @action
     getPermissions(): void {
-        new Get({ url: 'http://localhost:3000/api/permissions' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/permissions` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setPermissions(res.res);
@@ -104,7 +105,7 @@ export default class UserController extends BaseController {
 
     @action
     getPermissionTypes(): void {
-        new Get({ url: 'http://localhost:3000/api/permissions/types' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/permissions/types` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setPermissionsTypes(res.res);
@@ -113,7 +114,7 @@ export default class UserController extends BaseController {
 
     @action
     createPermission(permission: PermissionProfile): void {
-        new Post({ params: {permission} , url: 'http://localhost:3000/api/permissions' }).execute()
+        new Post({ params: {permission} , url: `${getApiBaseUrl()}/permissions` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.updatePermissions(res);
@@ -123,7 +124,7 @@ export default class UserController extends BaseController {
 
     @action
     updatePermission(permission: PermissionProfile): void {
-        new Patch({ params: {permission} , url: 'http://localhost:3000/api/permissions' }).execute()
+        new Patch({ params: {permission} , url: `${getApiBaseUrl()}/permissions` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.updatePermissions(res);
@@ -132,7 +133,7 @@ export default class UserController extends BaseController {
 
     @action
     deletePermission(permission: PermissionProfile): void {
-        new Delete({url: `http://localhost:3000/api/permissions/${permission.id}` }).execute()
+        new Delete({url: `${getApiBaseUrl()}/permissions/${permission.id}` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.deletePermission(res.res);

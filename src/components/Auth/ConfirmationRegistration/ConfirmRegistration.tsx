@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './ConfirmRegistration.style.scss';
+import getApiBaseUrl from '../../../utils/apiUrl';
 
 interface ConfirmRegistrationProps {
     token: string;
@@ -14,7 +15,7 @@ export const ConfirmRegistration: React.FC<ConfirmRegistrationProps> = ({ token,
 
     const handleConfirm = useCallback(async() => {
         try {
-            const url = `http://localhost:3000/api/users/confirmation?confirmation_token=${token}`;
+            const url = `${getApiBaseUrl()}/users/confirmation?confirmation_token=${token}`;
 
             const response = await fetch(url, {
                 headers: {

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './PasswordRecovery.style.scss';
+import getApiBaseUrl from '../../utils/apiUrl';
 
 export const PasswordRecovery: React.FC = () => {
     const { t } = useTranslation();
@@ -24,7 +25,7 @@ export const PasswordRecovery: React.FC = () => {
     const handleSubmit = async(event: React.FormEvent) => {
         event.preventDefault();
 
-        const response = await fetch('http://localhost:3000/api/users/password', {
+        const response = await fetch(`${getApiBaseUrl()}/users/password`, {
             body: JSON.stringify({ user: { email } }),
             headers: {
                 'Content-Type': 'application/json',

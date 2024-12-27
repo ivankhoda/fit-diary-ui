@@ -10,6 +10,7 @@ import { BaseController } from './BaseController';
 import Patch from '../utils/PatchRequest';
 import Delete from '../utils/DeleteRequest';
 import { UserProfile } from '../store/userStore';
+import getApiBaseUrl from '../utils/apiUrl';
 
 
 
@@ -38,14 +39,14 @@ export default class WorkoutController extends BaseController {
 
   @action
     getWorkouts(): void {
-        new Get({url: 'http://localhost:3000/api/workouts'}).execute()
+        new Get({url: `${getApiBaseUrl()}/workouts`}).execute()
             .then(r => r.json())
             .then(res => this.workoutsStore.setWorkouts(res));
     }
 
     @action
   getWorkout(id: string): void {
-      new Get({url: `http://localhost:3000/api/workouts/${id}`}).execute()
+      new Get({url: `${getApiBaseUrl()}/workouts/${id}`}).execute()
           .then(r => r.json())
           .then(res => {
               this.workoutsStore.setDraftWorkout(res.workout);});
@@ -53,7 +54,7 @@ export default class WorkoutController extends BaseController {
 
   @action
     getUserWorkout(id?: string): void {
-        new Get({url: `http://localhost:3000/api/user_workouts/${id}`}).execute()
+        new Get({url: `${getApiBaseUrl()}/user_workouts/${id}`}).execute()
             .then(r => r.json())
             .then(res => {
                 if(res.status === 'ok') {
@@ -64,7 +65,7 @@ export default class WorkoutController extends BaseController {
     }
 
   getUserWorkouts(): void {
-      new Get({url: 'http://localhost:3000/api/user_workouts'}).execute()
+      new Get({url: `${getApiBaseUrl()}/user_workouts`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status === 'ok') {
@@ -76,7 +77,7 @@ export default class WorkoutController extends BaseController {
 
   @action
   initWorkout(name?: string): void {
-      new Post({params: {workout: {name}}, url: 'http://localhost:3000/api/workouts/initialize_draft'}).execute()
+      new Post({params: {workout: {name}}, url: `${getApiBaseUrl()}/workouts/initialize_draft`}).execute()
           .then(r => r.json())
           .then(res => {this.workoutsStore.setDraftWorkout(res);
               this.exerciseStore.setWorkoutExercises(res.exercises);});
@@ -84,14 +85,14 @@ export default class WorkoutController extends BaseController {
 
   @action
   deleteWorkout(id?: number): void {
-      new Delete({params: {user_workout: {id}}, url: `http://localhost:3000/api/user_workouts/${id}`}).execute()
+      new Delete({params: {user_workout: {id}}, url: `${getApiBaseUrl()}/user_workouts/${id}`}).execute()
           .then(r => r.json())
           .then(res => {this.workoutsStore.updateUserWorkoutsInProgress(res.id);});
   }
 
   @action
   finishWorkout(id?: number): void {
-      new Post({params: {user_workout: {id}}, url: 'http://localhost:3000/api/user_workouts/finish_workout'}).execute()
+      new Post({params: {user_workout: {id}}, url: `${getApiBaseUrl()}/user_workouts/finish_workout`}).execute()
           .then(r => r.json())
           .then(res => {
               this.workoutsStore.updateUserWorkoutsDone(res.user_workout);
@@ -102,7 +103,7 @@ export default class WorkoutController extends BaseController {
 
   @action
   resumeWorkout(workout?: WorkoutInterface): void {
-      new Post({params: {user_workout: {id: workout.id}}, url: 'http://localhost:3000/api/user_workouts/resume_workout'}).execute()
+      new Post({params: {user_workout: {id: workout.id}}, url: `${getApiBaseUrl()}/user_workouts/resume_workout`}).execute()
           .then(r => r.json())
           .then(res => {
               this.workoutsStore.setCurrentUserWorkout(res.user_workout);
@@ -115,7 +116,7 @@ export default class WorkoutController extends BaseController {
 
   @action
   addExercise(params: AddExerciseParamsInterface): void {
-      new Post({params: {workout_exercise: params}, url: 'http://localhost:3000/api/workout_exercises'}).execute()
+      new Post({params: {workout_exercise: params}, url: `${getApiBaseUrl()}/workout_exercises`}).execute()
           .then(r => r.json())
           .then(res => this.exerciseStore.addWorkoutExercise(res));
   }
@@ -126,7 +127,7 @@ export default class WorkoutController extends BaseController {
           id: this.workoutsStore.draftWorkout.id,
           name: this.workoutsStore.draftWorkout.name
       };
-      new Post({params: {workout: params}, url: 'http://localhost:3000/api/workouts/save'}).execute()
+      new Post({params: {workout: params}, url: `${getApiBaseUrl()}/workouts/save`}).execute()
           .then(r => r.json())
           .then(res => {
               this.workoutsStore.addWorkout(res.workout);
@@ -157,7 +158,7 @@ export default class WorkoutController extends BaseController {
           console.log(payload);
           const response = await new Post({
               params: payload,
-              url: 'http://localhost:3000/api/workouts/save',
+              url: `${getApiBaseUrl()}/workouts/save`,
           }).execute();
 
 
@@ -190,7 +191,7 @@ export default class WorkoutController extends BaseController {
 
           const response = await new Patch({
               params: payload,
-              url: `http://localhost:3000/api/workouts/${id}`,
+              url: `${getApiBaseUrl()}/workouts/${id}`,
           }).execute();
 
 
@@ -205,7 +206,7 @@ export default class WorkoutController extends BaseController {
 
   @action
   archiveWorkout(id: number): void {
-      new Post({params: {workout: {id}}, url: 'http://localhost:3000/api/workouts/archive'}).execute()
+      new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/archive`}).execute()
           .then(r => r.json())
           .then(res => {this.workoutsStore.updateWorkouts(res.id);
               this.workoutsStore.updatArchivedWorkouts(res);});
@@ -213,7 +214,7 @@ export default class WorkoutController extends BaseController {
 
   @action
   startWorkout(id: number): void {
-      new Post({params: {workout: {id}}, url: 'http://localhost:3000/api/workouts/start'}).execute()
+      new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/start`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status ==='ok') {
@@ -229,7 +230,7 @@ export default class WorkoutController extends BaseController {
   @action
   startOrResumeExercise(id: number, workout_id: number): void {
       new Post({params: {user_workout: {exercise_id: id, workout_id  }},
-          url: 'http://localhost:3000/api/user_workouts/start_exercise'}).execute()
+          url: `${getApiBaseUrl()}/user_workouts/start_exercise`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status){
@@ -240,7 +241,7 @@ export default class WorkoutController extends BaseController {
   @action
   setDone(id: number, weigth: string, repetitions: string): void {
       new Post({params: {user_workout: {exercise_id: id, repetitions, result: weigth,  }},
-          url: 'http://localhost:3000/api/user_workouts/set_done'}).execute()
+          url: `${getApiBaseUrl()}/user_workouts/set_done`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status){
@@ -251,7 +252,7 @@ export default class WorkoutController extends BaseController {
   @action
   deleteSet(setId: string, userExerciseId: number): void {
       new Post({params: {user_workout: {exercise_id: userExerciseId, set_id: setId  }},
-          url: 'http://localhost:3000/api/user_workouts/delete_set'}).execute()
+          url: `${getApiBaseUrl()}/user_workouts/delete_set`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status){
@@ -264,7 +265,7 @@ export default class WorkoutController extends BaseController {
   @action
   exerciseDone(id: number): void {
       new Post({params: {user_workout: {exercise_id: id }},
-          url: 'http://localhost:3000/api/user_workouts/exercise_done'}).execute()
+          url: `${getApiBaseUrl()}/user_workouts/exercise_done`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status.ok && res.exercise) {
@@ -282,7 +283,7 @@ export default class WorkoutController extends BaseController {
 
   @action
   getUsersWithPermissions(): void {
-      new Get({ url: 'http://localhost:3000/api/workouts/permitted_users' }).execute()
+      new Get({ url: `${getApiBaseUrl()}/workouts/permitted_users` }).execute()
           .then(r => r.json())
           .then(res => {
               this.workoutsStore.setUsersWithPermissions(res);

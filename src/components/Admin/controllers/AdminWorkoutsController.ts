@@ -7,6 +7,7 @@ import Post from '../../../utils/PostRequest';
 import AdminWorkoutsStore, { AdminWorkoutProfile } from '../store/AdminWorkoutsStore';
 import Patch from '../../../utils/PatchRequest';
 import { AdminExerciseProfile } from '../store/AdminExercisesStore';
+import getApiBaseUrl from '../../../utils/apiUrl';
 
 export default class AdminWorkoutsController extends BaseController {
     adminWorkoutsStore: AdminWorkoutsStore;
@@ -18,7 +19,7 @@ export default class AdminWorkoutsController extends BaseController {
 
     @action
     getWorkouts(): void {
-        new Get({ url: 'http://localhost:3000/api/admin/workouts' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/admin/workouts` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.adminWorkoutsStore.setWorkouts(res);
@@ -27,7 +28,7 @@ export default class AdminWorkoutsController extends BaseController {
 
     @action
     getWorkoutById(id: string): void {
-        new Get({ url: `http://localhost:3000/api/admin/workouts/${id}` }).execute()
+        new Get({ url: `${getApiBaseUrl()}/admin/workouts/${id}` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.adminWorkoutsStore.setWorkout(res);
@@ -36,7 +37,7 @@ export default class AdminWorkoutsController extends BaseController {
 
     @action
     addWorkout(workout: AdminWorkoutProfile): void {
-        new Post({ url: 'http://localhost:3000/api/admin/workouts', params: { workout: JSON.stringify(workout) } })
+        new Post({ url: `${getApiBaseUrl()}/admin/workouts`, params: { workout: JSON.stringify(workout) } })
             .execute()
             .then(r => r.json())
             .then(res => {
@@ -47,7 +48,7 @@ export default class AdminWorkoutsController extends BaseController {
     @action
     updateWorkout(id: string, workout: AdminWorkoutProfile): void {
         console.log(workout.description, 'workout params');
-        new Patch({ url: `http://localhost:3000/api/admin/workouts/${id}`, params: { workout } })
+        new Patch({ url: `${getApiBaseUrl()}/admin/workouts/${id}`, params: { workout } })
             .execute()
             .then(r => r.json())
             .then(res => {
@@ -57,7 +58,7 @@ export default class AdminWorkoutsController extends BaseController {
 
     @action
     createWorkout(workout: {name: string, description: string, exercises: AdminExerciseProfile[], users: number[]}): void {
-        new Post({ url: 'http://localhost:3000/api/admin/workouts', params: { workout } })
+        new Post({ url: `${getApiBaseUrl()}/admin/workouts`, params: { workout } })
             .execute()
             .then(r => {console.log(r);
                 return r.json();})
@@ -68,7 +69,7 @@ export default class AdminWorkoutsController extends BaseController {
 
     @action
     deleteWorkout(id: number): void {
-        new Delete({ url: `http://localhost:3000/api/admin/workouts/${id}` }).execute()
+        new Delete({ url: `${getApiBaseUrl()}/admin/workouts/${id}` }).execute()
             .then(() => {
                 this.adminWorkoutsStore.deleteWorkout(id);
             });

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './ResetPassword.style.scss';
+import getApiBaseUrl from '../../utils/apiUrl';
 
 interface ResetPasswordProps {
     token: string;
@@ -27,7 +28,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ token, setToken })
         }
 
 
-        const response = await fetch('http://localhost:3000/api/users/password', {
+        const response = await fetch(`${getApiBaseUrl()}/users/password`, {
             body: JSON.stringify({
                 user: {
                     password,

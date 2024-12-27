@@ -4,6 +4,7 @@ import './Login.style.scss';
 import { useNavigate } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
 import { DecodedToken } from './useToken';
+import getApiBaseUrl from '../../utils/apiUrl';
 
 type FormProps = {
     setToken: (token: string | null) => void;
@@ -22,7 +23,7 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
 
     const loginUser = async (credentials: { user: { email: string; password: string } }) => {
         try {
-            const response = await fetch('http://localhost:3000/api/users/sign_in', {
+            const response = await fetch(`${getApiBaseUrl()}/users/sign_in`, {
                 body: JSON.stringify(credentials),
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
@@ -70,7 +71,7 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
         async (event: React.FormEvent) => {
             event.preventDefault();
 
-            const response = await fetch('http://localhost:3000/api/users/password', {
+            const response = await fetch(`${getApiBaseUrl()}/users/password`, {
                 body: JSON.stringify({ user: { email } }),
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
@@ -142,7 +143,7 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
                         <label htmlFor="login" className="form-label">
                             {t('login')}
                             <input
-                                id="login"
+                                id="login_input"
                                 className="form-input"
                                 type="text"
                                 name="login"

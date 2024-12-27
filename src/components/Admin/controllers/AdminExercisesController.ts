@@ -6,6 +6,7 @@ import Get from '../../../utils/GetRequest';
 import Post from '../../../utils/PostRequest';
 import AdminExercisesStore, { AdminExerciseProfile } from '../store/AdminExercisesStore';
 import Patch from '../../../utils/PatchRequest';
+import getApiBaseUrl from '../../../utils/apiUrl';
 
 export default class AdminExercisesController extends BaseController {
     adminExercisesStore: AdminExercisesStore;
@@ -17,7 +18,7 @@ export default class AdminExercisesController extends BaseController {
 
     @action
     getExercises(): void {
-        new Get({ url: 'http://localhost:3000/api/admin/exercises' }).execute()
+        new Get({ url: `${getApiBaseUrl()}/admin/exercises` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.adminExercisesStore.setExercises(res);
@@ -26,7 +27,7 @@ export default class AdminExercisesController extends BaseController {
 
     @action
     getExerciseById(id: string): void {
-        new Get({ url: `http://localhost:3000/api/admin/exercises/${id}` }).execute()
+        new Get({ url: `${getApiBaseUrl()}/admin/exercises/${id}` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.adminExercisesStore.setExercise(res);
@@ -35,7 +36,7 @@ export default class AdminExercisesController extends BaseController {
 
     @action
     addExercise(exercise: AdminExerciseProfile): void {
-        new Post({ url: 'http://localhost:3000/api/admin/exercises', params: {exercise: JSON.stringify(exercise)} })
+        new Post({ url: `${getApiBaseUrl()}/admin/exercises`, params: {exercise: JSON.stringify(exercise)} })
             .execute()
             .then(r => r.json())
             .then(res => {
@@ -45,7 +46,7 @@ export default class AdminExercisesController extends BaseController {
 
     @action
     updateExercise(exercise: AdminExerciseProfile): void {
-        new Patch({ url: `http://localhost:3000/api/admin/exercises/${exercise.id}`, params: {exercise} })
+        new Patch({ url: `${getApiBaseUrl()}/admin/exercises/${exercise.id}`, params: {exercise} })
             .execute()
             .then(r => r.json())
             .then(res => {
@@ -55,7 +56,7 @@ export default class AdminExercisesController extends BaseController {
 
     @action
     createExercise(exercise: AdminExerciseProfile): void {
-        new Post({ url: 'http://localhost:3000/api/admin/exercises', params: {exercise} })
+        new Post({ url: `${getApiBaseUrl()}/admin/exercises`, params: {exercise} })
             .execute()
             .then(r => r.json())
             .then(res => {
@@ -65,7 +66,7 @@ export default class AdminExercisesController extends BaseController {
 
     @action
     deleteExercise(id: number): void {
-        new Delete({ url: `http://localhost:3000/api/admin/exercises/${id}` }).execute()
+        new Delete({ url: `${getApiBaseUrl()}/admin/exercises/${id}` }).execute()
             .then(() => {
                 this.adminExercisesStore.deleteExercise(id);
             });

@@ -13,7 +13,7 @@ $color-blue: #009EDB;
 $white-color: #FFFFFF;
 
 // Шрифты
-$body-font-family: "Caveat", sans-serif;
+$body-font-family: "Roboto";
 $heading-font-family: "Montserrat", sans-serif;
 $base-font-size: 16px;
 $heading-font-size: 24px;
@@ -106,7 +106,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
   font-weight: 600;
   color: $button-dark;
-  font-family: 'Caveat';
+  font-family: $body-font-family;
 }
 
 h1 {
