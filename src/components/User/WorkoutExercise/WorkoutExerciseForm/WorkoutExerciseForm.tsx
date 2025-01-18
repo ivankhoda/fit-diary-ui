@@ -25,15 +25,6 @@ const WorkoutExerciseForm: React.FC<WorkoutExerciseFormProps> = inject(
         // Function to add an exercise
         const addExercise = useCallback((event: React.MouseEvent<HTMLButtonElement>): void => {
             event.preventDefault();
-
-            const { repetitions, sets, weight } = exercisesStore || {};
-
-            // Ensure we have all required values
-            if (repetitions === null || sets === null || weight === null) {
-                return;
-            }
-
-            exercisesController?.addWorkoutExercise();
         }, [exercisesStore, exercisesController]);
 
         // Check if button should be displayed

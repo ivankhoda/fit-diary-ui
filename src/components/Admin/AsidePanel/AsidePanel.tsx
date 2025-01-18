@@ -16,14 +16,18 @@ const options: OptionInterface[] = [
 
     { linkTo: '/admin/exercises', text: 'Упражнения' },
     { linkTo: '/admin/workouts', text: 'Тренировки' },
-    { subOptions: [
-        { linkTo: '/admin/reports/sales', text: 'Отчет продаж' }, { linkTo: '/admin/reports/analytics', text: 'Аналитика' },
-    ],
+    /*
+     * { subOptions: [
+     *     { linkTo: '/admin/reports/sales', text: 'Отчет продаж' }, { linkTo: '/admin/reports/analytics', text: 'Аналитика' },
+     * ],
+     */
 
-    text: 'Отчеты',
+    // Text: 'Отчеты',
 
-    },
-    { linkTo: '/admin/settings', text: 'Настройки' },
+    /*
+     * },
+     * { linkTo: '/admin/settings', text: 'Настройки' },
+     */
 ];
 
 const AsidePanel: React.FC = () => {

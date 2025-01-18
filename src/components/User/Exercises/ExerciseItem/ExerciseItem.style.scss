@@ -1,5 +1,4 @@
 .exercise-item {
-  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #fff;
@@ -21,12 +20,6 @@
       color: #333;
       margin: 0;
     }
-
-    .exercise-icons {
-      font-size: 18px;
-      color: #007bff;
-      cursor: pointer;
-    }
   }
 
   .exercise-summary,
@@ -46,12 +39,10 @@
   .show-exercise-btn {
     display: flex;
     align-items: center;
-    padding: 8px 10px;
     background-color:  #a5a5a5;;
     color: #fff;
     border: none;
     border-radius: 4px;
-    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s;
 

@@ -56,12 +56,10 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ token, setToken })
 
     const handleSetPassword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
-        console.log('Set Password:', event.target.value);
     }, []);
 
     const handleConfirmPassword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setConfirmPassword(event.target.value);
-        console.log('Set Confirm Password:', event.target.value);
     }, []);
 
     return token

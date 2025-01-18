@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable sort-keys */
 import { action } from 'mobx';
 import { BaseController } from '../../../controllers/BaseController';
@@ -8,6 +9,7 @@ import AdminWorkoutsStore, { AdminWorkoutProfile } from '../store/AdminWorkoutsS
 import Patch from '../../../utils/PatchRequest';
 import { AdminExerciseProfile } from '../store/AdminExercisesStore';
 import getApiBaseUrl from '../../../utils/apiUrl';
+import i18n from 'i18next';
 
 export default class AdminWorkoutsController extends BaseController {
     adminWorkoutsStore: AdminWorkoutsStore;
@@ -31,7 +33,7 @@ export default class AdminWorkoutsController extends BaseController {
         new Get({ url: `${getApiBaseUrl()}/admin/workouts/${id}` }).execute()
             .then(r => r.json())
             .then(res => {
-                this.adminWorkoutsStore.setWorkout(res);
+                this.adminWorkoutsStore.setDraftWorkout(res);
             });
     }
 
@@ -47,31 +49,84 @@ export default class AdminWorkoutsController extends BaseController {
 
     @action
     updateWorkout(id: string, workout: AdminWorkoutProfile): void {
-        console.log(workout.description, 'workout params');
         new Patch({ url: `${getApiBaseUrl()}/admin/workouts/${id}`, params: { workout } })
             .execute()
             .then(r => r.json())
             .then(res => {
-                this.adminWorkoutsStore.updateWorkout(res);
+                this.adminWorkoutsStore.updateDraftWorkout(res);
             });
     }
 
-    @action
-    createWorkout(workout: {name: string, description: string, exercises: AdminExerciseProfile[], users: number[]}): void {
-        new Post({ url: `${getApiBaseUrl()}/admin/workouts`, params: { workout } })
-            .execute()
-            .then(r => {console.log(r);
-                return r.json();})
-            .then(res => {
-                this.adminWorkoutsStore.addWorkout(res);
-            });
+
+  @action
+    async createWorkout(navigate: (path: string) => void): Promise<void> {
+        try {
+            const response = await new Post({
+                url: `${getApiBaseUrl()}/admin/workouts`,
+            }).execute();
+
+            const result = await response.json();
+
+            if (result.ok && result.workout.id) {
+                this.adminWorkoutsStore.setCurrentWorkout(result.workout);
+                alert(i18n.t('workoutData.workoutCreated'));
+                navigate(`/admin/workouts/${result.workout.id}/edit`);
+            } else {
+                console.error('No workout ID returned in response:', result);
+            }
+        } catch (error) {
+            console.error('Failed to create workout:', error);
+        }
     }
 
     @action
-    deleteWorkout(id: number): void {
-        new Delete({ url: `${getApiBaseUrl()}/admin/workouts/${id}` }).execute()
-            .then(() => {
-                this.adminWorkoutsStore.deleteWorkout(id);
-            });
+  deleteWorkout(id: number): void {
+      new Delete({ url: `${getApiBaseUrl()}/admin/workouts/${id}` }).execute()
+          .then(() => {
+              this.adminWorkoutsStore.deleteWorkout(id);
+          });
+  }
+
+    @action
+    updateWorkoutExercise(params: AdminExerciseProfile): void {
+        try {
+            new Patch({
+                params: { workout_exercise: params },
+                url: `${getApiBaseUrl()}/admin/workout_exercises/${params.id}`,
+            }).execute()
+                .then(r => r.json())
+                .then(res => {
+                    this.adminWorkoutsStore.updateOrAddDraftWorkoutExercise(res);
+                })
+                .catch(error => {
+                    console.error('Failed to edit workout exercise:', error);
+                });
+        } catch (error) {
+            console.error('Error in editWorkoutExercise:', error);
+        }
+    }
+
+
+    @action
+    addWorkoutExercise(workout_id: string, exercise_id: number): void {
+        try {
+            const params = {
+                exercise_id,
+                workout_id,
+            };
+            new Post({
+                params: { workout_exercise: params },
+                url: `${getApiBaseUrl()}/admin/workout_exercises`,
+            }).execute()
+                .then(r => r.json())
+                .then(res => {
+                    this.adminWorkoutsStore.updateOrAddDraftWorkoutExercise(res);
+                })
+                .catch(error => {
+                    console.error('Failed to add workout exercise:', error);
+                });
+        } catch (error) {
+            console.error('Error in addWorkoutExercise:', error);
+        }
     }
 }

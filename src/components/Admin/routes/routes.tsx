@@ -9,8 +9,9 @@ import ExerciseCreateForm from '../ExercisesManagement/ExerciseData/ExerciseCrea
 import WorkoutsList from '../WorkoutsManagement/WorkoutsList';
 import WorkoutData from '../WorkoutsManagement/WorkoutData/WorkoutData';
 import UserWorkoutsList from '../WorkoutsManagement/UserWorkouts/UserWorkoutsList';
-import CreateWorkout from '../WorkoutsManagement/CreateWorkout/CreateWorkout';
+
 import UserPermissionsList from '../UserManagement/UserPermissonsList/UserPermissionsList';
+import AdminCreateWorkout from '../WorkoutsManagement/CreateWorkout/AdminCreateWorkout';
 
 
 export const adminRoutes = [
@@ -25,6 +26,6 @@ export const adminRoutes = [
     {Component:  <ExerciseCreateForm/>, name: 'exercise/create', path: '/exercises/create'},
     {Component:  <WorkoutsList/>, name: 'workouts', path: 'workouts'},
     {Component:  <WorkoutData/>, name: 'workouts/data', path: 'workouts/:workoutId'},
-    {Component:  <CreateWorkout/>, name: 'workouts/create', path: 'workouts/create'},
+    {Component:  <AdminCreateWorkout />, name: 'Workout', path: 'workouts/:workoutId/edit'},
 
 ];

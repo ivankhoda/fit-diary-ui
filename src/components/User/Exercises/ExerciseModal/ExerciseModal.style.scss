@@ -1,0 +1,80 @@
+@use "../../../../styles.scss" as styles;
+
+
+.exercise-create-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+  .modal-content {
+      background-color: white;
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+      max-height: 80vh;
+      overflow-y: auto; /* Make it scrollable if content exceeds max-height */
+
+      h2 {
+          margin-top: 0;
+      }
+
+      .modal-actions {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 20px;
+      }
+
+      button {
+          padding: 10px 20px;
+          cursor: pointer;
+          border: none;
+          background-color: styles.$primary-color;;
+          color: white;
+          font-size: 14px;
+          border-radius: 5px;
+
+          &:hover {
+              background-color: styles.$primary-color;
+          }
+      }
+
+      button:last-child {
+          background-color: styles.$primary-color;
+      }
+  }
+  .muscle-groups {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    div {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background-color: #e0e0e0;
+      color: black;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+
+      &.active {
+        background-color: #007bff;
+        color: white;
+      }
+
+      &:hover {
+        background-color: #cce5ff;
+      }
+    }
+  }
+}

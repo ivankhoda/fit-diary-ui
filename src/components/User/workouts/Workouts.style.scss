@@ -3,88 +3,100 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 
-  h2 {
+  h1 {
     color: #000; /* Pantone text color */
     font-size: 24px;
     margin-bottom: 16px;
   }
+  p {
+    font-size: 14px;
+  }
 
-  /* Style for individual workout items */
-  .workout-item {
-    border: 1px solid #ccc; /* Light border */
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
+  .workouts-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Expand to fill available space */
+  }
 
-    /* Style for workout header/title */
-    .workout-header {
-      cursor: pointer;
-      font-size: 18px;
-      font-weight: bold;
-      color: #344b5a; /* Primary Pantone text color */
-      transition: color 0.3s ease;
+  .workouts-list {
+    flex: 1; /* Allow list to grow */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 630px;
+    min-height: 630px;
 
-      &:hover {
-        color: #2a3d4e; /* Darker shade on hover */
-      }
-    }
-
-    /* Container for workout details */
-    .workout-details {
-      margin-top: 10px;
-      background-color: #f9f9f9; /* Light gray for detail background */
-      padding: 10px;
+    .workout-item {
+      flex: 0 0 100px; /* Fixed height for each workout */
+      border: 1px solid #ccc; /* Light border */
       border-radius: 5px;
-
-      /* Style for individual exercise items */
-      .exercise-item {
-        margin-bottom: 15px;
-
-        p {
-          margin: 5px 0;
-          color: #555; /* Slightly muted text for exercise descriptions */
-        }
-
-        /* List for sets inside each exercise */
-        .sets-list {
-          margin-top: 10px;
-
-          ul {
-            padding-left: 20px;
-
-            li {
-              margin-bottom: 5px;
-              color: #333; /* Darker text color for sets */
-            }
-          }
-        }
-      }
+      padding: 10px;
+      background-color: #fff;
     }
   }
 
-  /* Create workout button styles */
-  .create-workout-btn {
-    background-color: #344b5a; /* Primary Pantone button color */
-    color: #fff; /* White text */
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    text-align: center;
-    display: inline-block;
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 10px;
+    gap: 10px;
 
-    &:hover {
-      background-color: #2a3d4e; /* Darker shade on hover */
-      transform: translateY(-2px); /* Slight lift on hover */
-    }
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
 
-    &:active {
-      transform: translateY(0); /* Reset on click */
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: #0056b3;
+      }
+
+      &.active {
+        background-color: #0056b3;
+      }
     }
+  }
+  .create-workout-btn{
+    background-color: #0056b3;
+    color: white;
+  }
+  .workouts-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: #000 1px solid;
+    h1 {
+      margin: 0;
+    }
+  }
+
+  .workout-actions{
+    display: flex;
+    flex-direction: column;
+  }
+  .exercises-container{
+    width: auto;
+  }
+  .sets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 300px;
+
   }
 }

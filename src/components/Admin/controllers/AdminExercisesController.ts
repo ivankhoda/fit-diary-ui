@@ -71,4 +71,74 @@ export default class AdminExercisesController extends BaseController {
                 this.adminExercisesStore.deleteExercise(id);
             });
     }
+    @action
+    addWorkoutExercise(workout_id: string, exercise_id: number): Promise<AdminExerciseProfile | null> {
+        return new Promise((resolve, reject) => {
+            try {
+                const params = {
+                    exercise_id,
+                    workout_id,
+                };
+
+                new Post({
+                    params: { workout_exercise: params },
+                    url: `${getApiBaseUrl()}/admin/workout_exercises`,
+                }).execute()
+                    .then(r => r.json())
+                    .then(res => {
+                        this.adminExercisesStore.addWorkoutExercise(res);
+                        resolve(res);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    })
+                    .finally(() => {
+                        console.log('addWorkoutExercise operation completed.');
+                    });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    @action
+    deleteWorkoutExercise(workout_exercise_id: number): void {
+        try {
+            new Delete({
+                url: `${getApiBaseUrl()}/admin/workout_exercises/${workout_exercise_id}`,
+            })
+                .execute()
+                .then(response => {
+                    if (response.ok) {
+                        this.adminExercisesStore.removeWorkoutExercise(workout_exercise_id);
+                    } else {
+                        console.error(`Failed to delete workout exercise with ID ${workout_exercise_id}:`, response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to delete workout exercise:', error);
+                });
+        } catch (error) {
+            console.error('Error in deleteWorkoutExercise:', error);
+        }
+    }
+
+    @action
+    editWorkoutExercise(params: AdminExerciseProfile): void {
+        try {
+            new Patch({
+                params: { workout_exercise: params },
+                url: `${getApiBaseUrl()}/workout_exercises/${params.id}`,
+            }).execute()
+                .then((r: Response) => r.json())
+                .then(res => {
+                    this.adminExercisesStore.updateOrAddDraftWorkoutExercise(res);
+                })
+                .catch(error => {
+                    console.error('Failed to edit workout exercise:', error);
+                });
+        } catch (error) {
+            console.error('Error in editWorkoutExercise:', error);
+        }
+    }
 }

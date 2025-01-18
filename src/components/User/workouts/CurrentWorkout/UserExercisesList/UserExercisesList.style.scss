@@ -1,0 +1,17 @@
+.user-exercises-container{
+  h2 {
+    font-size: 14px;
+  }
+
+  .exercise-item{
+  display: flex;
+
+  flex-direction: row;
+  align-items: baseline;
+
+
+    .exercise-name, p {
+      font-size: 14px;
+    }
+  }
+}

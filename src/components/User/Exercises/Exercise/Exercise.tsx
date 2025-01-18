@@ -42,12 +42,12 @@ const Exercise: React.FC<ExerciseDetailProps> = ({ exercisesStore, exercisesCont
             <button onClick={handleBack}>{t('exercise.back')}</button>
             <h2>{exercise.name}</h2>
             <div className="exercise-info">
-                <p><strong>{t('exercise.category')}:</strong> {t(`exercise.categories.${exercise.category}`)}</p>
-                <p><strong>{t('exercise.difficulty')}:</strong> {t(`exercise.difficulties.${exercise.difficulty}`)}</p>
-                <p><strong>{t('exercise.duration')}:</strong> {exercise.duration} {t('exercise.minutes')}</p>
-                <p><strong>{t('exercise.muscleGroups')}:</strong>
-                    {exercise.muscle_groups.map(mg => t(`exercise.muscleGroupsList.${mg}`)).join(', ')}</p>
-                <p><strong>{t('exercise.description')}:</strong> {exercise.description}</p>
+                {exercise.category && <p><strong>{t('exercise.category')}:</strong> {t(`exercise.categories.${exercise.category}`)}</p>}
+                {exercise.difficulty && <p><strong>{t('exercise.difficulty')}:</strong> {t(`exercise.difficulties.${exercise.difficulty}`)}</p>}
+                {exercise.duration && <p><strong>{t('exercise.duration')}:</strong> {exercise.duration} {t('exercise.minutes')}</p>}
+                {exercise.muscle_groups && exercise.muscle_groups.length > 0 && <p><strong>{t('exercise.muscleGroups')}:</strong>
+                    {exercise.muscle_groups.map(mg => t(`exercise.muscleGroupsList.${mg}`)).join(', ')}</p>}
+                {exercise.description && <p><strong>{t('exercise.description')}:</strong> {exercise.description}</p>}
             </div>
         </div>
     );

@@ -46,7 +46,6 @@ export default class WorkoutsStore {
 
     @action
     setUsersWithPermissions(users: UserProfile[]): void {
-        console.log(users);
         this.usersWithPermissions = users;
     }
 
@@ -87,7 +86,7 @@ export default class WorkoutsStore {
 
     @action
     updateWorkouts(id: number): void {
-        const index = this.userWorkoutsInProgress.findIndex(workout => workout.id === id);
+        const index = this.workouts.findIndex(workout => workout.id === id);
         const notFound = -1;
 
         if (index === notFound) {
@@ -134,15 +133,13 @@ export default class WorkoutsStore {
      @action
     updateOrAddDraftWorkoutExercise(newExercise: ExerciseInterface): void {
         if (this.draftWorkout) {
-            const index = this.draftWorkout.workout_exercises.findIndex(ex => ex.id === newExercise.id);
+            const index = this.draftWorkout.exercises.findIndex(ex => ex.id === newExercise.id);
 
             if (index === NOT_FOUND) {
-                this.draftWorkout.workout_exercises = [...this.draftWorkout.workout_exercises, newExercise];
+                this.draftWorkout.exercises = [...this.draftWorkout.exercises, newExercise];
             } else {
-                this.draftWorkout.workout_exercises[index] = newExercise;
+                this.draftWorkout.exercises[index] = newExercise;
             }
-        } else {
-            console.error('No draft workout is set');
         }
     }
 
@@ -150,8 +147,6 @@ export default class WorkoutsStore {
      deleteDraftWorkoutExercise(exerciseId: number): void {
          if (this.draftWorkout) {
              this.draftWorkout.workout_exercises = this.draftWorkout.workout_exercises.filter(ex => ex.id !== exerciseId);
-         } else {
-             console.error('No draft workout is set');
          }
      }
 

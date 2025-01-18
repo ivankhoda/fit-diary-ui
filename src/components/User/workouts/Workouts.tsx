@@ -42,7 +42,7 @@ const Workouts: React.FC<WorkoutsInterface> = ({
     }, [exercisesController, workoutsController]);
 
     const handleGoToCreateWorkout = useCallback(() => {
-        navigate('/me/workout/new');
+        workoutsController.createWorkout(navigate);
     }, [navigate]);
 
     const totalPages = Math.ceil((workoutsStore?.workouts.length || 0) / ITEMS_PER_PAGE);
@@ -66,40 +66,43 @@ const Workouts: React.FC<WorkoutsInterface> = ({
 
     return (
         <div className="workouts-section">
-            <h1>{t('workouts.title')}</h1>
-            <div>
-                {paginatedWorkouts?.map((workout, index) => (
-                    <Workout key={workout.id || `workout-${index}`} workout={workout} />
-                ))}
-            </div>
-            <div className="pagination-controls">
-                <button
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousClick}
-                >
-                    {t('workouts.pagination.previous')}
-                </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <button
-                        key={page}
-                        className={page === currentPage ? 'active' : ''}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onClick={handlePageClick.bind(null, page)}
-                    >
-                        {page}
-                    </button>
-                ))}
-                <button
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextClick}
-                >
-                    {t('workouts.pagination.next')}
-                </button>
-            </div>
-            <div>
+            <div className='workouts-header'>
+                <h1>{t('workouts.title')}</h1>
+
                 <button onClick={handleGoToCreateWorkout} className="create-workout-btn">
                     {t('workouts.createWorkoutButton')}
                 </button>
+            </div>
+            <div className="workouts-content">
+                <div className="workouts-list">
+                    {paginatedWorkouts?.map((workout, index) => (
+                        <Workout key={workout.id || `workout-${index}`} workout={workout} />
+                    ))}
+                </div>
+                <div className="pagination-controls">
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={handlePreviousClick}
+                    >
+                        {t('workouts.pagination.previous')}
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <button
+                            key={page}
+                            className={page === currentPage ? 'active' : ''}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={handlePageClick.bind(null, page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={handleNextClick}
+                    >
+                        {t('workouts.pagination.next')}
+                    </button>
+                </div>
             </div>
         </div>
     );

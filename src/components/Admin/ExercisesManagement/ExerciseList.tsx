@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminExercisesController from '../controllers/AdminExercisesController';
 import AdminExercisesStore, { AdminExerciseProfile } from '../store/AdminExercisesStore';
 import i18n from 'i18next';
+import { categoryMap, difficultyMap, muscleGroups } from './maps';
 
 export interface ExerciseListProps {
     adminExercisesStore?: AdminExercisesStore;
@@ -26,10 +27,10 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
     const [searchName, setSearchName] = useState<string>('');
     const [filterCategory, setFilterCategory] = useState<string>('');
     const [filterDifficulty, setFilterDifficulty] = useState<string>('');
-    const [filterMuscleGroup, setFilterMuscleGroup] = useState<number | string>('');
+    const [filterMuscleGroup, setFilterMuscleGroup] = useState<string>('');
     const [sortKey, setSortKey] = useState<string>('');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-    const exercisesPerPage = 10;
+    const exercisesPerPage = 20;
 
     useEffect(() => {
         adminExercisesController.getExercises();
@@ -72,7 +73,7 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
             exercise.name.toLowerCase().includes(searchName.toLowerCase()) &&
             (filterCategory ? exercise.category === filterCategory : true) &&
             (filterDifficulty ? exercise.difficulty === filterDifficulty : true) &&
-            (filterMuscleGroup === '' ? true : exercise.muscle_groups.includes(Number(filterMuscleGroup))))
+            (filterMuscleGroup === '' ? true : exercise.muscle_groups.includes(filterMuscleGroup)))
         .sort((a, b) => {
             if (!sortKey) { return 0; }
             if (sortDirection === 'asc') {
@@ -103,30 +104,21 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
 
                 <div className="filters">
                     <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
-                        <option value="">{i18n.t('allCategories')}</option>
-                        <option value="cardio">{i18n.t('cardio')}</option>
-                        <option value="strength">{i18n.t('strength')}</option>
-                        <option value="flexibility">{i18n.t('flexibility')}</option>
-                        <option value="balance">{i18n.t('balance')}</option>
+                        {categoryMap.map(category => (
+                            <option key={category} value={category}>{i18n.t(category)}</option>
+                        ))}
                     </select>
 
                     <select value={filterDifficulty} onChange={e => setFilterDifficulty(e.target.value)}>
-                        <option value="">{i18n.t('allDifficulties')}</option>
-                        <option value="beginner">{i18n.t('beginner')}</option>
-                        <option value="intermediate">{i18n.t('intermediate')}</option>
-                        <option value="advanced">{i18n.t('advanced')}</option>
+                        {difficultyMap.map(difficulty => (
+                            <option key={difficulty} value={difficulty}>{i18n.t(difficulty)}</option>
+                        ))}
                     </select>
 
                     <select value={filterMuscleGroup} onChange={e => setFilterMuscleGroup(e.target.value)}>
-                        <option value="">{i18n.t('allMuscleGroups')}</option>
-                        <option value="0">{i18n.t('muscleGroups.chest')}</option>
-                        <option value="1">{i18n.t('muscleGroups.biceps')}</option>
-                        <option value="2">{i18n.t('muscleGroups.triceps')}</option>
-                        <option value="3">{i18n.t('muscleGroups.back')}</option>
-                        <option value="4">{i18n.t('muscleGroups.legs')}</option>
-                        <option value="5">{i18n.t('muscleGroups.shoulders')}</option>
-                        <option value="6">{i18n.t('muscleGroups.core')}</option>
-                        <option value="7">{i18n.t('muscleGroups.cardio')}</option>
+                        {muscleGroups.map(muscleGroup => (
+                            <option key={muscleGroup.name} value={muscleGroup.name}>{i18n.t(muscleGroup.name)}</option>
+                        ))}
                     </select>
 
                     <button onClick={clearFilters}>{i18n.t('clearFilters')}</button>
@@ -139,7 +131,7 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
                             <th onClick={() => handleSort('name')}>{i18n.t('name')}</th>
                             <th onClick={() => handleSort('category')}>{i18n.t('category')}</th>
                             <th onClick={() => handleSort('difficulty')}>{i18n.t('difficulty')}</th>
-                            <th onClick={() => handleSort('duration')}>{i18n.t('duration')}</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -149,7 +141,7 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
                                 <td>{exercise.name}</td>
                                 <td>{i18n.t(`${exercise.category}`)}</td>
                                 <td>{i18n.t(`${exercise.difficulty}`)}</td>
-                                <td>{exercise.duration}</td>
+
                             </tr>
                         ))}
                     </tbody>

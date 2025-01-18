@@ -26,12 +26,6 @@ const options: OptionInterface[] = [
             { linkTo: '/me/workouts/done', text: 'Завершённые тренировки' }
         ],
         text: 'Тренировки',
-    },
-    {
-        subOptions: [
-            { linkTo: '/me/permissions', text: 'Разрешения' }
-        ],
-        text: 'Настройки',
     }
 ];
 

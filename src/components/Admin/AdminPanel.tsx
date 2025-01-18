@@ -9,7 +9,6 @@ interface AdminPanelProps {
 const AdminPanel: React.FC<AdminPanelProps> = ({ children }) => {
     const [isAsideVisible, setIsAsideVisible] = useState(true);
 
-    // Memoized toggle function to show/hide the aside panel
     const toggleAside = useCallback(() => {
         setIsAsideVisible(prev => !prev);
     }, []);

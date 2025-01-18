@@ -1,7 +1,6 @@
 /* eslint-disable no-magic-numbers */
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import { Workout } from '../components/User/Stats/WorkoutsStats/WorkoutProgressGrid/WorkoutProgressGrid';
-import { Exercise } from '../components/User/Stats/WorkoutsStats/ExercisesStats/ExercisesStats';
 
 export interface UserMeasurement {
     id: number;
@@ -31,6 +30,40 @@ export interface PermissionProfile{
     to_user: string
 }
 
+export interface Exercise {
+    id: number;
+    name: string;
+    type_of_measurement: string;
+    lastSession: {
+        weight?: number;
+        reps?: number;
+        sets?: number;
+        duration?: number;
+        distance?: number;
+        date: string;
+    };
+    progress: {
+        date: string;
+        progress_data: {
+            weight?: number;
+            reps?: number;
+            duration?: number;
+            distance?: number;
+        };
+    }[];
+    personal_bests: {
+        max_weight?: number;
+        max_reps?: number;
+        max_distance?: number;
+        max_duration?: number;
+    };
+}
+
+export interface ConsistencyMetrics {
+    days_exercised_this_week: number;
+    workout_streak: number;
+}
+
 export default class UserStore {
     constructor() {
         makeObservable(this);
@@ -54,6 +87,7 @@ export default class UserStore {
 
     @observable usersWithPermissions: UserProfile[] = [];
 
+    @observable userConsistencyStats: ConsistencyMetrics | null = null;
     @action
     setUserProfile(profile: UserProfile): void {
         this.userProfile = profile;
@@ -65,8 +99,9 @@ export default class UserStore {
     }
 
     @action
-    setUserExerciseStats(exercises: Exercise[]): void {
+    setUserExerciseStats(exercises: Exercise[], consistency: ConsistencyMetrics): void {
         this.userExercisesStats = exercises;
+        this.userConsistencyStats = consistency;
     }
 
     @action
@@ -144,13 +179,9 @@ export default class UserStore {
         const permissionIndex = this.permissions.findIndex(p => String(p.id) === String(permissionId));
 
 
-        if (permissionIndex === -1) {
-            console.log('Permission not found with id:', permissionId);
-        } else {
-            runInAction(() => {
-                this.permissions.splice(permissionIndex, 1);
-            });
-        }
+        runInAction(() => {
+            this.permissions.splice(permissionIndex, 1);
+        });
     }
 
     @action

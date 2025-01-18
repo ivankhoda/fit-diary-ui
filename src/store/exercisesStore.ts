@@ -4,19 +4,27 @@ import { action, makeObservable, observable } from 'mobx';
 import { Exercise } from '../components/User/Exercises/Exercises';
 
 export interface ExerciseInterface {
+    exercise_id?: number
     id: number;
+    uuid?: string;
     name?: string;
     description?: string;
     sets?: number;
     repetitions?: number;
-    weight?: number;
+    weight?: string;
     image?: string;
     number_of_sets?: SetInterface[]
+    type_of_measurement?: string;
+    distance?: string;
+    duration?: number;
   }
 
 export interface SetInterface {
     id: string;
-    result: string
+    result: string;
+    duration?: number;
+    weight?: number;
+    distance?: string;
     repetitions: string;
     user_exercise_id: number;
   }
@@ -41,7 +49,6 @@ export default class ExercisesStore {
 
     @observable currentUserExerciseSets: SetInterface[] = [];
 
-
     @observable repetitions: number = null;
 
     @observable sets: number = null;
@@ -49,11 +56,28 @@ export default class ExercisesStore {
     @observable weight: number = null;
 
     @observable generalExercises: Exercise[] = [];
+
     @observable generalExercise: Exercise = null;
 
     @action
     setGeneralExercises(exercises: Exercise[]): void {
         this.generalExercises = exercises;
+    }
+
+    @action
+    addGeneralExercise(exercise: Exercise): void {
+        this.generalExercises = [...this.generalExercises,exercise];
+    }
+
+    @action
+    updateGeneralExercise(updatedExercise: Exercise): void {
+        this.generalExercises = this.generalExercises.map(exercise =>
+            exercise.id === updatedExercise.id ? updatedExercise : exercise);
+    }
+
+    @action
+    deleteGeneralExercise(id: number): void {
+        this.generalExercises = this.generalExercises.filter(exercise => exercise.id !== id);
     }
 
     @action
@@ -99,8 +123,8 @@ export default class ExercisesStore {
     }
 
     @action
-    deleteWorkoutExercise(exercise: ExerciseInterface): void {
-        this.workoutExercises = this.workoutExercises.filter(e=> e.id !== exercise.id);
+    deleteWorkoutExercise(id: number): void {
+        this.workoutExercises = this.workoutExercises.filter(e=> e.id !== id);
     }
 
     @action

@@ -7,6 +7,7 @@ import WorkoutsController from '../../../controllers/WorkoutsController';
 import ExercisesStore from '../../../store/exercisesStore';
 import WorkoutsStore from '../../../store/workoutStore';
 import Workout from './Workout/Workout';
+import { UserExerciseSets } from './CurrentWorkout/UserExerciseSets/UserExerciseSets';
 
 interface WorkoutsInterface {
     exercisesStore?: ExercisesStore;
@@ -61,7 +62,7 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
     return (
         <div className="workouts-section">
             <h1>Завершенные тренировки</h1>
-            <div>
+            <div className='workouts-list'>
                 {workoutsToDisplay &&
                     workoutsToDisplay.map((workout, index) => (
                         <div key={workout.id || `workout-${index}`} className="workout-item">
@@ -78,23 +79,16 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
                                     {workout.user_exercises.map(exercise => (
                                         <div key={exercise.id} className="exercise-item">
                                             <p>
-                                                <strong>Упражнение:</strong> {exercise.name}
+                                                {exercise.name}
                                             </p>
-                                            <p>
-                                                Повторы: {exercise.repetitions}, Сеты: {exercise.sets},
-                                                Вес: {exercise.weight}
-                                            </p>
+
 
                                             {exercise.number_of_sets.length > 0 && (
                                                 <div className="sets-list">
-                                                    <h4>Сеты:</h4>
-                                                    <ul>
-                                                        {exercise.number_of_sets.map((set, i) => (
-                                                            <li key={set.id}>
-                                                                Сет {i + 1}: Повторы: {set.repetitions}, Вес: {set.result}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                                    <UserExerciseSets
+                                                        exerciseId={exercise.id}
+                                                        measurementType={exercise.type_of_measurement}
+                                                        sets={exercise.number_of_sets}/>
                                                 </div>
                                             )}
                                         </div>

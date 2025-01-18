@@ -50,10 +50,12 @@ export default class UserController extends BaseController {
         new Get({ url: `${getApiBaseUrl()}/users/exercise-statistics` }).execute()
             .then(r => r.json())
             .then(res => {
-                this.userStore.setUserExerciseStats(res);
+                this.userStore.setUserExerciseStats(res.exercises, res.consistency);
+            })
+            .catch(error => {
+                console.error('Failed to fetch user exercise statistics:', error);
             });
     }
-
     @action
     addWeightMeasurement(weight: number, recorded_at: string): void {
         const params = { recorded_at,  weight };

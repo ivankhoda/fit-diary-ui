@@ -1,0 +1,92 @@
+.exercise-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 400px;
+  max-height: 80vh;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.exercise-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.exercise-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+
+  &:hover {
+    background-color: #f4f4f4;
+    transform: scale(1.02);
+  }
+
+  .exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .exercise-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .last-session {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .session-details {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .session-date {
+    font-style: italic;
+    color: #999;
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ddd;
+
+  button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+
+    &:hover:not(:disabled) {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}

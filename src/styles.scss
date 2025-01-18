@@ -14,8 +14,8 @@ $white-color: #FFFFFF;
 
 // Шрифты
 $body-font-family: "Roboto";
-$heading-font-family: "Montserrat", sans-serif;
-$base-font-size: 16px;
+$heading-font-family: "Roboto";
+$base-font-size: 14px;
 $heading-font-size: 24px;
 $line-height: 1.5;
 
@@ -80,6 +80,10 @@ body {
   line-height: $line-height;
   color: $secondary-color;
   background-color: $background-color;
+
+  textarea {
+    font-family: $body-font-family;
+  }
 }
 
 html, body, #root {
@@ -188,7 +192,7 @@ tr {
 
 .container {
   max-width: $container-max-width;
-  margin: 0 auto;
+  margin: 0 10px auto;
 }
 
 .link-container {

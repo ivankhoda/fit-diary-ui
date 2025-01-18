@@ -1,5 +1,5 @@
 {
-  "hello": "Hello, world!",
+  "required": "Обязательно",
   "buttonLabel": "Click me!",
   "login": "Логин",
   "password": "Пароль",
@@ -41,23 +41,49 @@
   "selectCategory": "Выберите категорию",
   "difficulty": "Сложность",
   "selectDifficulty": "Выберите сложность",
+  "selectTypeOfMeasurement": "Выберите тип измерения",
   "muscleGroup": "Мышечные группы",
-  "duration": "Длительность (в минутах)",
+  "duration": "Длительность",
   "createdAt": "Создано",
   "updatedAt": "Обновлено",
   "strength": "Сила",
   "cardio": "Кардио",
   "flexibility": "Гибкость",
+  "other": "Другое",
   "balance": "Баланс",
   "beginner": "Новичок",
   "intermediate": "Средний",
   "advanced": "Продвинутый",
   "chest": "Грудные мышцы",
-  "back": "Спина",
   "legs": "Ноги",
   "arms": "Руки",
+
+        "biceps": "Бицепс",
+        "triceps": "Трицепс",
+        "back": "Спина",
+        "upper_back": "Верхняя часть спины",
+        "lats": "Широчайшие",
+        "shoulders": "Плечи",
+        "forearms": "Предплечья",
+        "abs": "Пресс",
+        "obliques": "Косые мышцы",
+        "lower_back": "Нижняя часть спины",
+        "quads": "Квадрицепс",
+        "hamstrings": "Бицепс бедра",
+        "calves": "Икры",
+        "glutes": "Ягодицы",
+        "hip_flexors": "Сгибатели бедра",
+        "adductors": "Приводящие мышцы",
+        "abductors": "Отводящие мышцы",
   "pleaseFillAllFields": "Пожалуйста, заполните все обязательные поля",
   "createExercise": "Создать упражнение",
+  "weight_and_reps": "Вес и Повторения",
+    "reps": "Повторения",
+    "duration_and_reps": "Длительность и Повторения",
+    "type_of_measurement": "Тип измерения",
+
+    "duration_and_distance": "Длительность и Расстояние",
+    "unspecified": "Не указано",
 
   "exerciseDetails": "Детали упражнения",
   "editExercise": "Редактировать упражнение",
@@ -82,7 +108,8 @@
         "glutes": "Ягодицы",
         "hip_flexors": "Сгибатели бедра",
         "adductors": "Приводящие мышцы",
-        "abductors": "Отводящие мышцы"
+        "abductors": "Отводящие мышцы",
+        "other": "Другое"
     },
     "exerciseListTitle": "Список управления упражнениями",
 
@@ -110,6 +137,16 @@
     "columnName": "Название",
     "columnActions": "Действия"
   },
+  "consistency": {
+    "daysExercisedThisWeek": "Дней тренировки на этой неделе",
+    "workoutStreak": "Тренировок подряд",
+    "days": "Дней"
+
+  },
+  "from": "От",
+  "to": "До",
+  "progress": "Прогресс",
+  "date": "Дата",
     "workoutData": {
       "exercises": "Упражнения",
     "createNewWorkout": "Создать новый тренинг",
@@ -121,8 +158,14 @@
     "exerciseName": "Название упражнения",
     "weight": "Вес",
     "repetitions": "Повторения",
+    "reps": "Повторения",
     "sets": "Подходы",
     "noExercises": "Упражнения для этого тренинга отсутствуют",
+    "exercisesDone": "Выполненные упражнения",
+    "duration": "Длительность",
+    "distance": "Расстояние",
+    "kg":"кг",
+    "date": "Дата",
 
     "fillAllFields": "Заполните все",
     "workoutUpdated": "Обновление тренировки",
@@ -143,7 +186,9 @@
     "createWorkoutButton": "Создать",
     "workoutDeleted": "Тренировка удалена",
     "deleteWorkoutConfirm": "Вы уверены, что хотите удалить эту тренировку?",
-    "workoutNotUpdated": "Тренировка не была обновлена"
+    "workoutNotUpdated": "Тренировка не была обновлена",
+    "saveWorkout": "Сохранить",
+     "saveChanges": "Сохранить"
   },
   "permissionManagement": "Управление правами",
   "searchUser": "Поиск по пользователю",
@@ -152,6 +197,10 @@
   "paginationPrevious": "← Назад",
   "paginationNext": "Вперёд →",
   "workout": "Тренировка",
+  "something_went_wrong": "Что-то пошло не так",
+  "login_failed": "Ошибка входа",
+  "send_password_reset": "Отправить письмо для сброса пароля",
+  "password_reset_successful": "Пароль успешно изменен",
 
   "createNewPermission": "Создать новое разрешение",
   "noPermissions": "Нет доступных разрешений",
@@ -185,7 +234,13 @@
       "next": "Вперед",
       "page": "Страница",
       "of": "из"
-    }},
+    },
+    "tabs": {
+      "base": "Общие",
+      "own": "Свои"
+    },
+    "add": "Добавить"
+  },
     "workouts": {
     "title": "Тренировки",
     "pagination": {
@@ -213,36 +268,40 @@
     "sets": "Сеты",
     "weight": "Вес",
     "kg": "кг",
+    "distance": "Дистанция",
     "categories": {
       "strength": "Сила",
       "cardio": "Кардио",
       "flexibility": "Гибкость",
-      "balance": "Баланс"
+      "balance": "Баланс",
+      "other": "Другое"
     },
     "difficulties": {
+      "other": "Другое",
       "beginner": "Начальный",
       "intermediate": "Средний",
       "advanced": "Продвинутый"
     },
     "muscleGroupsList": {
-    "0": "Грудь",
-    "1": "Бицепсы",
-    "2": "Трицепсы",
-    "3": "Спина",
-    "4": "Верх спины",
-    "5": "Широчайшие",
-    "6": "Плечи",
-    "7": "Предплечья",
-    "8": "Пресс",
-    "9": "Косые мышцы",
-    "10": "Нижняя часть спины",
-    "11": "Квадрицепсы",
-    "12": "Бицепсы бедра",
-    "13": "Икры",
-    "14": "Ягодицы",
-    "15": "Подвздошно-поясничные мышцы",
-    "16": "Приводящие мышцы",
-    "17": "Отводящие мышцы"
+    "chest": "Грудь",
+    "biceps": "Бицепсы",
+        "triceps": "Трицепсы",
+        "back": "Спина",
+        "upper_back": "Верх спины",
+        "lats": "Широчайшие",
+        "shoulders": "Плечи",
+        "forearms": "Предплечья",
+        "abs": "Пресс",
+        "obliques": "Косые мышцы",
+        "lower_back": "Нижняя часть спины",
+        "quads": "Квадрицепсы",
+        "hamstrings": "Бицепсы бедра",
+        "calves": "Икры",
+        "glutes": "Ягодицы",
+        "hip_flexors": "Подвздошно-поясничные мышцы",
+        "adductors": "Приводящие мышцы",
+        "abductors": "Отводящие мышцы",
+    "other": "Другое"
 }
   },
   "exerciseItem": {
@@ -254,6 +313,7 @@
     "description": "Описание",
     "muscleGroups": "Мышечные группы",
     "categories": {
+      "other": "Другое",
       "strength": "Сила",
       "cardio": "Кардио",
       "flexibility": "Гибкость",
@@ -265,13 +325,26 @@
       "advanced": "Продвинутый"
     },
     "muscleGroupsList": {
-      "2": "Грудь",
-      "biceps": "Бицепсы",
-      "triceps": "Трицепсы",
-      "back": "Спина",
-      "legs": "Ноги",
-      "shoulders": "Плечи"
-    }
+      "chest": "Грудь",
+    "biceps": "Бицепсы",
+    "triceps": "Трицепсы",
+    "back": "Спина",
+    "upper_back": "Верх спины",
+    "lats": "Широчайшие",
+    "shoulders": "Плечи",
+    "forearms": "Предплечья",
+    "abs": "Пресс",
+    "obliques": "Косые мышцы",
+    "lower_back": "Нижняя часть спины",
+    "quads": "Квадрицепсы",
+    "hamstrings": "Бицепсы бедра",
+    "calves": "Икры",
+    "glutes": "Ягодицы",
+    "hip_flexors": "Подвздошно-поясничные мышцы",
+    "adductors": "Приводящие мышцы",
+    "abductors": "Отводящие мышцы",
+    "other": "Другое"
+  }
   },
   "workout": {
     "name": "Название тренировки",
@@ -284,7 +357,8 @@
     "resume": "Продолжить",
     "showExercises": "Показать упражнения",
     "hideExercises": "Скрыть упражнения",
-    "exercises": "Упражнения"
+    "exercises": "Упражнения",
+    "setDone": "Сет выполнен"
   },
   "desc": {
   "title": "Добро пожаловать в Планку",

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Commands } from '../components/Commands/Commands';
 import Exercises from '../components/User/Exercises/Exercises';
-import { UserWorkout } from '../components/User/UserWorkout/UserWorkout';
 import WorkoutExerciseForm from '../components/User/WorkoutExercise/WorkoutExerciseForm/WorkoutExerciseForm';
 import { CurrentWorkout } from '../components/User/workouts/CurrentWorkout/CurrentWorkout';
 import NewWorkout from '../components/User/workouts/NewWorkout/NewWorkout';
@@ -26,7 +25,6 @@ function useQuery() {
 export const ResetPasswordWithToken: React.FC = () => {
     const query = useQuery();
     const token = query.get('reset_password_token');
-    console.log(token);
     return <ResetPassword token={token} />;
 };
 
@@ -48,7 +46,6 @@ export const routes = [
     {Component:  <Exercises />, name: 'Exercise', path: '/exercises'},
     {Component:  <Exercise />, name: 'Exercise', path: '/exercises/:id'},
     {Component:  <WorkoutExerciseForm />, name: 'WorkoutExerciseForm', path: '/workout/exercise'},
-    {Component:  <UserWorkout />, name: 'UserWorkout', path: '/workout/current'},
     {Component:  <PasswordRecovery />, name: 'PasswordRecovery', path: '/password/recovery'},
     {Component:  <SelfStats />, name: 'SelfStats', path: '/self-stats'},
     {Component: <Permissions/>, name: 'UserPermissions', path: '/permissions'},

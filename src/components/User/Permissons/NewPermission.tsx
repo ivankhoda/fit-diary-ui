@@ -22,24 +22,18 @@ const NewPermissionForm: React.FC<NewPermissionFormInterface> = ({
     useEffect(() => {
         userController.getPermissionTypes();
     }, [userController]);
-    // Form state
+
     const [userEmail, setUserEmail] = useState<string>('');
     const [resourceType, setResourceType] = useState<string>('');
     const [canAssign, setCanAssign] = useState<boolean>(false);
     const [canAccess, setCanAccess] = useState<boolean>(false);
-
-    // Form validation state
     const [error, setError] = useState<string>('');
-
-    // Handle form submission
     const handleSubmit = useCallback(() => {
-        console.log(userEmail, resourceType);
         if (!userEmail || !resourceType) {
             setError(t('formValidationError'));
             return;
         }
 
-        // Create a new permission
         const newPermission = {
             to_user: userEmail,
             instance: resourceType,
@@ -56,7 +50,6 @@ const NewPermissionForm: React.FC<NewPermissionFormInterface> = ({
         navigate,
         t]);
 
-    // Handlers for inputs
     const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setUserEmail(e.target.value);
         setError(t(null));

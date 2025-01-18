@@ -15,7 +15,7 @@ const formatDateForInput = (dateString: string): string => {
 };
 
 const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
-    const [weight, setWeight] = useState<number | ''>('');
+    const [weight, setWeight] = useState<string>('');
     const [recordedAt, setRecordedAt] = useState<string>('');
     const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
 
@@ -24,7 +24,11 @@ const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
     }, [userController]);
 
     const handleWeightChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setWeight(Number(e.target.value));
+        const {value} = e.target;
+
+        if (/^\d*\.?\d*$/u.test(value)) {
+            setWeight(value);
+        }
     }, []);
 
     const handleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +39,7 @@ const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             if (weight && recordedAt) {
-                userController?.addWeightMeasurement(weight as number, recordedAt);
+                userController?.addWeightMeasurement(parseFloat(weight), recordedAt);
                 setWeight('');
                 setRecordedAt('');
                 setIsFormVisible(false);
@@ -45,7 +49,6 @@ const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
             recordedAt,
             userController]
     );
-
 
     const handleToggleForm = useCallback(() => {
         setIsFormVisible(prev => !prev);
@@ -83,7 +86,7 @@ const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
                                         data-id={measurement.id}
                                         className="delete-button"
                                     >
-                                            X
+                  X
                                     </span>
                                 </li>
                             ))}
@@ -97,15 +100,15 @@ const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
 
             {isFormVisible && (
                 <form onSubmit={handleSubmit}>
-
                     <div className="form-group">
                         <label htmlFor="weight">Вес (kg):</label>
                         <input
-                            type="number"
+                            type="text"
                             id="weight"
                             value={weight}
                             onChange={handleWeightChange}
                             required
+                            placeholder="70.5"
                         />
                     </div>
                     <div className="form-group">

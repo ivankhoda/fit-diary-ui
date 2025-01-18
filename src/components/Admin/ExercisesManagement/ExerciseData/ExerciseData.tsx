@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable sort-keys */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable max-statements */
@@ -9,6 +10,7 @@ import { adminExercisesController } from '../../controllers/global';
 import { adminExercisesStore } from '../../store/global';
 import i18n from 'i18next';
 import { AdminExerciseProfile } from '../../store/AdminExercisesStore';
+import { categoryMap, difficultyMap, measurementKeys, muscleGroups } from '../maps';
 
 
 const ExerciseData: React.FC = () => {
@@ -18,37 +20,6 @@ const ExerciseData: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<AdminExerciseProfile | null>(null);
 
-    const categoryMap = {
-        strength: i18n.t('strength'),
-        cardio: i18n.t('cardio'),
-        flexibility: i18n.t('flexibility'),
-        balance: i18n.t('balance')
-    };
-    const difficultyMap = {
-        beginner: i18n.t('beginner'),
-        intermediate: i18n.t('intermediate'),
-        advanced: i18n.t('advanced')
-    };
-    const muscleGroups = [
-        { id: 0, name: i18n.t('muscleGroups.chest') },
-        { id: 1, name: i18n.t('muscleGroups.biceps') },
-        { id: 2, name: i18n.t('muscleGroups.triceps') },
-        { id: 3, name: i18n.t('muscleGroups.back') },
-        { id: 4, name: i18n.t('muscleGroups.upper_back') },
-        { id: 5, name: i18n.t('muscleGroups.lats') },
-        { id: 6, name: i18n.t('muscleGroups.shoulders') },
-        { id: 7, name: i18n.t('muscleGroups.forearms') },
-        { id: 8, name: i18n.t('muscleGroups.abs') },
-        { id: 9, name: i18n.t('muscleGroups.obliques') },
-        { id: 10, name: i18n.t('muscleGroups.lower_back') },
-        { id: 11, name: i18n.t('muscleGroups.quads') },
-        { id: 12, name: i18n.t('muscleGroups.hamstrings') },
-        { id: 13, name: i18n.t('muscleGroups.calves') },
-        { id: 14, name: i18n.t('muscleGroups.glutes') },
-        { id: 15, name: i18n.t('muscleGroups.hip_flexors') },
-        { id: 16, name: i18n.t('muscleGroups.adductors') },
-        { id: 17, name: i18n.t('muscleGroups.abductors') }
-    ];
 
     useEffect(() => {
         if (exerciseId) {
@@ -84,7 +55,7 @@ const ExerciseData: React.FC = () => {
         }
     }, [formData]);
 
-    const handleGroupClick = useCallback((groupId: number) => () => {
+    const handleGroupClick = useCallback((groupId: string) => () => {
         if (formData) {
             const updatedGroups = formData.muscle_groups.includes(groupId)
                 ? formData.muscle_groups.filter(id => id !== groupId)
@@ -150,8 +121,8 @@ const ExerciseData: React.FC = () => {
                                                 value={formData?.category || ''}
                                                 onChange={handleInputChange}
                                             >
-                                                {Object.entries(categoryMap).map(([key, label]) => (
-                                                    <option key={key} value={key}>{label}</option>
+                                                {categoryMap.map(label => (
+                                                    <option key={label} value={label}>{i18n.t(`${label}`)}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -162,8 +133,26 @@ const ExerciseData: React.FC = () => {
                                                 value={formData?.difficulty || ''}
                                                 onChange={handleInputChange}
                                             >
-                                                {Object.entries(difficultyMap).map(([key, label]) => (
-                                                    <option key={key} value={key}>{i18n.t(`${label}`)}</option>
+                                                {difficultyMap.map(label => (
+                                                    <option key={label} value={label}>{i18n.t(`${label}`)}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <strong>{i18n.t('type_of_measurement')}</strong>
+                                            <select
+                                                name="type_of_measurement"
+                                                value={formData?.type_of_measurement || ''}
+                                                onChange={handleInputChange}
+                                                className="custom-select"
+                                                required
+                                            >
+                                                <option value="" disabled>{i18n.t('selectCategory')}</option>
+                                                {Object.keys(measurementKeys).map(key => (
+                                                    <option key={key} value={String(measurementKeys[key as keyof typeof categoryMap])}>
+                                                        {i18n.t(String(measurementKeys[key as keyof typeof categoryMap]))}
+                                                    </option>
                                                 ))}
                                             </select>
                                         </div>
@@ -171,28 +160,17 @@ const ExerciseData: React.FC = () => {
                                             <strong>{i18n.t('muscleGroup')}</strong>
                                             <div className="muscle-groups">
                                                 {muscleGroups.map(group => (
-                                                    <label key={group.id}>
+                                                    <label key={group.name}>
                                                         <input
                                                             type="checkbox"
-                                                            checked={formData?.muscle_groups.includes(group.id) || false}
-                                                            onChange={handleGroupClick(group.id)}
+                                                            checked={formData?.muscle_groups.includes(group.name) || false}
+                                                            onChange={handleGroupClick(group.name)}
                                                         />
-                                                        {group.name}
+                                                        {i18n.t(group.name)}
                                                     </label>
                                                 ))}
                                             </div>
-                                        </div>
-                                        <div>
-                                            <strong>{i18n.t('duration')}</strong>
-                                            <input
-                                                type="number"
-                                                name="duration"
-                                                value={formData?.duration || ''}
-                                                onChange={handleInputChange}
-                                                placeholder={i18n.t('duration')}
-                                                required
-                                            />
-                                        </div>
+                                        </div> в
                                     </>
                                 )
                                 : (
@@ -206,13 +184,20 @@ const ExerciseData: React.FC = () => {
                                         <p>
                                             <strong>{i18n.t('category')}:</strong>
                                             {currentExercise?.category
-                                                ? categoryMap[currentExercise.category as keyof typeof categoryMap]
+                                                ? i18n.t(currentExercise.category)
                                                 : i18n.t('notProvided')}
                                         </p>
                                         <p>
                                             <strong>{i18n.t('difficulty')}:</strong>
                                             {currentExercise?.difficulty
-                                                ? difficultyMap[currentExercise.difficulty as keyof typeof difficultyMap]
+                                                ? i18n.t(currentExercise.difficulty)
+                                                : i18n.t('notProvided')}
+                                        </p>
+
+                                        <p>
+                                            <strong>{i18n.t('type_of_measurement')}:</strong>
+                                            {currentExercise?.type_of_measurement
+                                                ? i18n.t(currentExercise.type_of_measurement)
                                                 : i18n.t('notProvided')}
                                         </p>
                                         <p>
@@ -220,16 +205,12 @@ const ExerciseData: React.FC = () => {
                                             {currentExercise?.muscle_groups && currentExercise.muscle_groups.length > 0
                                                 ? currentExercise.muscle_groups
                                                     .map(groupId => {
-                                                        const muscleGroup = muscleGroups.find(group => group.id === groupId);
-                                                        return muscleGroup ? muscleGroup.name : '';
+                                                        const muscleGroup = muscleGroups.find(group => group.name === groupId);
+                                                        return muscleGroup ? i18n.t(muscleGroup.name) : '';
                                                     })
                                                     .filter(name => name)
                                                     .join(', ')
                                                 : i18n.t('notProvided')}
-                                        </p>
-                                        <p>
-                                            <strong>{i18n.t('duration')}:</strong>
-                                            {currentExercise?.duration || i18n.t('notProvided')} {i18n.t('seconds')}
                                         </p>
                                     </>
 

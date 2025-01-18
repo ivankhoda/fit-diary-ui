@@ -1,0 +1,117 @@
+/* Base styles */
+.exercise-small-table {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 90%;
+  &._mode {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-between;
+    max-width: 90%;
+  }
+}
+
+
+.exercise-small-table-data {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Exercise Name */
+.exercise-small-table strong {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-right: 20px;
+  overflow-wrap: anywhere;
+}
+
+/* Fields for each type of measurement */
+.exercise-fields {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-width: 300px;
+
+  &._mode {
+    flex-direction: column; /* Switch to vertical layout in _mode */
+    gap: 0;
+    align-items: start;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column; /* All child divs stack vertically */
+  }
+}
+
+.exercise-fields_mode {
+  display: flex;
+  flex-direction: column;
+  gap: 0 ;
+  align-items: start;
+}
+
+/* Label styles */
+.exercise-fields label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+/* Input field styles */
+.exercise-fields input {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+}
+
+.exercise-fields input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Button styles */
+.delete-btn {
+  background-color: transparent;
+  border: none;
+  color: #ff4d4d;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.delete-btn:hover {
+  color: #cc0000;
+}
+
+.delete-btn:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}

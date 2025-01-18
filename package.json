@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development webpack serve --open --config webpack.dev.js",
+    "start": "NODE_ENV=development GENERATE_SOURCEMAP=false webpack serve --open --config webpack.dev.js",
     "build": "NODE_ENV=production webpack --config webpack.production.js",
     "test": "npx jest"
   },

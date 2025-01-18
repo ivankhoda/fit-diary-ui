@@ -81,9 +81,6 @@ const UserData: React.FC = () => {
         navigate(`/admin/users/${userId}/permissions`);
     }, [navigate]);
 
-    console.log(currentUser);
-
-
     return (
         <AdminPanel>
             <div className="user-data-modal">

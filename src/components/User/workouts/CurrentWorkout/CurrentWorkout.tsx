@@ -1,3 +1,5 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
@@ -6,8 +8,12 @@ import { exercisesStore, workoutsStore } from '../../../../store/global';
 import { WorkoutInterface } from '../../../../store/workoutStore';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
 import './CurrentWorkout.style.scss';
+import './CurrentExercise/CurrentExercise.style.scss';
 import { workoutsController } from '../../../../controllers/global';
 import { useNavigate, useParams } from 'react-router';
+import SelectedExercise from '../NewWorkout/SelectedExercise';
+import { CurrentExercise } from './CurrentExercise/CurrentExercise';
+import { UserExercisesList } from './UserExercisesList/UserExercisesList';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -16,67 +22,152 @@ interface Props {
 export const CurrentWorkout: React.FC<Props> =
     inject('exercisesStore', 'exercisesController', 'workoutsStore', 'workoutsController')(observer((): React.JSX.Element => {
         const [selectedExercise, setSelectedExercise] = useState<ExerciseInterface | null>(null);
+        const [selectedExercises, setSelectedExercises] = useState<ExerciseInterface[]>([]);
         const [weight, setWeight] = useState('');
         const [repetitions, setRepetitions] = useState('');
-        const [expandedExercises, setExpandedExercises] = useState<{ [key: number]: boolean }>({});
+        const [duration, setDuration] = useState('00:00');
+        const [distance, setDistance] = useState('0.0');
+
         const { workoutId } = useParams<{ workoutId: string }>();
 
         const [sets] = useState(exercisesStore.currentUserExerciseSets);
         const navigate = useNavigate();
         const currentWorkout = workoutsStore.currentUserWorkout;
 
-
-
-
         useEffect(() => {
             if (!currentWorkout){
                 workoutsController.getUserWorkout(workoutId);
             }
-        }, [navigate, sets]);
+            if(currentWorkout){
+                setSelectedExercises(currentWorkout.workout_exercises|| [].sort((a, b) => a.id - b.id));
+            }
+        }, [navigate,
+            sets,
+            currentWorkout]);
 
-        const toggleExpanded = (exerciseId: number) => {
-            setExpandedExercises(prevState => ({
-                ...prevState,
-                [exerciseId]: !prevState[exerciseId],
-            }));
+        const handleWeight = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setWeight(exercise.weight?.toString() || '0');
         };
 
-        const handleToggleExpanded = (id: number) => () => {
-            toggleExpanded(id);
+        const handleWeightAndReps = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setWeight(exercise.weight?.toString() || '0');
+            setRepetitions(exercise.repetitions?.toString() || '0');
+        };
+
+        const handleReps = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setRepetitions(exercise.repetitions?.toString() || '0');
+        };
+
+        const handleDuration = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setDuration(exercise.duration?.toString() || '00:00');
+        };
+
+        const handleDurationAndReps = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setDuration(exercise.duration?.toString() || '00:00');
+            setRepetitions(exercise.repetitions?.toString() || '0');
+        };
+
+        const handleCardio = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setDuration(exercise.duration?.toString() || '00:00');
+            setDistance(exercise.distance?.toString() || '0.0');
+        };
+
+        const handleDistance = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setDistance(exercise.distance?.toString() || '0.0');
+        };
+
+
+        const handleDurationAndDistance = (exercise: ExerciseInterface) => {
+            setSelectedExercise(exercise);
+            setDuration(exercise.duration?.toString() || '00:00');
+            setDistance(exercise.distance?.toString() || '0.0');
         };
 
         const handleExerciseClick = (exercise: ExerciseInterface) => {
-            setSelectedExercise(exercise);
-            setWeight(exercise.weight.toString());
-            setRepetitions(exercise.repetitions.toString());
+            workoutsController.startOrResumeExercise(exercise.exercise_id, currentWorkout.id, exercise.id);
 
-            workoutsController.startOrResumeExercise(exercise.id, currentWorkout.id);
-        };
+            switch (exercise.type_of_measurement) {
+            case 'weight_and_reps':
+                handleWeightAndReps(exercise);
+                break;
 
-        const handleClick = (exercise: ExerciseInterface) => (event: React.MouseEvent<HTMLDivElement>) => {
-            event.preventDefault();
-            handleExerciseClick(exercise);
-        };
+            case 'reps':
+                handleReps(exercise);
+                break;
 
-        const handleWeightChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-            event.preventDefault();
-            setWeight(event.target.value);
-        };
+            case 'duration':
+                handleDuration(exercise);
+                break;
 
-        const handleRepetitionsChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-            event.preventDefault();
-            setRepetitions(event.target.value);
-        };
+            case 'duration_and_reps':
+                handleDurationAndReps(exercise);
+                break;
 
-        const setDone = () => () => {
-            if (selectedExercise) {
-                workoutsController.setDone(selectedExercise.id, weight, repetitions);
+            case 'cardio':
+                handleCardio(exercise);
+                break;
+
+            case 'duration_and_distance':
+                handleDurationAndDistance(exercise);
+                break;
+
+            default:
+                console.warn('Unknown type_of_measurement:', exercise.type_of_measurement);
+                break;
             }
         };
 
-        const deleteSet = (id: string, userExerciseId: number) => () => {
-            workoutsController.deleteSet(id, userExerciseId);
+        const setDone = () => {
+            if (selectedExercise) {
+                const {  type_of_measurement } = selectedExercise;
+                const {id} = exercisesStore.currentExercise;
+
+                if (type_of_measurement === 'weight_and_reps') {
+                    if(weight === '0' || repetitions === 'NaN') {
+                        return;
+                    }
+                    workoutsController.setDone(selectedExercise, { id, repetitions, weight });
+                } else if (type_of_measurement === 'reps') {
+                    if(repetitions !== 'NaN') {
+                        workoutsController.setDone(selectedExercise, { id, repetitions });
+                    }
+                } else if (type_of_measurement === 'duration') {
+                    if(duration !== '0'){
+                        workoutsController.setDone(selectedExercise, { duration, id });
+                    }
+                } else if (type_of_measurement === 'duration_and_distance') {
+                    if(duration === '0' || distance === '0'){
+                        return;
+                    }
+                    workoutsController.setDone(selectedExercise, { distance, duration, id });
+                } else if (type_of_measurement === 'duration_and_reps') {
+                    if(duration === '0' || repetitions === 'NaN'){
+                        return;
+                    }
+                    workoutsController.setDone(selectedExercise, { duration, id, repetitions });
+                } else if (type_of_measurement === 'cardio') {
+                    if(duration === '0' || distance === '0'){
+                        return;
+                    }
+                    workoutsController.setDone(selectedExercise, { distance, duration, id });
+                } else {
+                    console.log('Unknown type of measurement:', type_of_measurement);
+                }
+            }
         };
+
+
+
+        const deleteSet = useCallback((id: string, userExerciseId: number) => {
+            workoutsController.deleteSet(id, userExerciseId);
+        }, []);
 
         const exerciseDone = () => () => {
             setSelectedExercise(null);
@@ -88,112 +179,37 @@ export const CurrentWorkout: React.FC<Props> =
             }
         }, [currentWorkout?.id]);
 
-
-
         return currentWorkout
             ? (
                 <div className='workout-container'>
                     <h2 className='workout-name'>{currentWorkout.name}</h2>
                     {currentWorkout.workout_exercises.length > 0
-                        ? (
-                            <div className="exercises-container">
-                                <p className="exercises-title">Упражнения:</p>
-                                {currentWorkout.workout_exercises.map((exercise: ExerciseInterface) => (
-                                    <div key={exercise.id} className="exercise-item" onClick={handleClick(exercise)}>
-                                        <p className="exercise-name"><strong>{exercise.name}</strong></p>
-                                        <p className="exercise-details">
-                                    Повторы: {exercise.repetitions} | Подходы: {exercise.sets} | Вес: {exercise?.weight}
-                                        </p>
-                                        {exercise.number_of_sets && exercise.number_of_sets.length > 0 && (
-                                            <div>
-                                                <p className="sets-summary" onClick={handleToggleExpanded(exercise.id)}>
-                                                    Подходов: {exercise.number_of_sets.length}
-                                                </p>
-                                                {expandedExercises[exercise.id] && (
-                                                    <div className="set-details">
-                                                        {exercise.number_of_sets.map((set, index) => (
-                                                            <p key={set.id}>
-                                                                {index + 1} - Повторы: {set.repetitions}, Вес: {set.result}
-                                                            </p>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )
-                        : (
-                            <p>Нет упраженений для тренировки.</p>
-                        )}
+                        ? ( <div className="exercises-container">
+                            {selectedExercises.length > 0 && selectedExercises.map(exercise => (
+                                <React.Fragment key={exercise.id}>
+                                    <SelectedExercise
+                                        key={exercise.id}
+                                        exercise={exercise}
+                                        mode='view'
+                                        onClick={() => handleExerciseClick(exercise)}
+                                    />
 
-                    {selectedExercise && (
-                        <div className="current-exercise">
-                            <h2>Текущее Упражнение: {selectedExercise.name}</h2>
-                            <div className="current-exercise_info">
-                                <p>Подходы: {selectedExercise.sets}</p>
-                                <p>Повторы: {selectedExercise.repetitions}</p>
-                                <p>Вес: {selectedExercise.weight}</p>
-                            </div>
+                                </React.Fragment>
+                            ))}
+                        </div>)
+                        : (<p>Нет упраженений для тренировки.</p>)}
 
-                            <div className="current-exercise_inputs">
-                                <input
-                                    className="current-exercise_input"
-                                    type="number"
-                                    placeholder="Weight"
-                                    value={weight}
-                                    onChange={handleWeightChange()}
-                                />
-                                <input
-                                    className="current-exercise_input"
-                                    type="number"
-                                    placeholder="Reps"
-                                    value={repetitions}
-                                    onChange={handleRepetitionsChange()}
-                                />
-                            </div>
-
-                            <button className="save-btn" onClick={setDone()}>
-                            Подход сделан
-                            </button>
-                            <button className="save-btn" onClick={exerciseDone()}>
-                            Упражнение сделано
-                            </button>
-                        </div>
-                    )}
+                    {selectedExercise && <CurrentExercise exercise={selectedExercise}
+                        setDone={setDone}
+                        exerciseDone={exerciseDone}
+                        handleWeightChange={handleWeight}
+                        handleRepetitionsChange={handleReps}
+                        handleDurationChange={handleDuration}
+                        handleDistanceChange={handleDistance}/>
+                    }
 
                     {currentWorkout.user_exercises.length > 0 && (
-                        <div className="user-exercises-container">
-                            <h2>Упражнения сделаны:</h2>
-                            {currentWorkout.user_exercises.map((userExercise: ExerciseInterface) => (
-                                userExercise.number_of_sets && userExercise.number_of_sets.length > 0 &&
-                                <div key={userExercise.id} className="exercise-item">
-                                    <p className="exercise-name">
-                                        <strong>{userExercise.name}</strong>
-                                    </p>
-                                    <p className="exercise-details">
-                                    Повторы: {userExercise.repetitions} | Подходы: {userExercise.sets} | Вес: {userExercise?.weight}
-                                    </p>
-
-                                    {userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && (
-                                        <div className="user-set-details">
-                                            {userExercise.number_of_sets.map((set, index) => (
-                                                <div key={set.id}>
-                                                    <p>
-                                                        {index + 1} - Повторы: {set.repetitions}, Вес: {set.result}
-                                                    </p>
-                                                    <button onClick={deleteSet(set.id, userExercise.id)}>X</button>
-                                                </div>
-                                            ))}
-
-                                        </div>
-                                    )}
-                                </div>
-                            ))
-                            }
-                        </div>
-                    )}
+                        <UserExercisesList userExercises={currentWorkout.user_exercises} deleteSet={deleteSet}/>)}
 
                     <button className='save-btn' onClick={handleFinishClick}>
                     Завершить

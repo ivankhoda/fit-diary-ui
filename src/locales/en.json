@@ -27,10 +27,12 @@
   "selectCategory": "Select Category",
   "difficulty": "Difficulty",
   "selectDifficulty": "Select Difficulty",
+  "selectTypeOfMeasurement": "Select Type of Measurement",
   "muscleGroups": "Muscle Groups",
-  "duration": "Duration (in minutes)",
+  "duration": "Duration",
   "createdAt": "Created At",
   "updatedAt": "Updated At",
+  "required": "Required",
 
   "beginner": "Beginner",
   "intermediate": "Intermediate",
@@ -65,10 +67,37 @@
         "glutes": "Glutes",
         "hip_flexors": "Hip Flexors",
         "adductors": "Adductors",
-        "abductors": "Abductors"
+        "abductors": "Abductors",
+        "other": "Others"
     },
     "exerciseListTitle": "Exercise List Management",
-
+    "muscleGroupsList": {
+    "chest": "Chest",
+        "biceps": "Biceps",
+        "triceps": "Triceps",
+        "back": "Back",
+        "upper_back": "Upper Back",
+        "lats": "Lats",
+        "shoulders": "Shoulders",
+        "forearms": "Forearms",
+        "abs": "Abs",
+        "obliques": "Obliques",
+        "lower_back": "Lower Back",
+        "quads": "Quadriceps",
+        "hamstrings": "Hamstrings",
+        "calves": "Calves",
+        "glutes": "Glutes",
+        "hip_flexors": "Hip Flexors",
+        "adductors": "Adductors",
+        "abductors": "Abductors",
+        "other": "Others"
+},
+"weight_and_reps": "Weight and Reps",
+"reps": "Reps",
+"duration_and_reps": "Duration and Reps",
+"duration_and_distance": "Duration and Distance",
+"type_of_measurement": "Type of Measurement",
+"unspecified": "Unspecified",
   "searchByName": "Search by name",
   "allCategories": "All Categories",
   "allDifficulties": "All Difficulties",
@@ -90,6 +119,15 @@
     "columnName": "Name",
     "columnActions": "Actions"
   },
+  "consistency": {
+    "daysExercisedThisWeek": "Days Exercised This Week",
+    "workoutStreak": "Workout Streak",
+    "days": "Days"
+
+  },
+  "from": "From",
+  "to": "To",
+  "date":"Date",
   "workoutData": {
     "exercises": "Exercises ",
     "createNewWorkout": "Create New Workout",
@@ -113,7 +151,14 @@
     "selectedExercises": "Selected exercises",
     "exercise": "Exercise",
     "searchUsers": "Search users",
-    "updateWorkoutButton": "Update workout"
+    "updateWorkoutButton": "Update workout",
+    "saveWorkout": "Save",
+    "saveChanges": "Save",
+    "exercisesDone": "Exercises Done",
+    "duration": "Duration",
+    "distance": "Distance",
+    "kg": "kg",
+    "date": "Date"
 
 
 
@@ -159,7 +204,12 @@
         "next": "Next",
         "page": "Page",
         "of": "of"
-      }
+      },
+      "tabs": {
+      "base": "Common",
+      "own": "Own"
+    },
+     "add": "Add"
     },
     "workouts": {
     "title": "Workouts",
@@ -183,13 +233,16 @@
     "sets": "Sets",
     "weight": "Weight",
     "kg": "kg",
+    "distance": "Distance",
     "categories": {
+      "other": "Other",
       "strength": "Strength",
       "cardio": "Cardio",
       "flexibility": "Flexibility",
       "balance": "Balance"
     },
     "difficulties": {
+      "other": "Other",
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced"
@@ -203,6 +256,13 @@
       "shoulders": "Shoulders"
     }
   },
+
+  "something_went_wrong": "Something went wrong",
+  "login_failed": "Login failed",
+  "password_reset_link_sent": "Password reset link sent",
+  "send_password_reset": "Send password reset link",
+  "password_reset_successful": "Password reset successful",
+  "reset_password": "Reset password",
   "exerciseItem": {
     "viewDetails": "View Details",
     "category": "Category",
@@ -215,7 +275,8 @@
       "strength": "Strength",
       "cardio": "Cardio",
       "flexibility": "Flexibility",
-      "balance": "Balance"
+      "balance": "Balance",
+      "other": "Other"
     },
     "difficulties": {
       "beginner": "Beginner",
@@ -235,8 +296,10 @@
     "resume": "Resume",
     "showExercises": "Show Exercises",
     "hideExercises": "Hide Exercises",
-    "exercises": "Exercises"
+    "exercises": "Exercises",
+    "setDone": "Set Done"
   },
+  "progress": "Progress",
   "desc": {
   "title": "Welcome to Planka",
   "text": "Planka is a simple app for logging workouts and tracking progress. I made it as simple as possible because I love simplicity and efficiency. There are no unnecessary features, just what you need. Registration and use are free, and you don't need to provide more information than your email address. The app is intuitive and ready to help you achieve your fitness goals without any complicated settings or menus. I invite you to start your workouts with Planka and track your progress together!",

@@ -11,6 +11,7 @@ import AdminWorkoutsController from '../../controllers/AdminWorkoutsController';
 import AdminWorkoutsStore, { AdminWorkoutProfile } from '../../store/AdminWorkoutsStore';
 import AdminUsersStore from '../../store/AdminUsersStore';
 import AdminUsersController from '../../controllers/AdminUsersController';
+import { t } from 'i18next';
 
 export interface WorkoutListProps {
     adminWorkoutsStore?: AdminWorkoutsStore;
@@ -107,7 +108,7 @@ const UserWorkoutList: React.FC<WorkoutListProps> = observer(({adminUsersStore, 
                         <tr>
                             <th onClick={() => handleSort('id')}>ID</th>
                             <th onClick={() => handleSort('name')}>Название</th>
-                            <th>Действия</th>
+                            <th>{t('creator')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,8 +117,6 @@ const UserWorkoutList: React.FC<WorkoutListProps> = observer(({adminUsersStore, 
                                 <td>{workout.id}</td>
                                 <td>{workout.name}</td>
                                 <td>{workout.creator}</td>
-                                <td>
-                                </td>
                             </tr>
                         ))}
                     </tbody>

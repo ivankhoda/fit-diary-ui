@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './UserWorkoutsStats.style.scss';
 import { inject, observer } from 'mobx-react';
 import UserController from '../../../../controllers/UserController';
@@ -11,21 +11,13 @@ interface UserWorkoutsStatsProps {
   userController?: UserController;
 }
 
-const UserWorkoutsStats: React.FC<UserWorkoutsStatsProps> = ({ userStore, userController }) => {
-    useEffect(() => {
-        console.log(userStore, userController);
-    }, [userController, userStore]);
-
-
-
-    return (
-        <div className="user-workouts-stats">
-            <h2>Статистика тренировок</h2>
-            <div className="workout-progress-chart">
-                <WorkoutProgressGrid/>
-            </div>
+const UserWorkoutsStats: React.FC<UserWorkoutsStatsProps> = () => (
+    <div className="user-workouts-stats">
+        <h2>Статистика тренировок</h2>
+        <div className="workout-progress-chart">
+            <WorkoutProgressGrid/>
         </div>
-    );
-};
+    </div>
+);
 
 export default inject('userStore', 'userController')(observer(UserWorkoutsStats));

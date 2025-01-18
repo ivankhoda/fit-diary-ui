@@ -1,17 +1,17 @@
-/* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './ExerciseRecords.style.scss';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import UserController from '../../../../../controllers/UserController';
-import UserStore from '../../../../../store/userStore';
+import UserStore, { Exercise } from '../../../../../store/userStore';
 import { inject, observer } from 'mobx-react';
+import ProgressTable from './ProgressTable';
+import { t } from 'i18next';
+import ExerciseList from './ExerciseList/ExerciseList';
+import { PersonalBests } from './PersonalBests/PersonalBests';
 
-export interface Exercise {
-  id: number;
-  name: string;
-  muscleGroup: string;
-  lastSession: { weight: number; reps: number; sets: number; date: string };
-  progress: { date: string; weight: number; reps: number; sets: number }[];
+
+export interface ConsistencyMetrics {
+    days_exercised_this_week: number;
+    workout_streak: number;
 }
 
 interface ExerciseRecordsStatsProps {
@@ -25,6 +25,7 @@ const ExerciseRecords: React.FC<ExerciseRecordsStatsProps> = observer(({ userSto
     const [searchTerm, setSearchTerm] = useState('');
     const [startDate, setStartDate] = useState<string | null>(null);
     const [endDate, setEndDate] = useState<string | null>(null);
+    const [consistency, setConsistency] = useState<ConsistencyMetrics | null>(null);
 
     useEffect(() => {
         userController?.getUserExercisesStats();
@@ -34,7 +35,10 @@ const ExerciseRecords: React.FC<ExerciseRecordsStatsProps> = observer(({ userSto
         if (userStore?.userExercisesStats) {
             setExercises(userStore.userExercisesStats);
         }
-    }, [userStore?.userExercisesStats]);
+        if (userStore?.userConsistencyStats) {
+            setConsistency(userStore.userConsistencyStats);
+        }
+    }, [userStore?.userExercisesStats, userStore?.userConsistencyStats]);
 
     const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -52,96 +56,73 @@ const ExerciseRecords: React.FC<ExerciseRecordsStatsProps> = observer(({ userSto
         setEndDate(e.target.value);
     }, []);
 
-    const filteredExercises = useMemo(() => exercises.filter(exercise => {
-        const matchesSearch = exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const filteredExercises = useMemo(
+        () =>
+            exercises.filter(exercise => {
+                const matchesSearch = exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
+                const inDateRange = exercise.progress.some(session => {
+                    const sessionDate = new Date(session.date);
+                    const start = startDate ? new Date(startDate) : null;
+                    const end = endDate ? new Date(endDate) : null;
+                    return (!start || sessionDate >= start) && (!end || sessionDate <= end);
+                });
 
-        const inDateRange = exercise.progress.some(session => {
-            const sessionDate = new Date(session.date);
-            const start = startDate ? new Date(startDate) : null;
-            const end = endDate ? new Date(endDate) : null;
-
-            return (!start || sessionDate >= start) && (!end || sessionDate <= end);
-        });
-
-        return matchesSearch && inDateRange;
-    }), [exercises,
-        searchTerm,
-        startDate,
-        endDate]);
+                return matchesSearch && inDateRange;
+            }),
+        [exercises,
+            searchTerm,
+            startDate,
+            endDate]
+    );
 
     return (
         <div className="exercise-records">
+            {consistency && (
+                <div className="consistency-metrics">
+                    <p>
+                        {t('consistency.daysExercisedThisWeek')}: {consistency.days_exercised_this_week}
+                    </p>
+                    <p>
+                        {t('consistency.workoutStreak')}: {consistency.workout_streak}
+                    </p>
+                </div>
+            )}
+
             <div className="search-filter-section">
                 <input
                     type="text"
                     className="search-bar"
-                    placeholder="Поиск..."
+                    placeholder={t('search')}
                     value={searchTerm}
                     onChange={handleSearch}
                 />
-
                 <div className="date-filter">
-                    <label>От:</label>
-                    <input type="date" value={startDate || ''} onChange={handleStartDateChange} />
-
-                    <label>До:</label>
-                    <input type="date" value={endDate || ''} onChange={handleEndDateChange} />
+                    <label>{t('from')}</label>
+                    <input type="date" value={startDate || ''} onChange={handleStartDateChange}/>
+                    <label>{t('to')}</label>
+                    <input type="date" value={endDate || ''} onChange={handleEndDateChange}/>
                 </div>
             </div>
 
             <div className="records-container">
-                <div className="exercise-list">
-                    {filteredExercises.map(exercise => (
-                        <div key={exercise.id} className="exercise-item" onClick={() => handleExerciseClick(exercise)}>
-                            <span className="exercise-name">{exercise.name}</span>
-                            <span className="last-session">
-                                {exercise.lastSession.weight > 0 ? `${exercise.lastSession.weight}kg` : 'Bodyweight'}
-                                | {exercise.lastSession.reps} reps
-                                | {exercise.lastSession.sets} sets
-                                | {exercise.lastSession.date}
-                            </span>
-                        </div>
-                    ))}
-                </div>
+                <ExerciseList
+                    exercises={filteredExercises}
+                    onExerciseClick={handleExerciseClick}
+                />
 
                 {selectedExercise && (
                     <div className="exercise-progress">
-                        <h3>Прогресс {selectedExercise.name}</h3>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <LineChart data={selectedExercise.progress}>
-                                <CartesianGrid stroke="#eee" />
-                                <XAxis dataKey="date" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="weight" stroke="#8884d8" />
-                                <Line type="monotone" dataKey="reps" stroke="#82ca9d" />
-                            </LineChart>
-                        </ResponsiveContainer>
-
-                        <div className="exercise-log">
-                            <h4>Детали</h4>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Дата</th>
-                                        <th>Макс.вес</th>
-                                        <th>Повторов</th>
-                                        <th>Сетов</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {selectedExercise.progress.map((session, index) => (
-                                        <tr key={index}>
-                                            <td>{session.date}</td>
-                                            <td>{session.weight > 0 ? `${session.weight} kg` : 'Bodyweight'}</td>
-                                            <td>{session.reps}</td>
-                                            <td>{session.sets}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div className="exercise-details">
+                            <h2>{selectedExercise.name}</h2>
+                            <PersonalBests
+                                personalBests={selectedExercise.personal_bests}
+                                typeOfMeasurement={selectedExercise.type_of_measurement}
+                            />
                         </div>
+                        <ProgressTable
+                            progress={selectedExercise.progress}
+                            type_of_measurement={selectedExercise.type_of_measurement}
+                        />
                     </div>
                 )}
             </div>

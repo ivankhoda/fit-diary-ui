@@ -1,8 +1,8 @@
-/* eslint-disable no-alert */
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable react/jsx-no-bind */
-/* eslint-disable sort-keys */
+/* eslint-disable no-alert */
+
+
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,7 @@ import { adminExercisesStore } from '../../store/global';
 import i18n from 'i18next';
 import './ExerciseData.style.scss';
 import { AdminExerciseProfile } from '../../store/AdminExercisesStore';
-
-
+import { categoryMap, difficultyMap, measurementKeys, muscleGroups } from '../maps';
 
 const ExerciseData: React.FC = () => {
     const navigate = useNavigate();
@@ -21,54 +20,16 @@ const ExerciseData: React.FC = () => {
     const [isDetailsVisible, setIsDetailsVisible] = useState(true);
 
     const [formData, setFormData] = useState<AdminExerciseProfile>({
-        name: '',
         category: '',
+        created_at: '',
+        description: '',
         difficulty: '',
         muscle_groups: [],
-        duration: 0,
-        description: '',
-        created_at: '',
+        name: '',
+        type_of_measurement: '',
         updated_at: ''
     });
 
-    // Define type for the keys of category and difficulty maps
-    type CategoryKey = 'strength' | 'cardio' | 'flexibility' | 'balance';
-    type DifficultyKey = 'beginner' | 'intermediate' | 'advanced';
-
-    // Maps for category and difficulty
-    const categoryMap: Record<CategoryKey, string> = {
-        strength: i18n.t('strength'),
-        cardio: i18n.t('cardio'),
-        flexibility: i18n.t('flexibility'),
-        balance: i18n.t('balance'),
-    };
-
-    const difficultyMap: Record<DifficultyKey, string> = {
-        beginner: i18n.t('beginner'),
-        intermediate: i18n.t('intermediate'),
-        advanced: i18n.t('advanced'),
-    };
-
-    const muscleGroups = [
-        { id: 0, name: i18n.t('muscleGroups.chest') },
-        { id: 1, name: i18n.t('muscleGroups.biceps') },
-        { id: 2, name: i18n.t('muscleGroups.triceps') },
-        { id: 3, name: i18n.t('muscleGroups.back') },
-        { id: 4, name: i18n.t('muscleGroups.upper_back') },
-        { id: 5, name: i18n.t('muscleGroups.lats') },
-        { id: 6, name: i18n.t('muscleGroups.shoulders') },
-        { id: 7, name: i18n.t('muscleGroups.forearms') },
-        { id: 8, name: i18n.t('muscleGroups.abs') },
-        { id: 9, name: i18n.t('muscleGroups.obliques') },
-        { id: 10, name: i18n.t('muscleGroups.lower_back') },
-        { id: 11, name: i18n.t('muscleGroups.quads') },
-        { id: 12, name: i18n.t('muscleGroups.hamstrings') },
-        { id: 13, name: i18n.t('muscleGroups.calves') },
-        { id: 14, name: i18n.t('muscleGroups.glutes') },
-        { id: 15, name: i18n.t('muscleGroups.hip_flexors') },
-        { id: 16, name: i18n.t('muscleGroups.adductors') },
-        { id: 17, name: i18n.t('muscleGroups.abductors') }
-    ];
 
     useEffect(() => {
         const fetchedExercise = adminExercisesStore?.exercise;
@@ -86,9 +47,8 @@ const ExerciseData: React.FC = () => {
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
-
         if (name === 'category') {
-            const key = Object.keys(categoryMap).find(key => categoryMap[key as keyof typeof categoryMap] === value) as CategoryKey;
+            const key = categoryMap.find(el=> el === value);
             setFormData(prevState => ({
                 ...prevState,
                 [name]: key || '',
@@ -96,7 +56,16 @@ const ExerciseData: React.FC = () => {
         }
 
         else if (name === 'difficulty') {
-            const key = Object.keys(difficultyMap).find(key => difficultyMap[key as keyof typeof difficultyMap] === value) as DifficultyKey;
+            const key = difficultyMap.find(el=> el === value);
+
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: key || '',
+            }));
+        }
+
+        else if (name === 'type_of_measurement') {
+            const key = measurementKeys.find(el=> el === value);
 
             setFormData(prevState => ({
                 ...prevState,
@@ -112,22 +81,21 @@ const ExerciseData: React.FC = () => {
         }
     }, []);
 
-    const handleGroupClick = (groupId: number) => {
-        const newSelectedGroups = formData.muscle_groups.includes(groupId)
-            ? formData.muscle_groups.filter(id => id !== groupId)
-            : [...formData.muscle_groups, groupId];
+    const handleGroupClick = useCallback((groupName: string) => {
+        const newSelectedGroups = formData.muscle_groups.includes(groupName)
+            ? formData.muscle_groups.filter(name => name!== groupName)
+            : [...formData.muscle_groups, groupName];
 
         setFormData(prevState => ({
             ...prevState,
             muscle_groups: newSelectedGroups,
         }));
-    };
+    }, []);
 
     const handleSaveExercise = useCallback(async() => {
-        // Validate all required fields before saving
-        const { name, category, difficulty, description, duration, muscle_groups } = formData;
+        const { name, category, difficulty, description} = formData;
 
-        if (!name || !category || !difficulty || !description || !duration || muscle_groups.length === 0) {
+        if (!name || !category || !difficulty || !description) {
             alert(i18n.t('pleaseFillAllFields'));
             return;
         }
@@ -172,15 +140,32 @@ const ExerciseData: React.FC = () => {
                                 <strong>{i18n.t('category')}</strong>
                                 <select
                                     name="category"
-                                    value={categoryMap[formData?.category as CategoryKey] || ''}
+                                    value={formData?.category || ''}
                                     onChange={handleInputChange}
                                     className="custom-select"
                                     required
                                 >
                                     <option value="" disabled>{i18n.t('selectCategory')}</option>
                                     {Object.keys(categoryMap).map(key => (
-                                        <option key={key} value={categoryMap[key as keyof typeof categoryMap]}>
-                                            {categoryMap[key as keyof typeof categoryMap]}
+                                        <option key={key} value={String(categoryMap[key as keyof typeof categoryMap])}>
+                                            {i18n.t(String(categoryMap[key as keyof typeof categoryMap]))}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <strong>{i18n.t('type_of_measurement')}</strong>
+                                <select
+                                    name="type_of_measurement"
+                                    value={formData?.type_of_measurement || ''}
+                                    onChange={handleInputChange}
+                                    className="custom-select"
+                                    required
+                                >
+                                    <option value="" disabled>{i18n.t('selectCategory')}</option>
+                                    {Object.keys(measurementKeys).map(key => (
+                                        <option key={key} value={String(measurementKeys[key as keyof typeof categoryMap])}>
+                                            {i18n.t(String(measurementKeys[key as keyof typeof categoryMap]))}
                                         </option>
                                     ))}
                                 </select>
@@ -189,15 +174,15 @@ const ExerciseData: React.FC = () => {
                                 <strong>{i18n.t('difficulty')}</strong>
                                 <select
                                     name="difficulty"
-                                    value={difficultyMap[formData?.difficulty as DifficultyKey] || ''}
+                                    value={formData?.difficulty || ''}
                                     onChange={handleInputChange}
                                     className="custom-select"
                                     required
                                 >
                                     <option value="" disabled>{i18n.t('selectDifficulty')}</option>
                                     {Object.keys(difficultyMap).map(key => (
-                                        <option key={key} value={difficultyMap[key as keyof typeof difficultyMap]}>
-                                            {difficultyMap[key as keyof typeof difficultyMap]}
+                                        <option key={key} value={String(difficultyMap[key as keyof typeof difficultyMap])}>
+                                            {i18n.t(String(difficultyMap[key as keyof typeof difficultyMap]))}
                                         </option>
                                     ))}
                                 </select>
@@ -207,25 +192,14 @@ const ExerciseData: React.FC = () => {
                                 <div className="muscle-groups">
                                     {muscleGroups.map(group => (
                                         <div
-                                            key={group.id}
-                                            onClick={() => handleGroupClick(group.id)}
-                                            className={formData.muscle_groups.includes(group.id) ? 'active' : ''}
+                                            key={group.name}
+                                            onClick={handleGroupClick.bind(null, group.name)}
+                                            className={formData.muscle_groups.includes(group.name) ? 'active' : ''}
                                         >
-                                            {group.name}
+                                            {i18n.t(group.name)}
                                         </div>
                                     ))}
                                 </div>
-                            </div>
-                            <div>
-                                <strong>{i18n.t('duration')}</strong>
-                                <input
-                                    type="number"
-                                    name="duration"
-                                    value={formData?.duration || ''}
-                                    onChange={handleInputChange}
-                                    placeholder={i18n.t('duration')}
-                                    required
-                                />
                             </div>
                             <div className="dates">
                                 <p><strong>{i18n.t('createdAt')}</strong>: {currentExercise?.created_at || 'x'}</p>

@@ -15,6 +15,7 @@ import ExercisesController from '../../../../controllers/ExercisesController';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserProfile } from '../../../../store/userStore';
+import SelectedExercise from './SelectedExercise';
 
 interface NewWorkoutProps {
   workoutsStore?: WorkoutsStore;
@@ -32,7 +33,6 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     const [workoutName, setWorkoutName] = useState('');
     const [description, setDescription] = useState('');
     const [exerciseSearchTerm, setExerciseSearchTerm] = useState('');
-    const [userSearchTerm, setUserSearchTerm] = useState('');
     const [selectedExercises, setSelectedExercises] = useState<ExerciseInterface[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<UserProfile[]>([]);
 
@@ -46,11 +46,10 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             const fetchWorkoutData = async() => {
                 await workoutsController?.getWorkout(workoutId);
             };
-            // Fetch exercises and users irrespective of workoutId
-            exercisesController?.getExercises();
-            workoutsController?.getUsersWithPermissions();
             fetchWorkoutData();
         }
+        exercisesController?.getExercises();
+        workoutsController?.getUsersWithPermissions();
     }, [workoutId,
         workoutsController,
         exercisesController]);
@@ -61,45 +60,69 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
         if (fetchedWorkout) {
             setWorkoutName(fetchedWorkout.name || '');
             setDescription(fetchedWorkout.description || '');
-            setSelectedExercises(fetchedWorkout.exercises || []);
+            setSelectedExercises(
+                (fetchedWorkout.exercises || []).sort((a, b) => a.id - b.id)
+            );
             setSelectedUsers(fetchedWorkout.users || []);
         }
     }, [workoutsStore?.draftWorkout]);
 
 
+    const handleExerciseClick = async(exercise: ExerciseInterface) => {
+        try {
+            const addedExercise = await exercisesController?.addWorkoutExercise(workoutId, exercise.id);
 
+            if (addedExercise) {
+                const exerciseWithUuid = {
+                    ...exercise,
+                    id: addedExercise.id,
+                };
 
+                setSelectedExercises(prevExercises => {
+                    if (!prevExercises.find(e => e.id === exerciseWithUuid.id)) {
+                        return [...prevExercises, exerciseWithUuid];
+                    }
+                    return prevExercises;
+                });
+            }
 
-    const handleExerciseClick = (exercise: ExerciseInterface) => {
-        setSelectedExercises(prevSelected => {
-            const isSelected = prevSelected.some(e => e.id === exercise.id);
-            const updatedExercises = isSelected
-                ? prevSelected.filter(e => e.id !== exercise.id)
-                : [...prevSelected, { ...exercise, sets: 1, repetitions: 1, weight: 0 }];
-            return updatedExercises;
-        });
-
-        setExerciseSearchTerm('');
+            setExerciseSearchTerm('');
+        } catch (error) {
+            console.error('Failed to add exercise to workout:', error);
+        }
     };
 
-    const handleExerciseDetailChange = (id: number, field: string, value: number) => {
+    const handleExerciseDetailChange = (id: number, field: string, value: string) => {
         if (!['sets',
             'repetitions',
-            'weight'].includes(field)) {return;}
+            'weight',
+            'duration',
+            'distance'].includes(field)) {return;}
+
         setSelectedExercises(prevExercises =>
             prevExercises.map(exercise =>
-                exercise.id === id ? { ...exercise, [field]: value } : exercise));
+                exercise.id === id  ? { ...exercise, [field]: value } : exercise));
     };
 
-    const handleUserSelect = (user: UserProfile) => {
-        setSelectedUsers(prevSelected =>
-            prevSelected.some(u => u.id === user.id)
-                ? prevSelected.filter(u => u.id !== user.id)
-                : [...prevSelected, user]);
-        setUserSearchTerm('');
+    /*
+     * Const handleUserSelect = (user: UserProfile) => {
+     *     setSelectedUsers(prevSelected =>
+     *         prevSelected.some(u => u.id === user.id)
+     *             ? prevSelected.filter(u => u.id !== user.id)
+     *             : [...prevSelected, user]);
+     *     setUserSearchTerm('');
+     * };
+     */
+
+    const handleEditWorkoutExercise = (editedExercise: ExerciseInterface) => {
+        exercisesController?.editWorkoutExercise(editedExercise);
+        setSelectedExercises(prevExercises =>
+            prevExercises.map(exercise =>
+                exercise.id === editedExercise.id ? editedExercise : exercise));
     };
 
     const handleExerciseDelete = (exerciseId: number) => {
+        exercisesController?.deleteWorkoutExercise(exerciseId);
         setSelectedExercises(prevSelected =>
             prevSelected.filter(exercise => exercise.id !== exerciseId));
     };
@@ -112,28 +135,24 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!workoutName || !description || !selectedExercises.length) {
+        if (!workoutName || !description) {
             alert(i18n.t('workoutData.fillAllFields'));
             return;
         }
 
         const newWorkout = {
             name: workoutName,
-            description,
-            exercises: selectedExercises,
-            users: selectedUsers,
+            description
         };
 
         try {
             if (isEditing) {
                 await workoutsController?.updateWorkout(workoutId, newWorkout);
-                alert(i18n.t('workoutData.workoutUpdated'));
             } else {
                 await workoutsController?.saveWorkout(newWorkout, navigate);
-                alert(i18n.t('workoutData.workoutCreated'));
             }
         } catch (error) {
-            alert(i18n.t('workoutData.creationError'));
+            console.log(error);
         }
     };
 
@@ -141,9 +160,11 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     exercisesStore?.generalExercises?.filter(exercise =>
         exercise?.name?.toLowerCase().includes(exerciseSearchTerm.toLowerCase())) || [];
 
-    const filteredUsers =
-    workoutsStore?.usersWithPermissions?.filter(user =>
-        user?.email?.toLowerCase().includes(userSearchTerm.toLowerCase())) || [];
+    /*
+     * Const filteredUsers =
+     * workoutsStore?.usersWithPermissions?.filter(user =>
+     *     user?.email?.toLowerCase().includes(userSearchTerm.toLowerCase())) || [];
+     */
 
     return (
         <div className="new-workout-section">
@@ -168,6 +189,9 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         placeholder={i18n.t('workoutData.workoutDescriptionPlaceholder')}
                     />
                 </div>
+                <button type="submit">
+                    {isEditing ? i18n.t('workoutData.saveChanges') : i18n.t('workoutData.saveWorkout')}
+                </button>
 
                 <div>
                     <label>{i18n.t('workoutData.exercises')}</label>
@@ -181,9 +205,9 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         <div className="exercise-list">
                             {filteredExercises.map(exercise => (
                                 <div
-                                    key={exercise.id}
+                                    key={`${exercise.id}`}
                                     className={`exercise-item ${
-                                        selectedExercises.some(e => e.id === exercise.id) ? 'selected' : ''
+                                        selectedExercises.some(e => e.id.toString() === exercise.id.toString()) ? 'selected' : ''
                                     }`}
                                     onClick={() => handleExerciseClick(exercise)}
                                 >
@@ -197,80 +221,21 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                 {selectedExercises.length > 0 && (
                     <div>
                         <label>{i18n.t('workoutData.selectedExercises')}</label>
-                        <div className="exercise-table-container">
-                            <table className="exercise-table">
-                                <thead>
-                                    <tr>
-                                        <th>{i18n.t('workoutData.exercise')}</th>
-                                        <th>{i18n.t('workoutData.sets')}</th>
-                                        <th>{i18n.t('workoutData.reps')}</th>
-                                        <th>{i18n.t('workoutData.weight')}</th>
-                                        <th>{i18n.t('workoutData.delete')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {selectedExercises.map(exercise => (
-                                        <tr key={exercise.id}>
-                                            <td>{exercise.name}</td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    value={exercise.sets || 1}
-                                                    min="1"
-                                                    onChange={e =>
-                                                        handleExerciseDetailChange(
-                                                            exercise.id,
-                                                            'sets',
-                                                            parseInt(e.target.value, 10)
-                                                        )
-                                                    }
-                                                />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    value={exercise.repetitions || 1}
-                                                    min="1"
-                                                    onChange={e =>
-                                                        handleExerciseDetailChange(
-                                                            exercise.id,
-                                                            'repetitions',
-                                                            parseInt(e.target.value, 10)
-                                                        )
-                                                    }
-                                                />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    value={exercise.weight || 0}
-                                                    min="0"
-                                                    onChange={e =>
-                                                        handleExerciseDetailChange(
-                                                            exercise.id,
-                                                            'weight',
-                                                            parseInt(e.target.value, 10)
-                                                        )
-                                                    }
-                                                />
-                                            </td>
-                                            <td>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleExerciseDelete(exercise.id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 )}
 
-                <div>
+                {selectedExercises.length > 0 && selectedExercises.map(e => (
+                    <SelectedExercise
+                        key={e.id}
+                        exercise={e}
+                        handleExerciseDelete={handleExerciseDelete}
+                        handleExerciseDetailChange={handleExerciseDetailChange}
+                        editWorkoutExercise={handleEditWorkoutExercise}
+                        mode="edit"
+                    />
+                ))}
+
+                {/* <div>
                     <label>{i18n.t('workoutData.assignUsers')}</label>
                     <input
                         type="text"
@@ -293,7 +258,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                             ))}
                         </div>
                     )}
-                </div>
+                </div> */}
 
                 {selectedUsers.length > 0 && (
                     <div>
@@ -313,10 +278,6 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         </ul>
                     </div>
                 )}
-
-                <button type="submit">
-                    {isEditing ? i18n.t('workoutData.saveChanges') : i18n.t('workoutData.saveWorkout')}
-                </button>
             </form>
         </div>
     );

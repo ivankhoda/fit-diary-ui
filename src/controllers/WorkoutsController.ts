@@ -11,6 +11,7 @@ import Patch from '../utils/PatchRequest';
 import Delete from '../utils/DeleteRequest';
 import { UserProfile } from '../store/userStore';
 import getApiBaseUrl from '../utils/apiUrl';
+import i18n from 'i18next';
 
 
 
@@ -135,6 +136,32 @@ export default class WorkoutController extends BaseController {
           });
   }
 
+  @action
+  async createWorkout(navigate: (path: string) => void): Promise<void> {
+      try {
+          const response = await new Post({
+              url: `${getApiBaseUrl()}/workouts`,
+          }).execute();
+
+          const result = await response.json();
+
+          if (result.ok && result.workout.id) {
+              this.workoutsStore.addWorkout(result.workout);
+              alert(i18n.t('workoutData.workoutCreated'));
+              navigate(`/me/workouts/${result.workout.id}/edit`);
+          } else {
+              console.error('No workout ID returned in response:', result);
+          }
+      } catch (error) {
+          console.error('Failed to create workout:', error);
+      }
+  }
+
+
+
+
+
+
 
 
   @action
@@ -154,8 +181,6 @@ export default class WorkoutController extends BaseController {
                   users: users.map(user => user.id) || [],
               },
           };
-
-          console.log(payload);
           const response = await new Post({
               params: payload,
               url: `${getApiBaseUrl()}/workouts/save`,
@@ -164,9 +189,9 @@ export default class WorkoutController extends BaseController {
 
           const result = await response.json();
 
-          console.log(result);
-          this.workoutsStore.addWorkout(result);
 
+          this.workoutsStore.addWorkout(result);
+          alert(i18n.t('workoutData.workoutCreated'));
 
           navigate(`/me/workouts/${result.id}/edit`);
       } catch (error) {
@@ -178,14 +203,13 @@ export default class WorkoutController extends BaseController {
   @action
   async updateWorkout(id: string, newWorkout: WorkoutInterface): Promise<void> {
       try {
-          const { name, description, exercises, users } = newWorkout;
+          const { name, description } = newWorkout;
 
           const payload = {
               workout: {
+                  id,
                   name,
-                  description,
-                  exercises: exercises || [],
-                  users: users.map(user => user.id) || [],
+                  description
               },
           };
 
@@ -208,8 +232,9 @@ export default class WorkoutController extends BaseController {
   archiveWorkout(id: number): void {
       new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/archive`}).execute()
           .then(r => r.json())
-          .then(res => {this.workoutsStore.updateWorkouts(res.id);
-              this.workoutsStore.updatArchivedWorkouts(res);});
+          .then(res => {
+              this.workoutsStore.updateWorkouts(res.workout.id);
+              this.workoutsStore.updatArchivedWorkouts(res.workout);});
   }
 
   @action
@@ -228,23 +253,56 @@ export default class WorkoutController extends BaseController {
 
   // eslint-disable-next-line max-params
   @action
-  startOrResumeExercise(id: number, workout_id: number): void {
-      new Post({params: {user_workout: {exercise_id: id, workout_id  }},
+  startOrResumeExercise(exercise_id: number, workout_id: number, id: number): void {
+      new Post({params: {user_workout: {exercise_id, workout_id, id }},
           url: `${getApiBaseUrl()}/user_workouts/start_exercise`}).execute()
           .then(r => r.json())
           .then(res => {
-              if(res.status){
+              if(res.ok){
                   this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
+                  this.exerciseStore.setCurrentExercise(res.user_exercise);
               }
           });
   }
-  @action
-  setDone(id: number, weigth: string, repetitions: string): void {
-      new Post({params: {user_workout: {exercise_id: id, repetitions, result: weigth,  }},
-          url: `${getApiBaseUrl()}/user_workouts/set_done`}).execute()
+  // eslint-disable-next-line max-params
+  setDone(exercise: ExerciseInterface, p: {id: number, weight?: string, repetitions?: string, duration?: string, distance?: string}): void {
+      const {type_of_measurement} = exercise;
+      const params: { user_workout: { exercise_id: number; repetitions?: string; weight?: string; duration?: string; distance?: string } } = {
+          user_workout: {
+              exercise_id: p.id,
+              repetitions: p.repetitions
+          }
+      };
+
+      if (type_of_measurement === 'weight_and_reps') {
+          params.user_workout.weight = p.weight;
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'reps') {
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'duration') {
+          params.user_workout.duration = p.duration;
+      }
+      else if (type_of_measurement === 'duration_and_reps'){
+          params.user_workout.duration = p.duration;
+          params.user_workout.repetitions = p.repetitions;
+      }
+      else if (type_of_measurement === 'distance') {
+          params.user_workout.distance = p.distance;
+      } else if (type_of_measurement === 'duration_and_distance') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.distance = p.distance;
+      } else if (type_of_measurement === 'cardio') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.distance = p.distance;
+      }
+
+      new Post({
+          params,
+          url: `${getApiBaseUrl()}/user_workouts/set_done`
+      }).execute()
           .then(r => r.json())
           .then(res => {
-              if(res.status){
+              if (res.status) {
                   this.workoutsStore.setCurrentUserWorkoutSets(res.set);
               }
           });

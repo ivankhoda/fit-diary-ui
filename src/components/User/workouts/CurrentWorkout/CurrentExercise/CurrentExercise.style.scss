@@ -1,6 +1,12 @@
 .current-exercise {
   display: flex;
   flex-direction: column;
+  padding-left: 5px;
+  padding-right: 10px;
+  height: 100%;
+  h2{
+    font-size: 14px;
+  }
 
   &_info {
     display: flex;
@@ -10,13 +16,17 @@
 
   &_inputs {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
   }
 
   &_input {
     min-height: 32px;
     font-size: 16px;
+  }
+
+  p {
+    font-size: 14px;
   }
 
   button {

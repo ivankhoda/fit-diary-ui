@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import { action } from 'mobx';
 import ExercisesStore, { ExerciseInterface } from '../store/exercisesStore';
 import WorkoutsStore from '../store/workoutStore';
@@ -7,6 +8,7 @@ import Patch from '../utils/PatchRequest';
 import Post from '../utils/PostRequest';
 import { BaseController } from './BaseController';
 import getApiBaseUrl from '../utils/apiUrl';
+import { ExerciseFormData } from '../components/User/Exercises/ExerciseModal/ExerciseModal';
 
 
 export default class ExercisesController extends BaseController {
@@ -51,37 +53,110 @@ export default class ExercisesController extends BaseController {
                     this.exerciseStore.setFilteredExercises(res);});
         }
     }
+
     @action
-    addWorkoutExercise(): void {
-        const params = {exercise_id: this.exerciseStore.exerciseForWorkout.id,
-            repetitions: this.exerciseStore.repetitions,
-            sets: this.exerciseStore.sets,
-            weight: this.exerciseStore.weight,
-            workout_id: this.workoutsStore.draftWorkout.id};
-        new Post({params: {workout_exercise: params}, url: `${getApiBaseUrl()}/workout_exercises`}).execute()
+    createExercise(data?: ExerciseFormData): void {
+        new Post({params: {exercise: data}, url: `${getApiBaseUrl()}/exercises`}).execute()
             .then(r => r.json())
             .then(res => {
-                this.exerciseStore.addWorkoutExercise(res);
-                this.workoutsStore.updateOrAddDraftWorkoutExercise(res);
-                this.exerciseStore.clearExerciseForm();
+                if (res.ok){
+                    this.exerciseStore.addGeneralExercise(res.res);}
             });
     }
 
     @action
-    deleteWorkoutExercise(id: number): void {
-        new Delete({params: {workout_exercise: {id}}, url: `${getApiBaseUrl()}/workout_exercises/${id}`}).execute()
+    updateExercise(id: string, data?: ExerciseFormData): void {
+        new Patch({params: {exercise: data}, url: `${getApiBaseUrl()}/exercises/${id}`}).execute()
             .then(r => r.json())
             .then(res => {
-                console.log(res);
-                this.exerciseStore.deleteWorkoutExercise(res.workout_exercise);
-                this.workoutsStore.deleteDraftWorkoutExercise(res.workout_exercise.id);});
+                if (res.ok){
+                    this.exerciseStore.updateGeneralExercise(res.res);}
+            });
+    }
+
+    @action
+    deleteExercise(id: number): void {
+        new Delete({params: {exercise: {id}}, url: `${getApiBaseUrl()}/exercises/${id}`}).execute()
+            .then(r => r.json())
+            .then(res => {
+                if (res.ok){
+                    this.exerciseStore.deleteGeneralExercise(res.res);}
+            });
+    }
+
+
+
+
+
+    @action
+    addWorkoutExercise(workout_id: string, exercise_id: number): Promise<ExerciseInterface | null> {
+        return new Promise((resolve, reject) => {
+            try {
+                const params = {
+                    exercise_id,
+                    workout_id,
+                };
+
+                new Post({
+                    params: { workout_exercise: params },
+                    url: `${getApiBaseUrl()}/workout_exercises`,
+                }).execute()
+                    .then(r => r.json())
+                    .then(res => {
+                        this.exerciseStore.addWorkoutExercise(res);
+                        resolve(res);
+                    })
+                    .catch(error => {
+                        console.error('Failed to add workout exercise:', error);
+                        reject(error);
+                    });
+            } catch (error) {
+                console.error('Error in addWorkoutExercise:', error);
+                reject(error);
+            }
+        });
+    }
+
+
+    @action
+    deleteWorkoutExercise(id: number): void {
+        try {
+            const workoutExerciseParams = {
+                id,
+            };
+
+            new Delete({
+                params: { workout_exercise: workoutExerciseParams },
+                url: `${getApiBaseUrl()}/workout_exercises/${id}`,
+            }).execute()
+                .then(r => r.json())
+                .then(res => {
+                    this.exerciseStore.deleteWorkoutExercise(res.id);
+                })
+                .catch(error => {
+                    console.error('Failed to delete workout exercise:', error);
+                });
+        } catch (error) {
+            console.error('Error in deleteWorkoutExercise:', error);
+        }
     }
 
     @action
     editWorkoutExercise(params: ExerciseInterface): void {
-        new Patch({params: {workout_exercise: params},
-            url: `${getApiBaseUrl()}/workout_exercises/${params.id}`}).execute()
-            .then(r => r.json())
-            .then(res => this.workoutsStore.updateOrAddDraftWorkoutExercise(res));
+        try {
+            new Patch({
+                params: { workout_exercise: params },
+                url: `${getApiBaseUrl()}/workout_exercises/${params.id}`,
+            }).execute()
+                .then(r => r.json())
+                .then(res => {
+                    this.workoutsStore.updateOrAddDraftWorkoutExercise(res);
+                })
+                .catch(error => {
+                    console.error('Failed to edit workout exercise:', error);
+                });
+        } catch (error) {
+            console.error('Error in editWorkoutExercise:', error);
+        }
     }
 }

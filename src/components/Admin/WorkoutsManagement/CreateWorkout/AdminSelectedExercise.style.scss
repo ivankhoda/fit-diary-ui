@@ -1,0 +1,128 @@
+.exercise-admin-small-table {
+  display: flex;
+flex-direction: row;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  justify-content: space-between;
+
+  &._mode {
+      background-color: #f4f4f4;
+  }
+
+  .exercise-small-table-data {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+
+      .exercise-fields {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+
+          div {
+              flex: 1;
+              min-width: 150px;
+          }
+
+          input {
+              width: 100%;
+
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              font-size: 14px;
+          }
+
+          button.delete-btn {
+              background-color: red;
+              color: white;
+              border: none;
+
+              border-radius: 4px;
+              cursor: pointer;
+
+              &:hover {
+                  background-color: darkred;
+              }
+          }
+      }
+
+      .exercise-fields_mode {
+          font-size: 14px;
+          color: #666;
+
+          b {
+              font-weight: bold;
+          }
+      }
+
+      .exercise-fields_mode input {
+          max-width: 80px;
+      }
+
+      @media (max-width: 600px) {
+          .exercise-fields_mode {
+              font-size: 12px;
+          }
+      }
+  }
+
+  .exercise-admin-small-table-data {
+      display: flex;
+      flex-direction: row;
+
+
+      .exercise-fields {
+          display: flex;
+          flex-wrap: wrap;
+
+
+          div {
+              flex: 1;
+              min-width: 150px;
+          }
+
+          input {
+              width: 100%;
+
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              font-size: 14px;
+          }
+
+          button.delete-btn {
+              background-color: red;
+              color: white;
+              border: none;
+
+              border-radius: 4px;
+              cursor: pointer;
+
+              &:hover {
+                  background-color: darkred;
+              }
+          }
+      }
+
+      .exercise-fields_mode {
+          font-size: 14px;
+          color: #666;
+
+          b {
+              font-weight: bold;
+          }
+      }
+
+      .exercise-fields_mode input {
+          max-width: 80px;
+      }
+
+      @media (max-width: 600px) {
+          .exercise-fields_mode {
+              font-size: 12px;
+          }
+      }
+  }
+}

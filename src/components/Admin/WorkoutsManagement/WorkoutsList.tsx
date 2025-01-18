@@ -57,9 +57,8 @@ const WorkoutList: React.FC<WorkoutListProps> = observer(({ adminWorkoutsStore, 
     }, []);
 
     const goToNew = useCallback(() => {
-        navigate('/admin/workouts/create');
-    }, []);
-
+        adminWorkoutsController.createWorkout(navigate);
+    }, [navigate]);
 
     const filteredWorkouts = Array.isArray(workouts)
         ? workouts
@@ -114,7 +113,7 @@ const WorkoutList: React.FC<WorkoutListProps> = observer(({ adminWorkoutsStore, 
                         <tr>
                             <th onClick={() => handleSort('id')}>{i18n.t('workoutList.columnID')}</th>
                             <th onClick={() => handleSort('name')}>{i18n.t('workoutList.columnName')}</th>
-                            <th>{i18n.t('workoutList.columnActions')}</th>
+                            <th>{i18n.t('workoutList.creator')}</th>
                         </tr>
                     </thead>
                     <tbody>
