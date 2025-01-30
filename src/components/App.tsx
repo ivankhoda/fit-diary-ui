@@ -14,7 +14,7 @@ import adminStores from './Admin/store/stores';
 import adminControllers from './Admin/controllers/controllers';
 import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
-import { Footer } from './User/Footer/Footex';
+
 
 export const App = observer((): JSX.Element => {
     const { token, setToken, isAdmin } = useToken();
@@ -99,7 +99,6 @@ const MainAppRoutes = ({ token }: { token: string }) => (
                 ))}
             </Routes>
         </WorkingPanel>
-        <Footer />
     </>
 );
 

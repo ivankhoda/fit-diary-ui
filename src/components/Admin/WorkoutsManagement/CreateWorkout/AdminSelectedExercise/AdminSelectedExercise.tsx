@@ -9,9 +9,11 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import i18n from 'i18next';
 
 import './AdminSelectedExercise.style.scss';
-import { convertDurationToMMSS } from '../../../Admin/utils/convertDurationToMMSS';
-import { parseDurationInput } from '../../../Admin/utils/paraseDurationInput';
-import { AdminExerciseProfile } from '../../store/AdminExercisesStore';
+import { convertDurationToMMSS } from '../../../utils/convertDurationToMMSS';
+import { parseDurationInput } from '../../../utils/paraseDurationInput';
+import { AdminExerciseProfile } from '../../../store/AdminExercisesStore';
+import { DurationInput, NumericInput, TextInput } from '../../../../Common/ControlledInput';
+
 
 interface AdminSelectedExerciseProps {
   exercise: AdminExerciseProfile;
@@ -20,6 +22,8 @@ interface AdminSelectedExerciseProps {
   editWorkoutExercise: (editedExercise: AdminExerciseProfile) => void;
   mode: 'edit' | 'view';
 }
+
+
 
 const AdminSelectedExercise: React.FC<AdminSelectedExerciseProps> = ({
     exercise,
@@ -77,102 +81,87 @@ const AdminSelectedExercise: React.FC<AdminSelectedExerciseProps> = ({
         case 'weight_and_reps':
             return (
                 <div className="exercise-fields">
-                    <div>
-                        <label>{i18n.t('exercise.reps')}</label>
-                        <input
-                            type="number"
-                            value={repetitions || 1}
-                            onChange={handleRepsChange}
-                            onBlur={e => handleBlur('repetitions', e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>{i18n.t('exercise.weight')}</label>
-                        <input
-                            type="text"
-                            value={weight ?? '1'}
-                            step="0.1"
-                            onChange={handleWeightChange}
-                            onBlur={e => handleBlur('weight', e.target.value)}
-                        />
-                    </div>
+                    <NumericInput
+                        label={i18n.t('exercise.reps')}
+                        id={'reps-input'}
+                        value={repetitions || 1}
+                        onChange={(value: string) => handleRepsChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+                        onBlur={e => handleBlur('repetitions', e.target.value)}
+                    />
+                    <TextInput
+                        label={i18n.t('exercise.weight')}
+                        id={'weight-input'}
+                        value={weight ?? '1'}
+                        onChange={(value: string) => handleWeightChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+                        onBlur={e => handleBlur('weight', e)}
+                    />
                 </div>
             );
         case 'reps':
             return (
                 <div className="exercise-fields">
-                    <div>
-                        <label>{i18n.t('exercise.reps')}</label>
-                        <input
-                            type="number"
-                            value={repetitions || 1}
-                            onChange={handleRepsChange}
-                            onBlur={e => handleBlur('repetitions', e.target.value)}
-                        />
-                    </div>
+                    <NumericInput
+                        label={i18n.t('exercise.reps')}
+                        id={'reps-input'}
+                        value={repetitions || 1}
+                        onChange={(value: string) => handleRepsChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+                        onBlur={e => handleBlur('repetitions', e.target.value)}
+                    />
                 </div>
             );
         case 'duration':
             return (
                 <div className="exercise-fields">
-
-                    <div>
-                        <label>{i18n.t('exercise.duration')}</label>
-                        <input
-                            type="text"
-                            value={duration ? convertDurationToMMSS(duration) : '00:00'}
-                            onChange={handleDurationChange}
-                            onBlur={handleDurationBlur}
-                        />
-                    </div>
+                    <DurationInput
+                        label={i18n.t('exercise.duration')}
+                        id={'duration-input'}
+                        value={duration ? duration : 0}
+                        onChange={(value: string) => handleDurationChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+                        onBlur={e => handleDurationBlur(e as unknown as React.FocusEvent<HTMLInputElement>)}
+                    />
                 </div>
             );
         case 'duration_and_reps':
             return (
                 <div className="exercise-fields">
-                    <div>
-                        <label>{i18n.t('exercise.reps')}</label>
-                        <input
-                            type="number"
-                            value={repetitions || 1}
-                            onChange={handleRepsChange}
-                            onBlur={e => handleBlur('repetitions', e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>{i18n.t('exercise.duration')}</label>
-                        <input
-                            type="text"
-                            value={duration ? convertDurationToMMSS(duration) : '00:00'}
-                            onChange={handleDurationChange}
-                            onBlur={handleDurationBlur}
-                        />
-                    </div>
+                    <NumericInput
+                        label={i18n.t('exercise.reps')}
+                        id={'reps-input'}
+                        value={repetitions || 1}
+                        onChange={(value: string) => handleRepsChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+                        onBlur={e => handleBlur('repetitions', e.target.value)}
+                    />
+                    <DurationInput
+                        label={i18n.t('exercise.duration')}
+                        id={'duration-input'}
+                        value={duration ? duration : 0}
+                        onChange={(value: string) => handleDurationChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+                        onBlur={e => handleDurationBlur(e as unknown as React.FocusEvent<HTMLInputElement>)}
+                    />
                 </div>
             );
         case 'cardio':
         case 'duration_and_distance':
             return (
                 <div className="exercise-fields">
-                    <div>
-                        <label>{i18n.t('exercise.duration')}</label>
-                        <input
-                            type="text"
-                            value={duration ? convertDurationToMMSS(duration) : '00:00'}
-                            onChange={handleDurationChange}
-                            onBlur={handleDurationBlur}
-                        />
-                    </div>
-                    <div>
-                        <label>{i18n.t('exercise.distance')}</label>
-                        <input
-                            type="number"
-                            value={distance || 0}
-                            min="0"
-                            onChange={e => handleExerciseDetailChange(id, 'distance', String(parseFloat(e.target.value)))}
-                            onBlur={e => handleBlur('repetitions', e.target.value)}
-                        />
-                    </div>
+                    <DurationInput
+                        label={i18n.t('exercise.duration')}
+                        id={'duration-input'}
+                        value={duration ? duration : 0}
+                        onChange={(value: string) => handleDurationChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+                        onBlur={e => handleDurationBlur(e as unknown as React.FocusEvent<HTMLInputElement>)}
+                    />
+
+                    <NumericInput
+                        label={i18n.t('exercise.distance')}
+                        id={'distance-input'}
+                        value={distance || 0}
+                        onChange={(value: string) => {
+                            const parsedValue = String(parseFloat(value));
+                            handleExerciseDetailChange(id, 'distance', parsedValue);
+                        }}
+                        onBlur={e => handleBlur('distance', e.target.value)}
+                    />
                 </div>
             );
         default:
@@ -204,6 +193,7 @@ const AdminSelectedExercise: React.FC<AdminSelectedExerciseProps> = ({
                                 <button
                                     type="button"
                                     className="delete-btn"
+                                    aria-label="trash"
                                     onClick={() => handleExerciseDelete(id)}
                                 >
                                     <FontAwesomeIcon icon={faTrash} />

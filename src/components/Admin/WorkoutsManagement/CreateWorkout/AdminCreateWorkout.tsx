@@ -17,7 +17,7 @@ import AdminExercisesStore, { AdminExerciseProfile } from '../../store/AdminExer
 import AdminUsersStore, { AdminUserProfile } from '../../store/AdminUsersStore';
 import AdminWorkoutsStore from '../../store/AdminWorkoutsStore';
 import AdminUsersController from '../../controllers/AdminUsersController';
-import AdminSelectedExercise from './AdminSelectedExercise';
+import AdminSelectedExercise from './AdminSelectedExercise/AdminSelectedExercise';
 
 
 
@@ -68,7 +68,17 @@ const AdminCreateWorkout: React.FC<AdminCreateWorkoutProps> = ({
         if (draftWorkout) {
             setWorkoutName(draftWorkout.name || '');
             setDescription(draftWorkout.description || '');
-            setSelectedExercises((adminExercisesStore.workoutExercises).sort((a, b) => a.id - b.id));
+            setSelectedExercises(prevExercises => {
+                const updatedExercises = [...prevExercises];
+
+                adminExercisesStore.workoutExercises.forEach(newExercise => {
+                    if (!updatedExercises.some(exercise => exercise.id === newExercise.id)) {
+                        updatedExercises.push(newExercise);
+                    }
+                });
+
+                return updatedExercises.sort((a, b) => a.id - b.id);
+            });
             setSelectedUsers(draftWorkout.users || []);
         }
     }, [adminWorkoutsStore?.draftWorkout, adminExercisesStore]);
@@ -207,7 +217,7 @@ const AdminCreateWorkout: React.FC<AdminCreateWorkoutProps> = ({
 
                 <div>
                     <label>{i18n.t('workoutData.selectedExercises')}</label>
-                    {selectedExercises.map(exercise => (
+                    { adminExercisesStore.workoutExercises.map(exercise => (
                         <AdminSelectedExercise
                             key={exercise.id}
                             exercise={exercise}

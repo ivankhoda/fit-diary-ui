@@ -183,6 +183,7 @@
   "edit": "Edit",
   "exercises": {
       "title": "Exercises",
+      "noExercises": "No exercises available",
       "searchPlaceholder": "Search by name...",
       "allMuscleGroups": "All Muscle Groups",
       "muscleGroups": {

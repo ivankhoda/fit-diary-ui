@@ -213,6 +213,7 @@
   "edit": "Редактировать",
   "exercises": {
     "title": "Упражнения",
+    "noExercises": "Пока нет упраженений",
     "searchPlaceholder": "Поиск по названию...",
     "allMuscleGroups": "Все группы мышц",
     "muscleGroups": {
