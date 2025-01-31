@@ -8,6 +8,7 @@ import ExercisesStore from '../../../store/exercisesStore';
 import WorkoutsStore from '../../../store/workoutStore';
 import Workout from './Workout/Workout';
 import { UserExerciseSets } from './CurrentWorkout/UserExerciseSets/UserExerciseSets';
+import { t } from 'i18next';
 
 interface WorkoutsInterface {
     exercisesStore?: ExercisesStore;
@@ -99,24 +100,23 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
                     ))}
             </div>
 
-            {/* Pagination Controls */}
             <div className="pagination-controls">
                 <button
                     className="pagination-button"
                     onClick={handlePreviousPage}
                     disabled={currentPage === 1}
                 >
-                    Предыдущая страница
+                    {t('workouts.pagination.previous')}
                 </button>
                 <span className="page-info">
-                    Страница {currentPage} из {totalPages}
+                    {currentPage} / {totalPages}
                 </span>
                 <button
                     className="pagination-button"
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages}
                 >
-                    Следующая страница
+                    {t('workouts.pagination.next')}
                 </button>
             </div>
         </div>

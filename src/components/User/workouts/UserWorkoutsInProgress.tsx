@@ -7,6 +7,7 @@ import WorkoutsController from '../../../controllers/WorkoutsController';
 import ExercisesStore from '../../../store/exercisesStore';
 import WorkoutsStore from '../../../store/workoutStore';
 import Workout from './Workout/Workout';
+import { t } from 'i18next';
 
 interface WorkoutsInterface {
     exercisesStore?: ExercisesStore;
@@ -21,26 +22,12 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
     workoutsStore,
     workoutsController,
 }) => {
-    const [expandedWorkoutIds, setExpandedWorkoutIds] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         workoutsController.getUserWorkouts();
     }, [workoutsController]);
 
-    const toggleWorkout = useCallback((workoutId: number) => {
-        setExpandedWorkoutIds(prevIds =>
-            prevIds.includes(workoutId)
-                ? prevIds.filter(id => id !== workoutId)
-                : [...prevIds, workoutId]);
-    }, []);
-
-    const handleWorkoutClick = useCallback(
-        (workoutId: number) => {
-            toggleWorkout(workoutId);
-        },
-        [toggleWorkout]
-    );
 
     const handlePageClick = useCallback((page: number) => {
         setCurrentPage(page);
@@ -70,43 +57,9 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
                 {paginatedWorkouts &&
                     paginatedWorkouts.map((workout, index) => (
                         <div key={workout.id || `workout-${index}`} className="workout-item">
-                            <div
-                                className="workout-header"
-                                // eslint-disable-next-line react/jsx-no-bind
-                                onClick={() => handleWorkoutClick(workout.id)}
-                            >
+                            <div className="workout-header">
                                 <Workout workout={workout} state={workout.state} />
                             </div>
-
-                            {expandedWorkoutIds.includes(workout.id) && (
-                                <div className="workout-details">
-                                    <h3>Упражнения:</h3>
-                                    {workout.user_exercises.map(exercise => (
-                                        <div key={exercise.id} className="exercise-item">
-                                            <p>
-                                                <strong>Упражнение:</strong> {exercise.name}
-                                            </p>
-                                            <p>
-                                                Повторы: {exercise.repetitions}, Сеты: {exercise.sets},
-                                                Вес: {exercise.weight}
-                                            </p>
-
-                                            {exercise.number_of_sets.length > 0 && (
-                                                <div className="sets-list">
-                                                    <h4>Сеты:</h4>
-                                                    <ul>
-                                                        {exercise.number_of_sets.map(set => (
-                                                            <li key={set.id}>
-                                                                Сет {set.id}: Повторы: {set.repetitions}, Вес: {set.result}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
                         </div>
                     ))}
             </div>
@@ -115,7 +68,7 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
                     disabled={currentPage === 1}
                     onClick={handlePreviousClick}
                 >
-                    Previous
+                    {t('workouts.pagination.previous')}
                 </button>
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                     <button
@@ -131,7 +84,7 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
                     disabled={currentPage === totalPages}
                     onClick={handleNextClick}
                 >
-                    Next
+                    {t('workouts.pagination.next')}
                 </button>
             </div>
         </div>

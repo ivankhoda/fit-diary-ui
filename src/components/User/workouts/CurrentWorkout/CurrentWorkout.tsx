@@ -14,6 +14,7 @@ import { useNavigate, useParams } from 'react-router';
 import SelectedExercise from '../NewWorkout/SelectedExercise';
 import { CurrentExercise } from './CurrentExercise/CurrentExercise';
 import { UserExercisesList } from './UserExercisesList/UserExercisesList';
+import i18next from 'i18next';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -212,7 +213,7 @@ export const CurrentWorkout: React.FC<Props> =
                         <UserExercisesList userExercises={currentWorkout.user_exercises} deleteSet={deleteSet}/>)}
 
                     <button className='save-btn' onClick={handleFinishClick}>
-                    Завершить
+                        {i18next.t('workout.finish')}
                     </button>
                 </div>
             )

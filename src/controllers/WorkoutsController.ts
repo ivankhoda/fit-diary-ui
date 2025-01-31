@@ -102,18 +102,6 @@ export default class WorkoutController extends BaseController {
           });
   }
 
-  @action
-  resumeWorkout(workout?: WorkoutInterface): void {
-      new Post({params: {user_workout: {id: workout.id}}, url: `${getApiBaseUrl()}/user_workouts/resume_workout`}).execute()
-          .then(r => r.json())
-          .then(res => {
-              this.workoutsStore.setCurrentUserWorkout(res.user_workout);
-              if (window.location.pathname === '/me/workouts/in-progress') {
-                  window.location.pathname = `/me/workout/${workout.id}`;
-              }
-          });
-  }
-
 
   @action
   addExercise(params: AddExerciseParamsInterface): void {
@@ -309,32 +297,12 @@ export default class WorkoutController extends BaseController {
   }
   @action
   deleteSet(setId: string, userExerciseId: number): void {
-      new Post({params: {user_workout: {exercise_id: userExerciseId, set_id: setId  }},
+      new Post({params: {user_workout: {user_exercise_id: userExerciseId, set_id: setId  }},
           url: `${getApiBaseUrl()}/user_workouts/delete_set`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status){
                   this.workoutsStore.deleteCurrentUserWorkoutSet(res.set_id, res.user_exercise_id);
-              }
-          });
-  }
-
-
-  @action
-  exerciseDone(id: number): void {
-      new Post({params: {user_workout: {exercise_id: id }},
-          url: `${getApiBaseUrl()}/user_workouts/exercise_done`}).execute()
-          .then(r => r.json())
-          .then(res => {
-              if(res.status.ok && res.exercise) {
-                  this.exerciseStore.setCurrentExercise(res.exercise);
-                  this.exerciseStore.setCurrentUserExerciseSets(res.exercise.sets);
-              }
-              if(res.status.ok && !res.exercise){
-                  window.location.hash = '/me/workouts';
-                  this.exerciseStore.setCurrentExercise(null);
-                  this.exerciseStore.setCurrentUserExerciseSets(null);
-                  this.workoutsStore.setCurrentUserWorkout(null);
               }
           });
   }

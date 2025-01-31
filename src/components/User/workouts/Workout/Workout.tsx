@@ -42,7 +42,7 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
     }, [workout.id]);
 
     const handleResumeClick = useCallback(() => {
-        workoutsController.resumeWorkout(workout);
+        window.location.pathname = `/me/workout/${workout.id}`;
     }, [workout.id]);
 
     const handleFinishClick = useCallback(() => {
@@ -86,9 +86,6 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
                         <button className="save-btn" onClick={handleResumeClick}>
                             {t('workout.resume')}
                         </button>
-                        <button className="toggle-btn" onClick={toggleExpanded}>
-                            {isExpanded ? t('workout.hideExercises') : t('workout.showExercises')}
-                        </button>
                     </div>
                 )}
 
@@ -101,7 +98,6 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
                             key={exercise.id}
                             exercise={exercise}
                             mode='view'
-
                         />
                     ))}
                 </div>
