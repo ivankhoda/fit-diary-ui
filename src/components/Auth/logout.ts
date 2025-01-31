@@ -11,7 +11,7 @@ export const useLogout = (): (() => void) => {
             .execute()
             .then((r: Response) => {
                 if (r.ok) {
-                    sessionStorage.removeItem('token');
+                    localStorage.removeItem('token');
                     navigate('/');
                     window.location.reload();
                 }

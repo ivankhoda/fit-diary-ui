@@ -9,12 +9,12 @@ export interface DecodedToken {
 
 export const useToken = () => {
   const getToken = (): string | null => {
-    const tokenString = sessionStorage.getItem("token");
+    const tokenString = localStorage.getItem("token");
 
     try {
       return tokenString ? JSON.parse(tokenString) : null;
     } catch (error) {
-      console.error("Error parsing token from sessionStorage:", error);
+      console.error("Error parsing token from localStorage:", error);
       return null;
     }
   };
@@ -37,7 +37,7 @@ export const useToken = () => {
 
   const saveToken = (userToken: string | null) => {
     if (userToken) {
-      sessionStorage.setItem("token", JSON.stringify(userToken));
+      localStorage.setItem("token", JSON.stringify(userToken));
       setToken(userToken);
     } else {
       console.warn("Attempted to save an undefined token:", userToken);

@@ -1,6 +1,6 @@
 
 const getToken = () => {
-    const tokenString = sessionStorage.getItem('token');
+    const tokenString = localStorage.getItem('token');
 
     if (tokenString) {
         const token = JSON.parse(tokenString);
