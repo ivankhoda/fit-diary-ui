@@ -1,16 +1,18 @@
-/* eslint-disable max-params */
-/* eslint-disable complexity */
 /* eslint-disable max-lines-per-function */
-/* eslint-disable no-magic-numbers */
-/* eslint-disable react/jsx-no-bind */
-import React from 'react';
+
+/* eslint-disable complexity */
+
+import React, { useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import i18n from 'i18next';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
 import './SelectedExercise.style.scss';
 import { convertDurationToMMSS } from '../../../Admin/utils/convertDurationToMMSS';
-import { parseDurationInput } from '../../../Admin/utils/paraseDurationInput';
+import RepetitionsInput from '../../../Common/RepetitionsInput';
+import WeightInput from '../../../Common/WeightInput';
+import TimeInput from '../../../Common/TimeInput';
+import DistanceInput from '../../../Common/DistanceInput';
 
 interface SelectedExerciseProps {
   exercise: ExerciseInterface;
@@ -29,44 +31,41 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
     const { id, name, type_of_measurement, sets, repetitions, weight, duration, distance } = exercise;
 
 
-    const handleSetsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSetsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const {value} = e.target;
         const parsedValue = String(parseInt(value, 10));
         handleExerciseDetailChange(id, 'sets', parsedValue);
-    };
+    }, []);
 
-    const handleRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {value} = e.target;
-        const parsedValue = String(parseInt(value, 10));
-        handleExerciseDetailChange(id, 'repetitions', parsedValue);
-    };
+    const handleSetsBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+        handleBlur('sets', e.target.value);
+    }, []);
 
-    const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let {value} = e.target;
-        value = value.replace(',', '.');
-        const isValid = /^(?:\d+(?:\.\d{0,2})?)?$/u.test(value);
+    const handleDelete = useCallback(() => {
+        handleExerciseDelete(id);
+    }, []);
 
-        if (isValid || value === '') {
-            handleExerciseDetailChange(id, 'weight', value);
-        }
-    };
+    const handleReps = useCallback((r: string) => {
+        handleExerciseDetailChange(id, 'repetitions', r);
+    }, []);
 
-    const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const totalSeconds = parseDurationInput(e.target.value);
-        handleExerciseDetailChange(id, 'duration', String(totalSeconds));
-        e.target.value = convertDurationToMMSS(totalSeconds);
-    };
+    const handleWeightChange = useCallback((w: string) => {
+        handleExerciseDetailChange(id, 'weight', w);
+    }, []);
 
-    const handleBlur = (field: string, value: string | number | null) => {
+    const handleDurationChange = useCallback((d: string) => {
+        handleExerciseDetailChange(id, 'duration', d);
+    }, []);
+
+    const handleDistanceChange = useCallback((d: string) => {
+        handleExerciseDetailChange(id, 'distance', d);
+    }, []);
+
+    const handleBlur = useCallback((field: string, value: string | number | null) => {
         const updatedExercise = { ...exercise, [field]: value };
         editWorkoutExercise(updatedExercise);
-    };
+    }, []);
 
-    const handleDurationBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const totalSeconds = parseDurationInput(e.target.value);
-        const updatedExercise = { ...exercise, duration: totalSeconds };
-        editWorkoutExercise(updatedExercise);
-    };
 
     const handleClick = () => {
         if (onClick) {
@@ -90,22 +89,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         ? <div className="exercise-fields">
                             <div>
                                 <label>{i18n.t('exercise.reps')}</label>
-                                <input
-                                    type="number"
-                                    value={repetitions|| 1}
-                                    onChange={handleRepsChange}
-                                    onBlur={e => handleBlur('repetitions', e.target.value)}
-                                />
+                                <RepetitionsInput onChange={handleReps} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                             <div>
                                 <label>{i18n.t('exercise.weight')}</label>
-                                <input
-                                    type="text"
-                                    value={weight ?? '1'}
-                                    step="0.1"
-                                    onChange={handleWeightChange}
-                                    onBlur={e => handleBlur('weight', e.target.value)}
-                                />
+                                <WeightInput onChange={handleWeightChange} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                         </div>
                         :
@@ -123,13 +111,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         ?<div className="exercise-fields">
                             <div>
                                 <label>{i18n.t('exercise.reps')}</label>
-                                <input
-                                    type="number"
-                                    value={repetitions || 1}
-                                    min="1"
-                                    onChange={handleRepsChange}
-                                    onBlur={e => handleBlur('repetitions', e.target.value)}
-                                />
+                                <RepetitionsInput onChange={handleReps} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                         </div>
                         : <div className='exercise-fields_mode'>
@@ -144,13 +126,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         ?<div className="exercise-fields">
                             <div>
                                 <label>{i18n.t('exercise.duration')}</label>
-                                <input
-                                    type="text"
-                                    value={duration ? convertDurationToMMSS(duration) : '00:00'}
-                                    onChange={handleDurationChange}
-                                    placeholder="MM:SS"
-                                    onBlur={handleDurationBlur}
-                                />
+                                <TimeInput onChange={handleDurationChange} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                         </div>
                         :
@@ -166,23 +142,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         ?<div className="exercise-fields">
                             <div>
                                 <label>{i18n.t('exercise.duration')}</label>
-                                <input
-                                    type="text"
-                                    value={duration ? convertDurationToMMSS(duration) : '00:00'}
-                                    onChange={handleDurationChange}
-                                    placeholder="MM:SS"
-                                    onBlur={handleDurationBlur}
-                                />
+                                <TimeInput onChange={handleDurationChange} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                             <div>
                                 <label>{i18n.t('exercise.reps')}</label>
-                                <input
-                                    type="number"
-                                    value={repetitions || 1}
-                                    min="1"
-                                    onChange={handleRepsChange}
-                                    onBlur={e => handleBlur('repetitions', e.target.value)}
-                                />
+                                <RepetitionsInput onChange={handleReps} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                         </div>
                         : <div className={'exercise-fields_mode'}>
@@ -199,24 +163,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         ? <div className="exercise-fields">
                             <div>
                                 <label>{i18n.t('exercise.duration')}</label>
-                                <input
-                                    type="text"
-                                    value={duration ? convertDurationToMMSS(duration) : '00:00'}
-                                    onChange={handleDurationChange}
-                                    placeholder="MM:SS"
-                                    onBlur={handleDurationBlur}
-                                />
+                                <TimeInput onChange={handleDurationChange} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                             <div>
                                 <label>{i18n.t('exercise.distance')}</label>
-                                <input
-                                    type="number"
-                                    value={distance || 0}
-                                    min="0"
-                                    step={'0,1'}
-                                    onChange={e => handleExerciseDetailChange(id, 'distance', String(parseFloat(e.target.value)))}
-                                    onBlur={e => handleBlur('distance', e.target.value)}
-                                />
+                                <DistanceInput onChange={handleDistanceChange} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                         </div>
                         :<div className='exercise-fields_mode'>
@@ -234,24 +185,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         ? <div className="exercise-fields">
                             <div>
                                 <label>{i18n.t('exercise.duration')}</label>
-                                <input
-                                    type="text"
-                                    value={duration ? convertDurationToMMSS(duration) : '00:00'}
-                                    onChange={handleDurationChange}
-                                    placeholder="MM:SS"
-                                    onBlur={handleDurationBlur}
-                                />
+                                <TimeInput onChange={handleDurationChange} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                             <div>
                                 <label>{i18n.t('exercise.distance')}</label>
-                                <input
-                                    type="number"
-                                    value={distance || 0}
-                                    min="0"
-                                    step={'0,1'}
-                                    onChange={e => handleExerciseDetailChange(id, 'distance', String(parseFloat(e.target.value)))}
-                                    onBlur={e => handleBlur('distance', e.target.value)}
-                                />
+                                <DistanceInput onChange={handleDistanceChange} exercise={exercise} onBlur={handleBlur}/>
                             </div>
                         </div>
                         : <div className='exercise-fields_mode'>
@@ -271,14 +209,14 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                                 value={sets || 1}
                                 min="1"
                                 onChange={handleSetsChange}
-                                onBlur={e => handleBlur('sets', e.target.value)}
+                                onBlur={handleSetsBlur}
                             />
                         </div>
 
                         <button
                             type="button"
                             className="delete-btn"
-                            onClick={() => handleExerciseDelete(id)}
+                            onClick={handleDelete}
                         >
                             <FontAwesomeIcon icon={faTrash} />
                         </button>

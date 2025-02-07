@@ -164,7 +164,7 @@ export default class WorkoutsStore {
         if (this.currentUserWorkout) {
             this.currentUserWorkout = {
                 ...this.currentUserWorkout,
-                user_exercises: userExercises,
+                user_exercises: userExercises
             };
         } else {
             console.error('No current user workout is set');

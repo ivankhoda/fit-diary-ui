@@ -1,4 +1,3 @@
-// Src/stories/AdminSelectedExercise.stories.tsx
 import { Meta, StoryObj } from '@storybook/react';
 import { AdminExerciseProfile } from '../components/Admin/store/AdminExercisesStore';
 import AdminSelectedExercise from '../components/Admin/WorkoutsManagement/CreateWorkout/AdminSelectedExercise/AdminSelectedExercise';

@@ -16,6 +16,7 @@ const ProgressTable: React.FC<ProgressTableProps> = ({ progress, type_of_measure
     const columns: { [key: string]: string[] } = {
         cardio: ['date',
             'distance',
+            'duration',
             'sets'],
         duration: ['date',
             'duration',
@@ -59,7 +60,6 @@ const ProgressTable: React.FC<ProgressTableProps> = ({ progress, type_of_measure
         };
     });
 
-    // Pagination helpers
     const totalPages = Math.ceil(rows.length / rowsPerPage);
     const paginatedRows = rows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
@@ -95,7 +95,7 @@ const ProgressTable: React.FC<ProgressTableProps> = ({ progress, type_of_measure
                                                 header === 'weight'
                                                     ? 'kg'
                                                     : header === 'distance'
-                                                        ? 'km'
+                                                        ? 'm'
                                                         : ''
                                             }`}
                                 </td>
@@ -104,8 +104,6 @@ const ProgressTable: React.FC<ProgressTableProps> = ({ progress, type_of_measure
                     ))}
                 </tbody>
             </table>
-
-            {/* Pagination Controls */}
             <div className="pagination-controls">
                 <button
                     onClick={handlePreviousPage}

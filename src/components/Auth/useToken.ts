@@ -19,9 +19,7 @@ export const useToken = () => {
     }
   };
 
-
   const [token, setToken] = useState<string | null>(getToken());
-
 
   const decodeToken = useCallback((): DecodedToken | null => {
     if (!token) return null;

@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserProfile } from '../../../../store/userStore';
 import SelectedExercise from './SelectedExercise';
 
+
 interface NewWorkoutProps {
   workoutsStore?: WorkoutsStore;
   exercisesStore?: ExercisesStore;
@@ -104,16 +105,6 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                 exercise.id === id  ? { ...exercise, [field]: value } : exercise));
     };
 
-    /*
-     * Const handleUserSelect = (user: UserProfile) => {
-     *     setSelectedUsers(prevSelected =>
-     *         prevSelected.some(u => u.id === user.id)
-     *             ? prevSelected.filter(u => u.id !== user.id)
-     *             : [...prevSelected, user]);
-     *     setUserSearchTerm('');
-     * };
-     */
-
     const handleEditWorkoutExercise = (editedExercise: ExerciseInterface) => {
         exercisesController?.editWorkoutExercise(editedExercise);
         setSelectedExercises(prevExercises =>
@@ -159,12 +150,6 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     const filteredExercises =
     exercisesStore?.generalExercises?.filter(exercise =>
         exercise?.name?.toLowerCase().includes(exerciseSearchTerm.toLowerCase())) || [];
-
-    /*
-     * Const filteredUsers =
-     * workoutsStore?.usersWithPermissions?.filter(user =>
-     *     user?.email?.toLowerCase().includes(userSearchTerm.toLowerCase())) || [];
-     */
 
     return (
         <div className="new-workout-section">
@@ -225,7 +210,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                 )}
 
                 {selectedExercises.length > 0 && selectedExercises.map(e => (
-                    <SelectedExercise
+                    <><SelectedExercise
                         key={e.id}
                         exercise={e}
                         handleExerciseDelete={handleExerciseDelete}
@@ -233,32 +218,8 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         editWorkoutExercise={handleEditWorkoutExercise}
                         mode="edit"
                     />
+                    </>
                 ))}
-
-                {/* <div>
-                    <label>{i18n.t('workoutData.assignUsers')}</label>
-                    <input
-                        type="text"
-                        value={userSearchTerm}
-                        onChange={e => setUserSearchTerm(e.target.value)}
-                        placeholder={i18n.t('workoutData.searchUsers')}
-                    />
-                    {userSearchTerm && (
-                        <div className="user-list">
-                            {filteredUsers.map(user => (
-                                <div
-                                    key={user.id}
-                                    className={`user-item ${
-                                        selectedUsers.some(u => u.id === user.id) ? 'selected' : ''
-                                    }`}
-                                    onClick={() => handleUserSelect(user)}
-                                >
-                                    {user.email}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div> */}
 
                 {selectedUsers.length > 0 && (
                     <div>

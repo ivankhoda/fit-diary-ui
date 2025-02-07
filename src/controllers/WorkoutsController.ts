@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 
 /* eslint-disable sort-keys */
 /* eslint-disable no-alert */
