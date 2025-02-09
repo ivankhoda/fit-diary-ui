@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
 
 interface DistanceInputProps {
@@ -29,6 +29,10 @@ export const TimeInput: React.FC<DistanceInputProps> = ({ onChange, exercise, on
             onBlur('distance', value);
         }
     }, [onChange, exercise]);
+
+    useEffect(() => {
+        setInputValue(exercise.distance || '');
+    }, [exercise.distance]);
 
     return (
         <div>

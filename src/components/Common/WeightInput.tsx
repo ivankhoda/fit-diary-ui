@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
 
 interface WeightInputProps {
@@ -33,6 +33,10 @@ export const WeightInput: React.FC<WeightInputProps> = ({ onChange, exercise, on
     }, [onChange,
         exercise,
         onBlur]);
+
+    useEffect(() => {
+        setInputValue(exercise.weight ? exercise.weight : '');
+    }, [exercise.weight]);
 
 
     return (

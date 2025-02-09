@@ -42,7 +42,8 @@ export const CurrentWorkout: React.FC<Props> =
             }
         }, [navigate,
             sets,
-            currentWorkout]);
+            currentWorkout,
+            selectedExercise]);
 
         const handleWeight = useCallback((w: string) => {setSelectedExercise(prev => ({...prev,weight: w}));
             setWeight(w);
@@ -81,13 +82,15 @@ export const CurrentWorkout: React.FC<Props> =
 
             const fieldsToUpdate = typeConfig[exercise.type_of_measurement] || [];
             const newState: Partial<ExerciseInterface> = fieldsToUpdate.reduce((acc, field) => ({ ...acc, [field]: updates[field] }), {});
-
             setSelectedExercise(exercise);
             setWeight(newState.weight ?? '0');
             setRepetitions(newState.repetitions?.toString() ?? '0');
             setDuration(newState.duration ?? '');
             setDistance(newState.distance ?? '0.0');
-        }, [currentWorkout]);
+        }, [currentWorkout,
+            selectedExercise,
+            setSelectedExercise,
+            repetitions]);
 
         const setDone = useCallback(() => {
             if (!selectedExercise) {return;}

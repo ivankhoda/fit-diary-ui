@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
 import { convertDurationToMMSS } from '../Admin/utils/convertDurationToMMSS';
 
@@ -67,6 +67,10 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
         setInputValue(formattedValue);
         onBlur?.('duration', calculateTotalSeconds(digitsOnly).toString());
     }, [calculateTotalSeconds, onBlur]);
+
+    useEffect(() => {
+        setInputValue(exercise.duration ? convertDurationToMMSS(exercise.duration) : '');
+    }, [exercise.duration]);
 
     return (
         <div>

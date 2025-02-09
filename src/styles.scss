@@ -15,7 +15,7 @@ $white-color: #FFFFFF;
 // Шрифты
 $body-font-family: "Roboto";
 $heading-font-family: "Roboto";
-$base-font-size: 14px;
+$base-font-size: 16px;
 $heading-font-size: 24px;
 $line-height: 1.5;
 
@@ -33,7 +33,7 @@ $h2-font-size: 30px;
 $h3-font-size: 24px;
 $h4-font-size: 18px;
 $h5-font-size: 16px;
-$h6-font-size: 14px;
+$h6-font-size: 16px;
 
 // Основной контент
 $content-padding: 20px;
@@ -83,6 +83,10 @@ body {
 
   textarea {
     font-family: $body-font-family;
+  }
+
+  input {
+    font-size: 1rem;
   }
 }
 

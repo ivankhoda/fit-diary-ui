@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
 
 interface RepetitionsInputProps {
@@ -29,6 +29,11 @@ export const RepetitionsInput: React.FC<RepetitionsInputProps> = ({ onChange, ex
     }, [onChange,
         exercise,
         onBlur]);
+
+
+    useEffect(() => {
+        setInputValue(exercise.repetitions?.toString() || '');
+    }, [exercise.repetitions]);
 
     return (
         <div>
