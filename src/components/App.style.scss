@@ -73,7 +73,8 @@ input, textarea {
   border: 2px solid #bfb9a4;
   border-radius: 5px;
   background: #ffffff55;
-  width: calc(100% - 24px); /* Leave some room for padding and border */
+  width: calc(100% - 24px);
+  font-family: 16px;
 }
 
 .toggle-button {
