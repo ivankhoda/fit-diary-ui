@@ -29,7 +29,7 @@ module.exports = {
                     options: {
                         transpileOnly: true
                     }
-                }
+                },
             }, {
                 test: /\.(scss|css)$/,
                 use: [
@@ -49,7 +49,22 @@ module.exports = {
                         },
                     },
                 ],
-            }
+            },
+            {
+                test: /\.svg$/,
+                use: ['@svgr/webpack'],
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name].[ext]',
+                        },
+                    },
+                ],
+            },
         ]
     },
     resolve: {

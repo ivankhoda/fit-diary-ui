@@ -13,6 +13,7 @@ import { adminRoutes } from './Admin/routes/routes';
 import adminStores from './Admin/store/stores';
 import adminControllers from './Admin/controllers/controllers';
 import { useTranslation } from 'react-i18next';
+import boosty from '../images/boosty.png';
 import { t } from 'i18next';
 
 
@@ -72,9 +73,18 @@ const DescriptionScreen = ({ proceedToAuth }: { proceedToAuth: () => void }) => 
             <button className="proceed-button" onClick={proceedToAuth}>
                 {t('desc.proceed')}
             </button>
+
+            <div className='support' onClick={() => window.open('https://boosty.to/ivankho/donate', '_blank')}>
+                <p> {t('desc.support')}</p>
+                <BoostyIcon />
+            </div>
         </div>
     );
 };
+
+const BoostyIcon = () => (
+    <img src={boosty} alt="Boosty" width={150} height={40} />
+);
 
 const AdminRoutes = (): JSX.Element => {
     const store = Object.assign(adminStores, adminControllers);
