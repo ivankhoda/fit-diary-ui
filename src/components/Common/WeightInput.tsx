@@ -1,10 +1,11 @@
 /* eslint-disable no-magic-numbers */
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
+import { AdminExerciseProfile } from '../Admin/store/AdminExercisesStore';
 
 interface WeightInputProps {
-    onChange: (weight: string, exercise: ExerciseInterface) => void;
-    exercise: ExerciseInterface;
+    onChange: (weight: string, exercise: ExerciseInterface | AdminExerciseProfile) => void;
+    exercise: ExerciseInterface | AdminExerciseProfile;
     onBlur?: (field: string, value: string | number | null) => void;
 }
 

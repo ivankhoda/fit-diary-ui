@@ -1,12 +1,11 @@
 .exercise-admin-small-table {
-  display: flex;
-flex-direction: row;
+  display: grid;
+  grid-template-columns: 20% 80%;
   gap: 16px;
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  justify-content: space-between;
 
   &._mode {
       background-color: #f4f4f4;
@@ -18,36 +17,40 @@ flex-direction: row;
       gap: 12px;
 
       .exercise-fields {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
+        display: flex;
+        flex-wrap: nowrap; /* Prevent wrapping */
+        align-items: center; /* Align items properly */
+        gap: 10px;
 
-          div {
-              flex: 1;
-              min-width: 150px;
-          }
+        div {
+            flex: 0 1 auto; /* Prevent divs from growing too much */
+            min-width: 150px;
+            display: flex;
+            align-items: center;
+        }
 
-          input {
-              width: 100%;
+        input {
+            width: 100px; /* Set a fixed width or adjust as needed */
+            min-width: 80px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
 
-              border: 1px solid #ddd;
-              border-radius: 4px;
-              font-size: 14px;
-          }
+        button.delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 5px 10px;
 
-          button.delete-btn {
-              background-color: red;
-              color: white;
-              border: none;
+            &:hover {
+                background-color: darkred;
+            }
+        }
+    }
 
-              border-radius: 4px;
-              cursor: pointer;
-
-              &:hover {
-                  background-color: darkred;
-              }
-          }
-      }
 
       .exercise-fields_mode {
           font-size: 14px;
@@ -76,16 +79,22 @@ flex-direction: row;
 
       .exercise-fields {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: row;
+          align-items: center;
 
+         .exercise-fields-column {
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+          }
 
           div {
-              flex: 1;
+              flex-direction: row;
               min-width: 150px;
           }
 
           input {
-              width: 100%;
+              width: 50%;
 
               border: 1px solid #ddd;
               border-radius: 4px;

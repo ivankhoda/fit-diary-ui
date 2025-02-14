@@ -2,10 +2,11 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
 import { convertDurationToMMSS } from '../Admin/utils/convertDurationToMMSS';
+import { AdminExerciseProfile } from '../Admin/store/AdminExercisesStore';
 
 interface TimeInputProps {
-    onChange: (duration: string, exercise: ExerciseInterface) => void;
-    exercise: ExerciseInterface;
+    onChange: (duration: string, exercise: ExerciseInterface | AdminExerciseProfile) => void;
+    exercise: ExerciseInterface | AdminExerciseProfile;
     onBlur?: (field: string, value: string | number | null) => void;
 }
 
@@ -46,7 +47,6 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
                 }
             }
         }
-
         return groups.join(':');
     };
 
@@ -70,7 +70,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
 
     useEffect(() => {
         setInputValue(exercise.duration ? convertDurationToMMSS(exercise.duration) : '');
-    }, [exercise.duration]);
+    }, []);
 
     return (
         <div>

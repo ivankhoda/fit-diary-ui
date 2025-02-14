@@ -68,17 +68,7 @@ const AdminCreateWorkout: React.FC<AdminCreateWorkoutProps> = ({
         if (draftWorkout) {
             setWorkoutName(draftWorkout.name || '');
             setDescription(draftWorkout.description || '');
-            setSelectedExercises(prevExercises => {
-                const updatedExercises = [...prevExercises];
-
-                adminExercisesStore.workoutExercises.forEach(newExercise => {
-                    if (!updatedExercises.some(exercise => exercise.id === newExercise.id)) {
-                        updatedExercises.push(newExercise);
-                    }
-                });
-
-                return updatedExercises.sort((a, b) => a.id - b.id);
-            });
+            setSelectedExercises(draftWorkout.exercises || []);
             setSelectedUsers(draftWorkout.users || []);
         }
     }, [adminWorkoutsStore?.draftWorkout, adminExercisesStore]);
@@ -217,7 +207,7 @@ const AdminCreateWorkout: React.FC<AdminCreateWorkoutProps> = ({
 
                 <div>
                     <label>{i18n.t('workoutData.selectedExercises')}</label>
-                    { adminExercisesStore.workoutExercises.map(exercise => (
+                    { selectedExercises.map(exercise => (
                         <AdminSelectedExercise
                             key={exercise.id}
                             exercise={exercise}

@@ -82,7 +82,6 @@ const UserPermissionsList: React.FC<PermissionsListProps> = observer(({ adminUse
                             <th>{t('resourceType')}</th>
                             <th>{t('canAssign')}</th>
                             <th>{t('canAccess')}</th>
-                            <th>{t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,12 +89,9 @@ const UserPermissionsList: React.FC<PermissionsListProps> = observer(({ adminUse
                             <tr key={permission.id} style={{ cursor: 'pointer' }} onClick={() => handlePermissionClick(permission)}>
                                 <td>{permission.id}</td>
                                 <td>{permission.to_user}</td>
-                                <td>{t(`${permission.instance}`)}</td>
+                                <td>{permission.instance}</td>
                                 <td>{permission.can_assign ? t('yes') : t('no')}</td>
                                 <td>{permission.can_access ? t('yes') : t('no')}</td>
-                                <td>
-                                    {/* Additional actions like edit or delete could go here */}
-                                </td>
                             </tr>
                         ))}
                     </tbody>

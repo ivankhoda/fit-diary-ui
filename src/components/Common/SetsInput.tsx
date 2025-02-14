@@ -3,37 +3,38 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
 import { AdminExerciseProfile } from '../Admin/store/AdminExercisesStore';
 
-interface DistanceInputProps {
-    onChange: (distance: string, exercise: ExerciseInterface | AdminExerciseProfile) => void;
-    exercise: ExerciseInterface| AdminExerciseProfile;
+interface RepetitionsInputProps {
+    onChange: (repetitions: string, exercise: ExerciseInterface | AdminExerciseProfile) => void;
+    exercise: ExerciseInterface | AdminExerciseProfile;
     onBlur?: (field: string, value: string | number | null) => void;
 }
 
-export const TimeInput: React.FC<DistanceInputProps> = ({ onChange, exercise, onBlur}) => {
-    const [inputValue, setInputValue] = useState(exercise.distance || '');
+export const RepetitionsInput: React.FC<RepetitionsInputProps> = ({ onChange, exercise, onBlur }) => {
+    const [inputValue, setInputValue] = useState(exercise.repetitions || '');
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-
-        if (/^\d*\.?\d*$/u.test(value)) {
-            setInputValue(value);
-            onChange(value, exercise);
-        }
-    }, [onChange, exercise]);
+        const inputs = value.replace(/\D/gu, '');
+        setInputValue(inputs);
+        onChange(inputs, exercise);
+    }, [onChange,
+        exercise,
+        onBlur]);
 
     const handleBlur = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
+        const inputs = value.replace(/\D/gu, '');
+        setInputValue(inputs);
+        onBlur('sets',  inputs);
+    }, [onChange,
+        exercise,
+        onBlur]);
 
-        if (/^\d*\.?\d*$/u.test(value)) {
-            setInputValue(value);
-            onBlur('distance', value);
-        }
-    }, [onChange, exercise]);
 
     useEffect(() => {
-        setInputValue(exercise.distance || '');
-    }, [exercise.distance]);
+        setInputValue(exercise.sets?.toString() || '');
+    }, [exercise.sets]);
 
     return (
         <div>
@@ -41,8 +42,9 @@ export const TimeInput: React.FC<DistanceInputProps> = ({ onChange, exercise, on
                 type='text'
                 value={inputValue}
                 onChange={handleInputChange}
-                maxLength={5}
-                placeholder='1000'
+                maxLength={4}
+                placeholder='8'
+                min='0'
                 ref={inputRef}
                 onBlur={onBlur ? handleBlur : null}
             />
@@ -50,4 +52,4 @@ export const TimeInput: React.FC<DistanceInputProps> = ({ onChange, exercise, on
     );
 };
 
-export default TimeInput;
+export default RepetitionsInput;

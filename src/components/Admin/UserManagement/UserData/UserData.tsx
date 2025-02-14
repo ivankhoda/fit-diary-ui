@@ -31,9 +31,6 @@ const UserData: React.FC = () => {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isProfileVisible, setIsProfileVisible] = useState(true);
-    const [isStatusVisible, setIsStatusVisible] = useState(false);
-    const [isActivityVisible, setIsActivityVisible] = useState(false);
-
 
     useEffect(() => {
         if (userId) {
@@ -57,13 +54,7 @@ const UserData: React.FC = () => {
         setIsProfileVisible(prevState => !prevState);
     }, []);
 
-    const handleToggleStatus = useCallback(() => {
-        setIsStatusVisible(prevState => !prevState);
-    }, []);
 
-    const handleToggleActivity = useCallback(() => {
-        setIsActivityVisible(prevState => !prevState);
-    }, []);
 
     const handleWorkoutsClick = useCallback(() => {
         navigate(`/admin/users/${userId}/workouts`);
@@ -105,32 +96,8 @@ const UserData: React.FC = () => {
                     )}
                 </div>
 
-                <div className="user-status">
-                    <h3 onClick={handleToggleStatus}>
-                        Статус {isStatusVisible ? '▼' : '▲'}
-                    </h3>
-                    {isStatusVisible && (
-                        <div className="user-section">
-                            <p><strong>Статус:</strong> {currentUser?.status || 'Not Specified'}</p>
-                            <p><strong>Последний вход:</strong> {currentUser?.lastLogin || 'Not Available'}</p>
-                            <p><strong>Дата создания:</strong> {currentUser?.accountCreated || 'Not Available'}</p>
-                            <p><strong>Дата подтверждения:</strong> {currentUser?.confirmed_at || 'Not Available'}</p>
-                        </div>
-                    )}
-                </div>
 
 
-
-                <div className="user-activity">
-                    <h3 onClick={handleToggleActivity}>
-                        История активности {isActivityVisible ? '▼' : '▲'}
-                    </h3>
-                    {isActivityVisible && (
-                        <div className="user-section">
-                            <p><strong>Активность:</strong> {currentUser?.activityHistory?.join(', ') || 'No Activity Recorded'}</p>
-                        </div>
-                    )}
-                </div>
                 <button onClick={handleWorkoutsClick}>Тренировки пользователя</button>
                 <button onClick={handlePermissonsClick}>Разрешения</button>
             </div>
