@@ -39,7 +39,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleSetsBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
         handleBlur('sets', e.target.value);
-    }, []);
+    }, [exercise]);
 
     const handleDelete = useCallback(() => {
         handleExerciseDelete(id);
@@ -64,7 +64,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
     const handleBlur = useCallback((field: string, value: string | number | null) => {
         const updatedExercise = { ...exercise, [field]: value };
         editWorkoutExercise(updatedExercise);
-    }, []);
+    }, [exercise]);
 
 
     const handleClick = () => {
