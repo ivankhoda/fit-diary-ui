@@ -97,6 +97,7 @@
     "recharts": "^2.7.2",
     "sass": "^1.81.0",
     "save-dev": "^0.0.1-security",
+    "swiper": "^11.2.4",
     "webpack-merge": "^5.8.0"
   },
   "eslintConfig": {

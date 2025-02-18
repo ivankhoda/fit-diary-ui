@@ -14,6 +14,13 @@ import { CurrentExercise } from './CurrentExercise/CurrentExercise';
 import { UserExercisesList } from './UserExercisesList/UserExercisesList';
 import i18next from 'i18next';
 
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
+
 interface Props {
     workout?: WorkoutInterface;
 }
@@ -144,16 +151,26 @@ export const CurrentWorkout: React.FC<Props> =
                     <h2 className='workout-name'>{currentWorkout.name}</h2>
                     {currentWorkout.workout_exercises.length > 0
                         ? ( <div className="exercises-container">
-                            {selectedExercises.length > 0 && selectedExercises.map(exercise => (
-                                <React.Fragment key={exercise.id}>
-                                    <SelectedExercise
-                                        key={exercise.id}
-                                        exercise={exercise}
-                                        mode='view'
-                                        onClick={handleExerciseClickFactory(exercise)}
-                                    />
-                                </React.Fragment>
-                            ))}
+                            <Swiper
+                                modules={[Navigation, Pagination]}
+                                spaceBetween={15}
+                                slidesPerView={1}
+
+                                pagination={{ clickable: true }}
+                                className="exercise-swiper"
+                            >
+                                {selectedExercises.length > 0 &&
+                                        selectedExercises.map(exercise => (
+                                            <SwiperSlide key={exercise.id}>
+                                                <SelectedExercise
+                                                    key={exercise.id}
+                                                    exercise={exercise}
+                                                    mode="view"
+                                                    onClick={handleExerciseClickFactory(exercise)}
+                                                />
+                                            </SwiperSlide>
+                                        ))}
+                            </Swiper>
                         </div>)
                         : (<p>Нет упраженений для тренировки.</p>)}
 

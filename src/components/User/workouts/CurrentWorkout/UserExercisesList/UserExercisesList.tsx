@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExerciseInterface } from '../../../../../store/exercisesStore';
 import { UserExerciseSets } from '../UserExerciseSets/UserExerciseSets';
 import './UserExercisesList.style.scss';
-
 
 interface UserExercisesListProps {
   userExercises: ExerciseInterface[];
@@ -13,9 +12,20 @@ interface UserExercisesListProps {
 export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExercises, deleteSet }) => {
     const { t } = useTranslation();
 
+    const [expandedExerciseIds, setExpandedExerciseIds] = useState<number[]>([]);
+
     const handleDeleteSet = React.useCallback((setId: string, exerciseId: number) => {
         deleteSet(setId, exerciseId);
     }, [deleteSet]);
+
+    const toggleExpand = useCallback((exerciseId: number) => {
+        setExpandedExerciseIds(prev =>
+            prev.includes(exerciseId)
+                ? prev.filter(id => id !== exerciseId)
+                : [...prev, exerciseId]);
+    }, [userExercises]);
+
+    const handleToggleExpand = useCallback((userExercise: ExerciseInterface) => () => toggleExpand(userExercise.id), [toggleExpand]);
 
     return (
         <div className="user-exercises-container">
@@ -23,11 +33,12 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
             {userExercises.map(userExercise => (
                 userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && (
                     <div key={userExercise.id} className="exercise-item">
-                        <p className="exercise-name">
-                            {userExercise.name}
-                        </p>
+                        <div className="exercise-header">
+                            <p className="exercise-name" onClick={handleToggleExpand(userExercise)}>{userExercise.name}</p>
+                            <p className="exercise-sets">{t('workoutData.sets')}: {userExercise.number_of_sets.length}</p>
+                        </div>
 
-                        {userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && (
+                        {expandedExerciseIds.includes(userExercise.id) && (
                             <UserExerciseSets
                                 sets={userExercise.number_of_sets}
                                 measurementType={userExercise.type_of_measurement}

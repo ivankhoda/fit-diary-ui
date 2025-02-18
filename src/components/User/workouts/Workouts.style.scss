@@ -36,6 +36,11 @@
       border-radius: 5px;
       padding: 10px;
       background-color: #fff;
+
+      .exercise-item{
+          align-items: baseline;
+          display: grid;
+      }
     }
   }
 

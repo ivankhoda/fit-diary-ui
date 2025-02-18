@@ -8,13 +8,31 @@
 
   .exercise-item{
   display: flex;
-
-  flex-direction: row;
+  flex-direction: column;
   align-items: baseline;
+  justify-content: space-between;
+  align-content: center;
+
+  :hover{
+    transform: none !important;
+  }
+
+  .exercise-header{
+    width: 100%
+  }
 
 
-    .exercise-name, p {
+    .exercise-name, .exercise-sets, p {
       font-size: 14px;
+      margin: 5px;
+    }
+
+    .user-set-details{
+      width: 100%;
+      margin-top: 15px;
+      div{
+        margin-top: 10px;
+      }
     }
   }
 }
