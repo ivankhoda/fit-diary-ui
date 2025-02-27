@@ -1,6 +1,14 @@
-
- .working-panel {
-  max-height: 90%;
+/* Working Panel */
+.working-panel {
+  background-color: #fff;
+  overflow: auto; /* Enables scrolling if content overflows */
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 16px; /* Optional: Space between children */
   width: 100%;
-  background: #ffffffaa;
 }
+
+
+
+

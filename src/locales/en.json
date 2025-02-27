@@ -1,6 +1,7 @@
 {
   "hello": "Hello, world!",
   "buttonLabel": "Click me!",
+  "statistics":"Statistics",
   "login": "Login",
   "password": "Password",
   "login_first": "Please login first",
@@ -265,7 +266,7 @@
   "password_reset_successful": "Password reset successful",
   "reset_password": "Reset password",
   "exerciseItem": {
-    "viewDetails": "View Details",
+    "viewDetails": "Details",
     "category": "Category",
     "difficulty": "Difficulty",
     "duration": "Duration",

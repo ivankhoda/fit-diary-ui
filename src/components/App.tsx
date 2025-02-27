@@ -15,6 +15,7 @@ import adminControllers from './Admin/controllers/controllers';
 import { useTranslation } from 'react-i18next';
 import boosty from '../images/boosty.png';
 import { t } from 'i18next';
+import Footer from './User/Footer/Footer';
 
 
 export const App = observer((): JSX.Element => {
@@ -108,7 +109,9 @@ const MainAppRoutes = ({ token }: { token: string }) => (
                     <Route key={path} path={path} element={Component} />
                 ))}
             </Routes>
+
         </WorkingPanel>
+        <Footer />
     </>
 );
 

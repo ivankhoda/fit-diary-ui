@@ -8,7 +8,6 @@ import { workoutsStore, userStore } from '../../../../store/global';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
-import SelectedExercise from '../NewWorkout/SelectedExercise';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -55,50 +54,47 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
 
     return (
         <div className="workout-container">
-            <div>
-                <p>{t('workout.name')}: {workout.name}</p>
-                <p>{t('workout.createdAt')}: {workout.created_at?.split(' ')[0] || workout.date}</p>
-                {!state && (
-                    <div className='workout-actions'>
-                        <button className="save-btn" onClick={handleStartClick}>
-                            {t('workout.start')}
-                        </button>
-                        {workout.creator_id === userStore.userProfile?.id && (
-                            <>
-                                <button className="save-btn" onClick={handleClick(workout)}>
-                                    {t('workout.edit')}
-                                </button>
-                                <button className="save-btn" onClick={handleArchiveClick}>
-                                    {t('workout.archive')}
-                                </button>
-                            </>
-                        )}
-                        {workout.exercises && workout.exercises.length> 0 && <button className="toggle-btn" onClick={toggleExpanded}>
-                            {isExpanded ? t('workout.hideExercises') : t('workout.showExercises')}
-                        </button>}
-                    </div>
-                )}
-                {state === 'in_progress' && (
-                    <div className='workout-actions'>
-                        <button className="save-btn" onClick={handleFinishClick}>
-                            {t('workout.finish')}
-                        </button>
-                        <button className="save-btn" onClick={handleResumeClick}>
-                            {t('workout.resume')}
-                        </button>
-                    </div>
-                )}
 
-            </div>
+            <p>{workout.name}  {workout.created_at?.split(' ')[0] || workout.date}</p>
+            {!state && (
+                <div className='workout-actions'>
+                    <button className="save-btn" onClick={handleStartClick}>
+                        {t('workout.start')}
+                    </button>
+                    {workout.creator_id === userStore.userProfile?.id && (
+                        <>
+                            <button className="save-btn" onClick={handleClick(workout)}>
+                                {t('workout.edit')}
+                            </button>
+                            <button className="save-btn" onClick={handleArchiveClick}>
+                                {t('workout.archive')}
+                            </button>
+                        </>
+                    )}
+                    {workout.exercises && workout.exercises.length> 0 && <button className="toggle-btn" onClick={toggleExpanded}>
+                        {isExpanded ? t('workout.hideExercises') : t('workout.showExercises')}
+                    </button>}
+                </div>
+            )}
+            {state === 'in_progress' && (
+                <div className='workout-actions'>
+                    <button className="save-btn" onClick={handleFinishClick}>
+                        {t('workout.finish')}
+                    </button>
+                    <button className="save-btn" onClick={handleResumeClick}>
+                        {t('workout.resume')}
+                    </button>
+                </div>
+            )}
+
+
             {isExpanded && workout.exercises && (
                 <div className="exercises-container">
                     <h4>{t('workout.exercises')}</h4>
                     {workout.exercises.map((exercise: ExerciseInterface) => (
-                        <SelectedExercise
-                            key={exercise.id}
-                            exercise={exercise}
-                            mode='view'
-                        />
+                        <>
+                            <p>{exercise.name}</p>
+                        </>
                     ))}
                 </div>
             )}

@@ -46,13 +46,15 @@
   }
 }
 
+/* Filtered Exercises */
 .filtered-exercises {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 455px; /* Set a fixed or minimum height to stabilize layout */
-  max-height: 455px; /* Optional: Ensure it doesn't grow too large */
-  overflow-y: auto; /* Allow scrolling if needed */
+  flex-grow: 1; /* Take all remaining space */
+  height: 100%;
+  overflow-y: auto; /* Enable vertical scrolling when needed */
+ /* Adjust based on other content height */
 }
 
 .tabs {
@@ -119,4 +121,5 @@
   background-color: #fff;
   min-height: 60px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }

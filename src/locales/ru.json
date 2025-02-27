@@ -1,6 +1,7 @@
 {
   "required": "Обязательно",
   "buttonLabel": "Click me!",
+  "statistics": "Статистика",
   "login": "Логин",
   "password": "Пароль",
   "login_first": "Пожалуйста войдите",
@@ -306,7 +307,7 @@
 }
   },
   "exerciseItem": {
-    "viewDetails": "Посмотреть детали",
+    "viewDetails": "Детали",
     "category": "Категория",
     "difficulty": "Сложность",
     "duration": "Продолжительность",

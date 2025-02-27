@@ -1,10 +1,14 @@
 .exercise-item {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 0;
 
   &:hover {
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
@@ -13,7 +17,7 @@
   .exercise-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
 
     h2 {
       font-size: 18px;
@@ -24,6 +28,10 @@
 
   .exercise-summary,
   .exercise-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
     padding: 10px 0;
     font-size: 14px;
     color: #666;
@@ -45,6 +53,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    max-width: 100px;
 
     svg {
       margin-left: 5px;

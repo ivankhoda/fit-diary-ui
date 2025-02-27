@@ -104,8 +104,14 @@ html, body, #root {
 #root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; // Make root take full viewport height
+
+  height: 100%;
   align-items: center;
+
+  // display: grid;
+  // grid-template-rows: auto auto 1fr; /* Header | Working Panel | Footer */
+
+
 
   @include mixins.apply-to(less-than, mobile.$mobile) {
     align-items: baseline;
@@ -203,6 +209,7 @@ tr {
 .container {
   max-width: $container-max-width;
   margin: 0 10px auto;
+  height: 100vh;
 }
 
 .link-container {
