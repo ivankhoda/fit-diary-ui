@@ -39,26 +39,28 @@ const ProgressTable: React.FC<ProgressTableProps> = ({ progress, type_of_measure
     };
 
     const headers = columns[type_of_measurement] || [];
-    const rows = progress.map((session): { [key: string]: string | number } => {
-        const { date, progress_data } = session;
-        const formattedProgressData = Object.keys(progress_data).reduce((acc, key) => {
-            const value = progress_data[key];
+    const rows = progress
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .map((session): { [key: string]: string | number } => {
+            const { date, progress_data } = session;
+            const formattedProgressData = Object.keys(progress_data).reduce((acc, key) => {
+                const value = progress_data[key];
 
 
-            if (key === 'duration' && typeof value === 'number') {
-                acc[key] = convertDurationToMMSS(value);
-            } else {
-                acc[key] = value;
-            }
+                if (key === 'duration' && typeof value === 'number') {
+                    acc[key] = convertDurationToMMSS(value);
+                } else {
+                    acc[key] = value;
+                }
 
-            return acc;
-        }, {} as { [key: string]: string | number });
+                return acc;
+            }, {} as { [key: string]: string | number });
 
-        return {
-            date: new Date(date).toLocaleDateString(),
-            ...formattedProgressData,
-        };
-    });
+            return {
+                date: new Date(date).toLocaleDateString(),
+                ...formattedProgressData,
+            };
+        });
 
     const totalPages = Math.ceil(rows.length / rowsPerPage);
     const paginatedRows = rows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
