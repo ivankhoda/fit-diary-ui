@@ -56,6 +56,7 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
         <div className="workout-container">
 
             <p>{workout.name}  {workout.created_at?.split(' ')[0] || workout.date}</p>
+            {state === 'completed' && <p>{t('workout.duration')}: {workout.duration}</p>}
             {!state && (
                 <div className='workout-actions'>
                     <button className="save-btn" onClick={handleStartClick}>

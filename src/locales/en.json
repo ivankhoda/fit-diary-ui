@@ -299,7 +299,8 @@
     "showExercises": "Show Exercises",
     "hideExercises": "Hide Exercises",
     "exercises": "Exercises",
-    "setDone": "Set Done"
+    "setDone": "Set Done",
+    "duration": "Duration"
   },
   "progress": "Progress",
   "desc": {

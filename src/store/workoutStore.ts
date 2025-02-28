@@ -11,6 +11,7 @@ export interface WorkoutInterface {
     workout_exercises?: ExerciseInterface[];
     exercises?: ExerciseInterface[];
     user_exercises?: ExerciseInterface[];
+    duration?: string
     users?: UserProfile[];
     creator_id?: number;
     created_at?: string;
