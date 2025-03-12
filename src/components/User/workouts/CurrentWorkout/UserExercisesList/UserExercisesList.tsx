@@ -26,17 +26,20 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
     }, [userExercises]);
 
     const handleToggleExpand = useCallback((userExercise: ExerciseInterface) => () => toggleExpand(userExercise.id), [toggleExpand]);
-
     return (
         <div className="user-exercises-container">
             <h2>{t('workoutData.exercisesDone')}</h2>
             {userExercises.map(userExercise => (
                 userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && (
                     <div key={userExercise.id} className="exercise-item">
-                        <div className="exercise-header">
-                            <p className="exercise-name" onClick={handleToggleExpand(userExercise)}>{userExercise.name}</p>
+                        <div className="exercise-header" onClick={handleToggleExpand(userExercise)}>
+                            <p className="exercise-name">{userExercise.name}</p>
                             <p className="exercise-sets">{t('workoutData.sets')}: {userExercise.number_of_sets.length}</p>
                         </div>
+                        {userExercise.formatted_duration &&
+                        <div className="exercise-header">
+                            <p className="exercise-name">{t('workoutData.exercise_duration')}: {userExercise.formatted_duration}</p>
+                        </div>}
 
                         {expandedExerciseIds.includes(userExercise.id) && (
                             <UserExerciseSets

@@ -167,7 +167,8 @@
     "distance": "Расстояние",
     "kg":"кг",
     "date": "Дата",
-
+    "exercise_duration": "Длительность выполнения",
+    "setDuration": "Длительность сета",
     "fillAllFields": "Заполните все",
     "workoutUpdated": "Обновление тренировки",
     "updateError": "Ошибка",
@@ -361,6 +362,9 @@
     "hideExercises": "Скрыть упражнения",
     "exercises": "Упражнения",
     "setDone": "Сет выполнен",
+    "startSet": "Начать сет",
+    "finishSet": "Закончить сет",
+    "finishExercise": "Закончить упражнение",
     "duration": "Продолжительность"
   },
   "desc": {

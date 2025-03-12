@@ -11,6 +11,7 @@ export interface WorkoutInterface {
     workout_exercises?: ExerciseInterface[];
     exercises?: ExerciseInterface[];
     user_exercises?: ExerciseInterface[];
+    current_set?: SetInterface
     duration?: string
     users?: UserProfile[];
     creator_id?: number;
@@ -174,27 +175,29 @@ export default class WorkoutsStore {
 
     @action
     setCurrentUserWorkoutSets(set: SetInterface): void {
-        if (this.currentUserWorkout) {
-            if (this.currentUserWorkout) {
-                this.currentUserWorkout = {
-                    ...this.currentUserWorkout,
-
-                    user_exercises: this.currentUserWorkout.user_exercises.map(exercise => {
-                        if (exercise.id === set.user_exercise_id) {
-                            return {
-                                ...exercise,
-                                number_of_sets: [...exercise.number_of_sets, set]
-                            };
-                        }
-                        return exercise;
-                    }),
-
-                };
-            } else {
-                console.error('No current user workout is set');
-            }
+        if (!this.currentUserWorkout) {
+            console.error('No current user workout is set');
+            return;
         }
+
+        this.currentUserWorkout = {
+            ...this.currentUserWorkout,
+            user_exercises: this.currentUserWorkout.user_exercises.map(exercise => {
+                if (exercise.id === set.user_exercise_id) {
+                    return {
+                        ...exercise,
+                        number_of_sets: exercise.number_of_sets.some(s => s.id === set.id)
+                            ? exercise.number_of_sets.map(s => s.id === set.id ? { ...s, ...set } : s)
+                            : [...exercise.number_of_sets, set]
+                    };
+                }
+                return exercise;
+            })
+        };
+
+        this.currentUserWorkout.current_set = set;
     }
+
 
     @action
     deleteCurrentUserWorkoutSet(setId: string, userExerciseId: number): void {

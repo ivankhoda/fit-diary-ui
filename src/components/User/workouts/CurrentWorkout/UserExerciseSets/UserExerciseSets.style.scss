@@ -1,0 +1,21 @@
+.user-set-details {
+  display: flex;
+  flex-direction: column;
+
+
+  p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+  }
+}
+.user-set-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}

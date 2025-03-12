@@ -159,10 +159,9 @@
     "duration": "Duration",
     "distance": "Distance",
     "kg": "kg",
-    "date": "Date"
-
-
-
+    "date": "Date",
+    "exercise_duration": "Completion time",
+    "setDuration": "Set Duration"
   },
   "permissionManagement": "Permission Management",
   "searchUser": "Search by user",
@@ -300,6 +299,9 @@
     "hideExercises": "Hide Exercises",
     "exercises": "Exercises",
     "setDone": "Set Done",
+    "startSet": "Start Set",
+    "finishSet": "Finish Set",
+    "finishExercise": "Finish Exercise",
     "duration": "Duration"
   },
   "progress": "Progress",

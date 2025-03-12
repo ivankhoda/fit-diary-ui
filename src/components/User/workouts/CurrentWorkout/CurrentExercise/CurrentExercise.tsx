@@ -15,18 +15,22 @@ export interface CurrentExerciseProps {
     setDone: () => void;
     handleDurationChange: (duration: string, exercise?: ExerciseInterface, ) => void;
     handleDistanceChange: (distance: string, exercise: ExerciseInterface) => void;
-
+    finishExerciseClick?: (exercise?: ExerciseInterface) => void;
 }
 
 export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
     handleRepetitionsChange,
-    handleWeightChange, handleDistanceChange, setDone, handleDurationChange}): React.JSX.Element => {
-    const { type_of_measurement } = exercise;
+    handleWeightChange, handleDistanceChange, setDone, handleDurationChange, finishExerciseClick}): React.JSX.Element => {
+    const { type_of_measurement} = exercise;
     const { t, i18n } = useTranslation();
 
     const handleSetDone = useCallback(() => {
         setDone();
     }, [setDone]);
+
+    const handleFinishExerciseClick = useCallback(() => {
+        finishExerciseClick(exercise);
+    }, [finishExerciseClick, exercise]);
 
     return (
         <div className='current-exercise'>
@@ -103,6 +107,7 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
                 )}
 
                 <button onClick={handleSetDone}>{t('workout.setDone')}</button>
+                {<button onClick={handleFinishExerciseClick}>{t('workout.finishExercise')}</button>}
             </div>
         </div>
     );

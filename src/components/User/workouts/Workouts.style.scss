@@ -101,9 +101,7 @@
   .sets-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    overflow-y: auto;
-    max-height: 300px;
+    width: 100%;
 
   }
 }

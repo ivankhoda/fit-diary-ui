@@ -17,6 +17,8 @@ export interface ExerciseInterface {
     type_of_measurement?: string;
     distance?: string;
     duration?: number;
+    formatted_duration?: string;
+    started_at?: string;
   }
 
 export interface SetInterface {
@@ -27,6 +29,7 @@ export interface SetInterface {
     distance?: string;
     repetitions: string;
     user_exercise_id: number;
+    formatted_duration?: string;
   }
 
 

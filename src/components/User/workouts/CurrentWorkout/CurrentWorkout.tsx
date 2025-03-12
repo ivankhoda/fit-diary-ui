@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable max-statements */
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
@@ -145,6 +146,22 @@ export const CurrentWorkout: React.FC<Props> =
 
         const handleExerciseClickFactory = (exercise: ExerciseInterface) => () => {handleExerciseClick(exercise);};
 
+        interface SwiperInstance {
+            previousIndex: number;
+        }
+
+        const handleSlideChangeRef = useCallback((swiper: SwiperInstance) => {
+            const prevExercise = selectedExercises[swiper.previousIndex];
+
+            if(prevExercise.id === selectedExercise?.id) {
+                workoutsController.finishExercise(prevExercise.exercise_id, currentWorkout.id, prevExercise.id);
+            }
+        }, [selectedExercises, selectedExercise]);
+
+        const handleFinishExercise = useCallback(() => {
+            workoutsController.finishExercise(selectedExercise.exercise_id, currentWorkout.id, selectedExercise.id);
+        }, [selectedExercise]);
+
         return currentWorkout
             ? (
                 <div className='workout-container'>
@@ -155,9 +172,9 @@ export const CurrentWorkout: React.FC<Props> =
                                 modules={[Navigation, Pagination]}
                                 spaceBetween={15}
                                 slidesPerView={1}
-
                                 pagination={{ clickable: true }}
                                 className="exercise-swiper"
+                                onSlideChange={handleSlideChangeRef}
                             >
                                 {selectedExercises.length > 0 &&
                                         selectedExercises.map(exercise => (
@@ -181,6 +198,7 @@ export const CurrentWorkout: React.FC<Props> =
                         handleRepetitionsChange={handleReps}
                         handleDurationChange={handleDuration}
                         handleDistanceChange={handleDistance}
+                        finishExerciseClick={handleFinishExercise}
                     />
                     }
 

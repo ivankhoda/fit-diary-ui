@@ -253,6 +253,19 @@ export default class WorkoutController extends BaseController {
               }
           });
   }
+
+  @action
+  finishExercise(exercise_id: number, workout_id: number, id: number): void {
+      new Post({params: {user_workout: {exercise_id, workout_id, id }},
+          url: `${getApiBaseUrl()}/user_workouts/finish_exercise`}).execute()
+          .then(r => r.json())
+          .then(res => {
+              if(res.ok){
+                  this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
+                  this.exerciseStore.setCurrentExercise(res.user_exercise);
+              }
+          });
+  }
   // eslint-disable-next-line max-params
   setDone(exercise: ExerciseInterface, p: {id: number, weight?: string, repetitions?: string, duration?: string, distance?: string}): void {
       const {type_of_measurement} = exercise;
@@ -296,6 +309,94 @@ export default class WorkoutController extends BaseController {
               }
           });
   }
+
+  startSet(exercise: ExerciseInterface, p: {id: number, weight?: string, repetitions?: string, duration?: string, distance?: string}): void {
+      const { type_of_measurement } = exercise;
+      const params: { user_workout: { exercise_id: number; repetitions?:
+        string; weight?: string; duration?: string; distance?: string; } } = {
+            user_workout: {
+                exercise_id: p.id,
+                repetitions: p.repetitions,
+            }
+        };
+
+      if (type_of_measurement === 'weight_and_reps') {
+          params.user_workout.weight = p.weight;
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'reps') {
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'duration') {
+          params.user_workout.duration = p.duration;
+      } else if (type_of_measurement === 'duration_and_reps') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'distance') {
+          params.user_workout.distance = p.distance;
+      } else if (type_of_measurement === 'duration_and_distance') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.distance = p.distance;
+      } else if (type_of_measurement === 'cardio') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.distance = p.distance;
+      }
+
+      new Post({
+          params,
+          url: `${getApiBaseUrl()}/user_workouts/start_set`
+      }).execute()
+          .then(r => r.json())
+          .then(res => {
+              if (res.status) {
+                  this.workoutsStore.setCurrentUserWorkoutSets(res.set);
+              }
+          });
+  }
+
+  finishSet(exercise: ExerciseInterface, p: {id: number, weight?: string, repetitions?: string, duration?: string, distance?: string},
+      set_id: string): void {
+      const { type_of_measurement } = exercise;
+      const params: { user_workout: { exercise_id: number; repetitions?: string;
+        weight?: string; duration?: string; distance?: string; set_id?: string; } } = {
+            user_workout: {
+                exercise_id: p.id,
+                repetitions: p.repetitions,
+                set_id,
+            }
+        };
+
+      if (type_of_measurement === 'weight_and_reps') {
+          params.user_workout.weight = p.weight;
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'reps') {
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'duration') {
+          params.user_workout.duration = p.duration;
+      } else if (type_of_measurement === 'duration_and_reps') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.repetitions = p.repetitions;
+      } else if (type_of_measurement === 'distance') {
+          params.user_workout.distance = p.distance;
+      } else if (type_of_measurement === 'duration_and_distance') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.distance = p.distance;
+      } else if (type_of_measurement === 'cardio') {
+          params.user_workout.duration = p.duration;
+          params.user_workout.distance = p.distance;
+      }
+
+      new Post({
+          params,
+          url: `${getApiBaseUrl()}/user_workouts/finish_set`
+      }).execute()
+          .then(r => r.json())
+          .then(res => {
+              if (res.status) {
+                  this.workoutsStore.setCurrentUserWorkoutSets(res.set);
+              }
+          });
+  }
+
+
   @action
   deleteSet(setId: string, userExerciseId: number): void {
       new Post({params: {user_workout: {user_exercise_id: userExerciseId, set_id: setId  }},
