@@ -12,14 +12,12 @@ import i18n from 'i18next';
 import { AdminExerciseProfile } from '../../store/AdminExercisesStore';
 import { categoryMap, difficultyMap, measurementKeys, muscleGroups } from '../maps';
 
-
 const ExerciseData: React.FC = () => {
     const { exerciseId } = useParams<{ exerciseId: string }>();
     const [currentExercise, setCurrentExercise] = useState<AdminExerciseProfile | null>(null);
     const [isDetailsVisible, setIsDetailsVisible] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<AdminExerciseProfile | null>(null);
-
 
     useEffect(() => {
         if (exerciseId) {
@@ -64,8 +62,6 @@ const ExerciseData: React.FC = () => {
             setFormData(prev => ({ ...prev, muscle_groups: updatedGroups }));
         }
     }, [formData]);
-
-
 
     const handleUpdateExercise = useCallback(() => {
         if (formData) {

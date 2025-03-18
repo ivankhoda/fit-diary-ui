@@ -2,8 +2,6 @@ import { Meta, StoryObj } from '@storybook/react';
 import { AdminExerciseProfile } from '../components/Admin/store/AdminExercisesStore';
 import AdminSelectedExercise from '../components/Admin/WorkoutsManagement/CreateWorkout/AdminSelectedExercise/AdminSelectedExercise';
 
-
-
 const mockExercise: AdminExerciseProfile = {
     distance: '0',
     duration: null,
@@ -24,7 +22,6 @@ const mockDurationExercise: AdminExerciseProfile = {
     type_of_measurement: 'duration',
 };
 
-
 const handleExerciseDetailChange = (id: number, field: string, value: string): void => {
     console.log(`Exercise ${id} - ${field} changed to ${value}`);
 };
@@ -36,7 +33,6 @@ const handleExerciseDelete = (exerciseId: number): void => {
 const editWorkoutExercise = (editedExercise: AdminExerciseProfile): void => {
     console.log('Exercise edited:', editedExercise);
 };
-
 
 const meta: Meta<typeof AdminSelectedExercise> = {
     args: {
@@ -51,7 +47,6 @@ const meta: Meta<typeof AdminSelectedExercise> = {
 };
 
 export default meta;
-
 
 type Story = StoryObj<typeof AdminSelectedExercise>;
 

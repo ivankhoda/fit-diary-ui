@@ -8,7 +8,6 @@ import { t } from 'i18next';
 import ExerciseList from './ExerciseList/ExerciseList';
 import { PersonalBests } from './PersonalBests/PersonalBests';
 
-
 export interface ConsistencyMetrics {
     days_exercised_this_week: number;
     workout_streak: number;

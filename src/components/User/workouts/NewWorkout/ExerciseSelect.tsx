@@ -30,7 +30,6 @@ const ExerciseSelect: React.FC<ExerciseSelectInterface> = inject(
                     setIsExerciseSelected(false);
                 }
 
-
                 if (inputName === '') {
                     exercisesStore.setFilteredExercises([]);
                 } else {

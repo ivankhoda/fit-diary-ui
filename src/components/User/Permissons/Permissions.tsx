@@ -27,10 +27,8 @@ const Permissions: React.FC<PermissionsInterface> = ({
     }, [userController]);
 
     const handleGoToCreatePermission = useCallback(() => {
-        navigate('/me/permissions/new');
+        navigate('/permissions/new');
     }, [navigate]);
-
-
 
     const handleDeletePermission = useCallback((permission: PermissionProfile) => (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();

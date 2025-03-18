@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 
-
 export interface BotCommandInterface {
     command: string;
 }

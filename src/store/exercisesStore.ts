@@ -1,5 +1,4 @@
 
-
 import { action, makeObservable, observable } from 'mobx';
 import { Exercise } from '../components/User/Exercises/Exercises';
 
@@ -31,7 +30,6 @@ export interface SetInterface {
     user_exercise_id: number;
     formatted_duration?: string;
   }
-
 
 export default class ExercisesStore {
     constructor() {
@@ -88,8 +86,6 @@ export default class ExercisesStore {
         this.generalExercise = exercise;
     }
 
-
-
     @action
     setExercises(exercises: ExerciseInterface[]): void {
         this.exercises = exercises;
@@ -134,7 +130,6 @@ export default class ExercisesStore {
     updateWorkoutExercise(exercise: ExerciseInterface): void {
         this.workoutExercises = this.workoutExercises.map(e => e.id === exercise.id ? exercise : e);
     }
-
 
     @action
     setFilteredExercises(exercises: ExerciseInterface[]): void {

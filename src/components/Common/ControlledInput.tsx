@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { convertDurationToMMSS } from '../Admin/utils/convertDurationToMMSS';
 import { parseDurationInput } from '../Admin/utils/paraseDurationInput';
 
-
 export const NumericInput: React.FC<{
   label: string;
   id: string;

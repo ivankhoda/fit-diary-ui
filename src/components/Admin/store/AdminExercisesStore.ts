@@ -72,7 +72,6 @@ export default class AdminExercisesStore {
         }
     }
 
-
     @action
     removeWorkoutExercise(exerciseId: number): void {
         this.workoutExercises = this.workoutExercises.filter(

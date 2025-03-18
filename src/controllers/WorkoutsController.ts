@@ -14,8 +14,6 @@ import { UserProfile } from '../store/userStore';
 import getApiBaseUrl from '../utils/apiUrl';
 import i18n from 'i18next';
 
-
-
 export interface AddExerciseParamsInterface {
     id?: number,
     repetitions: number,
@@ -24,9 +22,6 @@ export interface AddExerciseParamsInterface {
     workout_id: number,
     exercise_id: number
 }
-
-
-
 
 export default class WorkoutController extends BaseController {
     // eslint-disable-next-line max-params
@@ -76,7 +71,6 @@ export default class WorkoutController extends BaseController {
               }});
   }
 
-
   @action
   initWorkout(name?: string): void {
       new Post({params: {workout: {name}}, url: `${getApiBaseUrl()}/workouts/initialize_draft`}).execute()
@@ -102,7 +96,6 @@ export default class WorkoutController extends BaseController {
               this.workoutsStore.setCurrentUserWorkout(null);
           });
   }
-
 
   @action
   addExercise(params: AddExerciseParamsInterface): void {
@@ -137,7 +130,7 @@ export default class WorkoutController extends BaseController {
           if (result.ok && result.workout.id) {
               this.workoutsStore.addWorkout(result.workout);
               alert(i18n.t('workoutData.workoutCreated'));
-              navigate(`/me/workouts/${result.workout.id}/edit`);
+              navigate(`/workouts/${result.workout.id}/edit`);
           } else {
               console.error('No workout ID returned in response:', result);
           }
@@ -145,13 +138,6 @@ export default class WorkoutController extends BaseController {
           console.error('Failed to create workout:', error);
       }
   }
-
-
-
-
-
-
-
 
   @action
   async saveWorkout(newWorkout: {
@@ -175,19 +161,16 @@ export default class WorkoutController extends BaseController {
               url: `${getApiBaseUrl()}/workouts/save`,
           }).execute();
 
-
           const result = await response.json();
-
 
           this.workoutsStore.addWorkout(result);
           alert(i18n.t('workoutData.workoutCreated'));
 
-          navigate(`/me/workouts/${result.id}/edit`);
+          navigate(`/workouts/${result.id}/edit`);
       } catch (error) {
           console.error('Failed to save workout:', error);
       }
   }
-
 
   @action
   async updateWorkout(id: string, newWorkout: WorkoutInterface): Promise<void> {
@@ -207,7 +190,6 @@ export default class WorkoutController extends BaseController {
               url: `${getApiBaseUrl()}/workouts/${id}`,
           }).execute();
 
-
           const result = await response.json();
           this.workoutsStore.addWorkout(result.workout);
           this.workoutsStore.setDraftWorkout(null);
@@ -215,7 +197,6 @@ export default class WorkoutController extends BaseController {
           console.error('Failed to update workout:', error);
       }
   }
-
 
   @action
   archiveWorkout(id: number): void {
@@ -234,8 +215,7 @@ export default class WorkoutController extends BaseController {
               if(res.status ==='ok') {
                   this.workoutsStore.setCurrentUserWorkout(res.user_workout);
 
-
-                  window.location.pathname = `/me/workout/${res.user_workout.id}`;
+                  window.location.pathname = `/workout/${res.user_workout.id}`;
               }
           });
   }
@@ -395,7 +375,6 @@ export default class WorkoutController extends BaseController {
               }
           });
   }
-
 
   @action
   deleteSet(setId: string, userExerciseId: number): void {

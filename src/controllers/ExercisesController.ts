@@ -10,7 +10,6 @@ import { BaseController } from './BaseController';
 import getApiBaseUrl from '../utils/apiUrl';
 import { ExerciseFormData } from '../components/User/Exercises/ExerciseModal/ExerciseModal';
 
-
 export default class ExercisesController extends BaseController {
     // eslint-disable-next-line max-params
     exerciseStore: ExercisesStore;
@@ -84,10 +83,6 @@ export default class ExercisesController extends BaseController {
             });
     }
 
-
-
-
-
     @action
     addWorkoutExercise(workout_id: string, exercise_id: number): Promise<ExerciseInterface | null> {
         return new Promise((resolve, reject) => {
@@ -116,7 +111,6 @@ export default class ExercisesController extends BaseController {
             }
         });
     }
-
 
     @action
     deleteWorkoutExercise(id: number): void {

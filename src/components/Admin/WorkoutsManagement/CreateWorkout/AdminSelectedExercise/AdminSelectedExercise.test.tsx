@@ -10,7 +10,6 @@ describe('AdminSelectedExercise Component', () => {
     const mockHandleExerciseDelete = jest.fn();
     const mockEditWorkoutExercise = jest.fn();
 
-
     const defaultProps = {
         editWorkoutExercise: mockEditWorkoutExercise,
         exercise: {

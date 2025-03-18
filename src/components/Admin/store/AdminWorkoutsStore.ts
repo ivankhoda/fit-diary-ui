@@ -16,7 +16,6 @@ export interface AdminWorkoutProfile {
     creator?: string
 }
 
-
 const NOT_FOUND = -1;
 
 export default class AdminWorkoutsStore {
@@ -52,7 +51,6 @@ export default class AdminWorkoutsStore {
         this.draftWorkout = workout;
     }
 
-
     @action
     addWorkout(workout: AdminWorkoutProfile): void {
         this.workouts.push(workout);
@@ -67,13 +65,10 @@ export default class AdminWorkoutsStore {
         }
     }
 
-
     @action
     deleteWorkout(id: number): void {
         this.workouts = this.workouts.filter(workout => workout.id !== id);
     }
-
-
 
       @action
     updateOrAddDraftWorkoutExercise(newExercise: AdminExerciseProfile): void {

@@ -80,8 +80,6 @@ const WorkoutList: React.FC<WorkoutListProps> = observer(({ adminWorkoutsStore, 
         navigate(`/admin/workouts/${workout.id}`);
     }, [navigate]);
 
-
-
     return (
         <AdminPanel>
             <div className="workout-management">

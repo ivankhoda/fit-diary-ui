@@ -4,7 +4,6 @@ import RepetitionsInput from '../components/Common/RepetitionsInput';
 import { StoryObj } from '@storybook/react';
 import { ExerciseInterface } from '../store/exercisesStore';
 
-
 export default {
     component: RepetitionsInput,
     title: 'Components/RepetitionsInput',

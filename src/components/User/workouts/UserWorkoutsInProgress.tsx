@@ -28,7 +28,6 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
         workoutsController.getUserWorkouts();
     }, [workoutsController]);
 
-
     const handlePageClick = useCallback((page: number) => {
         setCurrentPage(page);
     }, []);

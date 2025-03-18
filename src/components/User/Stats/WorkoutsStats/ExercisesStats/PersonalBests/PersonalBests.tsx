@@ -54,7 +54,6 @@ export const PersonalBests: React.FC<PersonalBestsProps> = ({ personalBests, typ
     const formatLocalDate = (utcDate: string) => {
         const date = new Date(utcDate);
 
-
         return date.toLocaleString('en-GB', { hour12: false });
     };
 

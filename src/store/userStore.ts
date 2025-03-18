@@ -20,6 +20,8 @@ export interface UserProfile {
     id: number;
     username: string;
     email: string;
+    has_workouts: boolean;
+    has_exercises: boolean;
 }
 
 export interface PermissionProfile{
@@ -165,7 +167,6 @@ export default class UserStore {
     updatePermissions(permission: PermissionProfile): void {
         const permissionIndex = this.permissions.findIndex(p => p.id === permission.id);
 
-
         if (permissionIndex === -1) {
             this.addNewPermission(permission);
         } else {
@@ -177,7 +178,6 @@ export default class UserStore {
 
     deletePermission(permissionId: string): void {
         const permissionIndex = this.permissions.findIndex(p => String(p.id) === String(permissionId));
-
 
         runInAction(() => {
             this.permissions.splice(permissionIndex, 1);

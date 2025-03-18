@@ -7,7 +7,6 @@ import i18n from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { App } from './components/App';
 
-
 import { Provider } from 'mobx-react';
 import controllers from './controllers/controllers';
 import en from './locales/en.json';

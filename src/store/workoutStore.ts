@@ -45,18 +45,15 @@ export default class WorkoutsStore {
     @observable
     usersWithPermissions: UserProfile[] = null;
 
-
     @action
     setUsersWithPermissions(users: UserProfile[]): void {
         this.usersWithPermissions = users;
     }
 
-
     @action
     setUserWorkoutsDone(workouts: WorkoutInterface[]): void {
         this.userWorkoutsDone = workouts;
     }
-
 
     @action
     setUserWorkoutsInProgress(workouts: WorkoutInterface[]): void {
@@ -108,8 +105,6 @@ export default class WorkoutsStore {
 
         this.archivedWorkouts[index] = updatedWorkout;
     }
-
-
 
     @action
     setWorkouts(workouts: WorkoutInterface[]): void {
@@ -197,7 +192,6 @@ export default class WorkoutsStore {
 
         this.currentUserWorkout.current_set = set;
     }
-
 
     @action
     deleteCurrentUserWorkoutSet(setId: string, userExerciseId: number): void {

@@ -59,7 +59,7 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
                     navigate('/admin');
                     window.location.reload()
                 } else {
-                    navigate('/me');
+                    navigate('/');
                     window.location.reload()
                 }
             }

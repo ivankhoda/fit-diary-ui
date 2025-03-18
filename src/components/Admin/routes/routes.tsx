@@ -13,7 +13,6 @@ import UserWorkoutsList from '../WorkoutsManagement/UserWorkouts/UserWorkoutsLis
 import UserPermissionsList from '../UserManagement/UserPermissonsList/UserPermissionsList';
 import AdminCreateWorkout from '../WorkoutsManagement/CreateWorkout/AdminCreateWorkout';
 
-
 export const adminRoutes = [
     {Component:  <AdminPanel/>, name: 'panel', path: '/'},
     {Component:  <Dashboard/>, name: 'dashboard', path: '/dashboard'},

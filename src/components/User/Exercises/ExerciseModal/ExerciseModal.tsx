@@ -69,7 +69,6 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
         }
     }, [exercise]);
 
-
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 

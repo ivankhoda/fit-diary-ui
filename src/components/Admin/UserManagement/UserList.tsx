@@ -54,7 +54,6 @@ const UserList: React.FC<UserListProps> = observer(({ adminUsersStore, adminUser
                     />
                 </div>
 
-
                 <table className="user-table">
                     <thead>
                         <tr>

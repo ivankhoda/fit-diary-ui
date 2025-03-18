@@ -9,7 +9,6 @@ export const PasswordRecovery: React.FC = () => {
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-
     const handleChangeEmail = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         handleEmailChange(event);
     }, []);

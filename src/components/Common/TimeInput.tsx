@@ -31,7 +31,6 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
         return minutes * 60 + seconds;
     }, []);
 
-
     const formatTimeInput = (digitsOnly: string) => {
         const groups = [];
 

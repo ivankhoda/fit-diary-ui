@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import { t } from 'i18next';
 
 const links = [
-    { icon: faDumbbell, key: 'exercises', text: 'workoutData.exercises', to: '/me/exercises' },
-    { icon: faStopwatch20, key: 'workouts', text: 'workouts.title', to: '/me/workouts' },
-    { icon: faRankingStar, key: 'statistics', text: 'statistics', to: '/me/exercises-stats' }
+    { icon: faDumbbell, key: 'exercises', text: 'workoutData.exercises', to: '/exercises' },
+    { icon: faStopwatch20, key: 'workouts', text: 'workouts.title', to: '/workouts' },
+    { icon: faRankingStar, key: 'statistics', text: 'statistics', to: '/exercises-stats' }
 ];
 
 const Footer = ():JSX.Element => (

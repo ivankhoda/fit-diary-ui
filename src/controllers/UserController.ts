@@ -25,7 +25,6 @@ export default class UserController extends BaseController {
             });
     }
 
-
     @action
     updateUser(userData: { username?: string; email?: string }): void {
         new Patch({ params: { user: userData }, url: `${getApiBaseUrl()}/users/${this.userStore.userProfile.id}` }).execute()
@@ -34,7 +33,6 @@ export default class UserController extends BaseController {
                 this.userStore.setUserProfile(res);
             });
     }
-
 
     @action
     getUserWorkoutStats(): void {
@@ -75,7 +73,6 @@ export default class UserController extends BaseController {
                 this.userStore.deleteMeasurement(res.id);
             });
     }
-
 
     @action
     getWeightMeasurements(): void {
@@ -120,7 +117,7 @@ export default class UserController extends BaseController {
             .then(r => r.json())
             .then(res => {
                 this.userStore.updatePermissions(res);
-                window.location.href = '/me/permissions';
+                window.location.href = '/permissions';
             });
     }
 

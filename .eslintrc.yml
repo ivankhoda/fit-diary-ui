@@ -3,14 +3,15 @@ env:
   node: true
   es6: true
 extends:
-  - 'eslint:all'
-  - 'plugin:react/recommended'
+  - "eslint:all"
+  - "plugin:react/recommended"
+  - "plugin:@typescript-eslint/recommended"
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
   subject: true
   context: true
-parser: '@typescript-eslint/parser'
+parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaFeatures:
     jsx: true
@@ -19,12 +20,12 @@ parserOptions:
   sourceType: module
 plugins:
   - react
-  - '@typescript-eslint'
+  - "@typescript-eslint"
 rules: &rules
   indent:
     - error
     - 4
-    - { ignoredNodes: ['TemplateLiteral'] }
+    - { ignoredNodes: ["TemplateLiteral"] }
   object-property-newline:
     - error
     - allowAllPropertiesOnSameLine: true
@@ -46,11 +47,11 @@ rules: &rules
   quotes:
     - error
     - single
-  'react/prop-types': 0
+  "react/prop-types": 0
   semi:
     - error
     - always
-  'template-curly-spacing': 'off'
+  "template-curly-spacing": "off"
   #new
   padded-blocks:
     - error
@@ -80,12 +81,15 @@ rules: &rules
   no-magic-numbers:
     - error
     - ignore:
-      - 0
-      - 1
-      - 100
+        - 0
+        - 1
+        - 100
   array-element-newline:
     - error
     - minItems: 3
+  no-multiple-empty-lines:
+    - error
+    - max: 1
   no-ternary: off
   one-var: off
   no-unused-expressions:
@@ -110,37 +114,37 @@ rules: &rules
     - max: 200
   max-lines:
     - error
-    - max : 500
+    - max: 500
   class-methods-use-this: off
-  'react/display-name': off
-  'react/jsx-no-bind': warn
+  "react/display-name": off
+  "react/jsx-no-bind": warn
   no-shadow: off
-  '@typescript-eslint/no-shadow': warn
-  '@typescript-eslint/ban-ts-comment': off
+  "@typescript-eslint/no-shadow": warn
+  "@typescript-eslint/ban-ts-comment": off
 settings:
   react:
     version: detect
 overrides:
   - files:
-      - '*.ts'
-      - '*.tsx'
+      - "*.ts"
+      - "*.tsx"
     extends:
-      - 'eslint:all'
-      - 'plugin:react/recommended'
-      - 'plugin:@typescript-eslint/recommended'
+      - "eslint:all"
+      - "plugin:react/recommended"
+      - "plugin:@typescript-eslint/recommended"
     rules:
       <<: *rules
-      indent :
+      indent:
         - "error"
         - 4
-        - ignoredNodes :
+        - ignoredNodes:
             - "PropertyDefinition"
-      semi: 'off'
-      '@typescript-eslint/semi': 'error'
-      '@typescript-eslint/no-unused-vars': 'error'
-      '@typescript-eslint/explicit-module-boundary-types': 'error'
-      '@typescript-eslint/no-explicit-any': 'error'
+      semi: "off"
+      "@typescript-eslint/semi": "error"
+      "@typescript-eslint/no-unused-vars": "error"
+      "@typescript-eslint/explicit-module-boundary-types": "error"
+      "@typescript-eslint/no-explicit-any": "error"
   - files:
-      - '**/*.spec.js'
+      - "**/*.spec.js"
     env:
       jest: true

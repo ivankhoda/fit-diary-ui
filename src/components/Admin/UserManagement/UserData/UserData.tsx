@@ -49,12 +49,9 @@ const UserData: React.FC = () => {
         }
     }, [adminUsersStore?.userProfile]);
 
-
     const handleToggleProfile = useCallback(() => {
         setIsProfileVisible(prevState => !prevState);
     }, []);
-
-
 
     const handleWorkoutsClick = useCallback(() => {
         navigate(`/admin/users/${userId}/workouts`);
@@ -85,7 +82,6 @@ const UserData: React.FC = () => {
                         <div className="user-section">
                             <p><strong>ID:</strong> {currentUser?.id || 'x'}</p>
 
-
                             <p><strong>Email:</strong> {currentUser?.email || 'x'}</p>
 
                             <p><strong>Роль:</strong> {currentUser?.role || 'x'}</p>
@@ -95,8 +91,6 @@ const UserData: React.FC = () => {
                         </div>
                     )}
                 </div>
-
-
 
                 <button onClick={handleWorkoutsClick}>Тренировки пользователя</button>
                 <button onClick={handlePermissonsClick}>Разрешения</button>

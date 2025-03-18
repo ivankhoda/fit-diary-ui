@@ -31,7 +31,6 @@ export const RepetitionsInput: React.FC<RepetitionsInputProps> = ({ onChange, ex
         exercise,
         onBlur]);
 
-
     useEffect(() => {
         setInputValue(exercise.sets?.toString() || '');
     }, [exercise.sets]);

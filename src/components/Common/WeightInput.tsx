@@ -39,7 +39,6 @@ export const WeightInput: React.FC<WeightInputProps> = ({ onChange, exercise, on
         setInputValue(exercise.weight ? exercise.weight : '');
     }, [exercise.weight]);
 
-
     return (
         <div>
             <input

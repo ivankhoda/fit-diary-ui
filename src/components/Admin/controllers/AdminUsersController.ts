@@ -5,8 +5,6 @@ import { BaseController } from '../../../controllers/BaseController';
 import Get from '../../../utils/GetRequest';
 import getApiBaseUrl from '../../../utils/apiUrl';
 
-
-
 export default class AdminUsersController extends BaseController {
     adminUsersStore: AdminUsersStore;
 
@@ -42,7 +40,6 @@ export default class AdminUsersController extends BaseController {
     confirm(id:number): void {
         new Get({ url: `${getApiBaseUrl()}/admin/users/${id}/confirm` }).execute();
     }
-
 
     @action
     getWorkoutsByUser(id: string): void {

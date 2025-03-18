@@ -30,7 +30,6 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 }) => {
     const { id, name, type_of_measurement, sets, repetitions, weight, duration, distance } = exercise;
 
-
     const handleSetsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const {value} = e.target;
         const parsedValue = String(parseInt(value, 10));
@@ -65,7 +64,6 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
         const updatedExercise = { ...exercise, [field]: value };
         editWorkoutExercise(updatedExercise);
     }, [exercise]);
-
 
     const handleClick = () => {
         if (onClick) {

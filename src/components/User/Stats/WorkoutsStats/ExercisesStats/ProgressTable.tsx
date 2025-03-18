@@ -46,7 +46,6 @@ const ProgressTable: React.FC<ProgressTableProps> = ({ progress, type_of_measure
             const formattedProgressData = Object.keys(progress_data).reduce((acc, key) => {
                 const value = progress_data[key];
 
-
                 if (key === 'duration' && typeof value === 'number') {
                     acc[key] = convertDurationToMMSS(value);
                 } else {

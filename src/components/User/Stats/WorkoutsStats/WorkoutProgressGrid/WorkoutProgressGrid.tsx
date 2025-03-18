@@ -49,7 +49,6 @@ const WorkoutProgressGrid: React.FC<UserWorkoutsStatsProps> = observer(({ userSt
         return daysMap;
     }, [workouts]);
 
-
     const getDayIntensity = (count: number): string => {
         if (count === 0) {
             return 'none';
@@ -61,7 +60,6 @@ const WorkoutProgressGrid: React.FC<UserWorkoutsStatsProps> = observer(({ userSt
         return 'high';
     };
 
-
     const today = new Date();
     const days = [];
 
@@ -70,7 +68,6 @@ const WorkoutProgressGrid: React.FC<UserWorkoutsStatsProps> = observer(({ userSt
         date.setDate(today.getDate() - i);
         days.push(date);
     }
-
 
     const handleDayClick = useCallback((dateString: string) => {
         const workout = workoutDays[dateString];
@@ -85,7 +82,6 @@ const WorkoutProgressGrid: React.FC<UserWorkoutsStatsProps> = observer(({ userSt
     const handleCloseModal = useCallback(() => {
         setSelectedWorkout(null);
     }, []);
-
 
     useEffect(() => {
         const obs = new IntersectionObserver(entries => {
@@ -106,7 +102,6 @@ const WorkoutProgressGrid: React.FC<UserWorkoutsStatsProps> = observer(({ userSt
             }
         };
     }, [loadMoreRef, days.length]);
-
 
     const monthLabels: { month: string; index: number }[] = [];
     let currentMonth = '';

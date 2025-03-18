@@ -16,7 +16,6 @@ import TimeInput from '../../../../Common/TimeInput';
 import DistanceInput from '../../../../Common/DistanceInput';
 import SetsInput from '../../../../Common/SetsInput';
 
-
 interface AdminSelectedExerciseProps {
   exercise: AdminExerciseProfile;
   handleExerciseDetailChange: (id: number, field: string, value: string) => void;
@@ -24,8 +23,6 @@ interface AdminSelectedExerciseProps {
   editWorkoutExercise: (editedExercise: AdminExerciseProfile) => void;
   mode: 'edit' | 'view';
 }
-
-
 
 const AdminSelectedExercise: React.FC<AdminSelectedExerciseProps> = ({
     exercise,
@@ -36,12 +33,9 @@ const AdminSelectedExercise: React.FC<AdminSelectedExerciseProps> = ({
 }) => {
     const { id, name, type_of_measurement} = exercise;
 
-
-
     const handleSetsChange = (s: string) => {
         handleExerciseDetailChange(id, 'sets', s);
     };
-
 
     const handleRepsChange = (r: string) => {
         handleExerciseDetailChange(id, 'repetitions', r);
@@ -63,7 +57,6 @@ const AdminSelectedExercise: React.FC<AdminSelectedExerciseProps> = ({
         const updatedExercise = { ...exercise, [field]: value };
         editWorkoutExercise(updatedExercise);
     };
-
 
     const renderEditableFields = () => {
         switch (type_of_measurement) {

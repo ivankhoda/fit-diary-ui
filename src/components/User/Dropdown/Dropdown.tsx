@@ -11,22 +11,23 @@ export interface OptionInterface {
 
 // Main menu options
 const options: OptionInterface[] = [
-    { linkTo: '/me/exercises', text: 'Упражнения' },
+    { linkTo: '/exercises', text: 'Упражнения' },
+
     {
-        linkTo: '/me/info',
+        linkTo: '/info',
         subOptions: [
-            { linkTo: '/me/exercises-stats', text: 'Стастистика упражнений' }, { linkTo: '/me/self-stats', text: 'Собственные показатели' }
+            { linkTo: '/exercises-stats', text: 'Стастистика упражнений' }, { linkTo: '/self-stats', text: 'Собственные показатели' },
         ],
-        text: 'Статистика'
+        text: 'Статистика',
     },
     {
         subOptions: [
-            { linkTo: '/me/workouts', text: 'Все тренировки' },
-            { linkTo: '/me/workouts/in-progress', text: 'Тренировки в процессе' },
-            { linkTo: '/me/workouts/done', text: 'Завершённые тренировки' }
+            { linkTo: '/workouts', text: 'Все тренировки' },
+            { linkTo: '/workouts/in-progress', text: 'Тренировки в процессе' },
+            { linkTo: '/workouts/done', text: 'Завершённые тренировки' },
         ],
         text: 'Тренировки',
-    }
+    },
 ];
 
 const Dropdown = (): React.ReactElement => {
@@ -36,7 +37,10 @@ const Dropdown = (): React.ReactElement => {
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            if (
+                dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+            ) {
                 setIsOpen(false);
                 setOpenSubMenu(null);
             }
@@ -60,7 +64,8 @@ const Dropdown = (): React.ReactElement => {
     }, []);
 
     const handleSubMenuToggle = useCallback((optionText: string) => {
-        setOpenSubMenu(prevOpenSubMenu => (prevOpenSubMenu === optionText ? null : optionText));
+        setOpenSubMenu(prevOpenSubMenu =>
+            prevOpenSubMenu === optionText ? null : optionText);
     }, []);
 
     const createSubMenuToggleHandler = useCallback(
@@ -88,17 +93,18 @@ const Dropdown = (): React.ReactElement => {
                                         </button>
                                         {openSubMenu === option.text && (
                                             <div className="dropdown-submenu">
-                                                {option.subOptions.map(subOption => (
-                                                    subOption.linkTo && (
-                                                        <MenuLink
-                                                            key={subOption.text}
-                                                            linkTo={subOption.linkTo}
-                                                            text={subOption.text}
-                                                            onClick={handleOptionClick}
-                                                            className="dropdown-link"
-                                                        />
-                                                    )
-                                                ))}
+                                                {option.subOptions.map(
+                                                    subOption =>
+                                                        subOption.linkTo && (
+                                                            <MenuLink
+                                                                key={subOption.text}
+                                                                linkTo={subOption.linkTo}
+                                                                text={subOption.text}
+                                                                onClick={handleOptionClick}
+                                                                className="dropdown-link"
+                                                            />
+                                                        )
+                                                )}
                                             </div>
                                         )}
                                     </>

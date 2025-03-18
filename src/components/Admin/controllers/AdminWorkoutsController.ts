@@ -57,7 +57,6 @@ export default class AdminWorkoutsController extends BaseController {
             });
     }
 
-
   @action
     async createWorkout(navigate: (path: string) => void): Promise<void> {
         try {
@@ -105,7 +104,6 @@ export default class AdminWorkoutsController extends BaseController {
             console.error('Error in editWorkoutExercise:', error);
         }
     }
-
 
     @action
     addWorkoutExercise(workout_id: string, exercise_id: number): void {

@@ -87,7 +87,6 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
                                                 {t('workoutData.exercise_duration')}: {exercise.formatted_duration}
                                             </p>}
 
-
                                             {exercise.number_of_sets.length > 0 && (
                                                 <div className="sets-list">
                                                     <UserExerciseSets

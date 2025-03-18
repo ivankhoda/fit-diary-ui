@@ -19,8 +19,6 @@ import AdminWorkoutsStore from '../../store/AdminWorkoutsStore';
 import AdminUsersController from '../../controllers/AdminUsersController';
 import AdminSelectedExercise from './AdminSelectedExercise/AdminSelectedExercise';
 
-
-
 interface AdminCreateWorkoutProps {
   adminWorkoutsStore?: AdminWorkoutsStore;
   adminExercisesStore?: AdminExercisesStore;

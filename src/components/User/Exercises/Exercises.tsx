@@ -94,8 +94,6 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
         return filteredList.slice(startIndex, startIndex + ITEMS_PER_PAGE);
     }, [filteredList, currentPage]);
 
-
-
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
     }, []);
@@ -148,7 +146,6 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
         exercisesController.deleteExercise(id);
     }, []);
 
-
     interface HandleEditExercise {
         (exercise: Exercise): void;
     }
@@ -156,7 +153,6 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
     const handleEditExercise: HandleEditExercise = useCallback((exercise: Exercise) => {
         handleOpenModal(exercise);
     }, [handleOpenModal]);
-
 
     return (
         <div className="container">

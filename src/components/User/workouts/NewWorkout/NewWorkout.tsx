@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserProfile } from '../../../../store/userStore';
 import SelectedExercise from './SelectedExercise';
 
-
 interface NewWorkoutProps {
   workoutsStore?: WorkoutsStore;
   exercisesStore?: ExercisesStore;
@@ -67,7 +66,6 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             setSelectedUsers(fetchedWorkout.users || []);
         }
     }, [workoutsStore?.draftWorkout]);
-
 
     const handleExerciseClick = async(exercise: ExerciseInterface) => {
         try {

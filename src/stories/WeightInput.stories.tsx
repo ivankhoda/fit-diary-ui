@@ -4,7 +4,6 @@ import { StoryObj } from '@storybook/react';
 import { ExerciseInterface } from '../store/exercisesStore';
 import WeightInput from '../components/Common/WeightInput';
 
-
 export default {
     component: WeightInput,
     title: 'Components/WeightInput',

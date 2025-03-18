@@ -9,4 +9,3 @@ const adminWorkoutsStore = new AdminWorkoutsStore();
 
 export { adminUsersStore, adminExercisesStore, adminWorkoutsStore};
 
-

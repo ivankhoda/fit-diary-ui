@@ -2,7 +2,6 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-alert */
 
-
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +28,6 @@ const ExerciseData: React.FC = () => {
         type_of_measurement: '',
         updated_at: ''
     });
-
 
     useEffect(() => {
         const fetchedExercise = adminExercisesStore?.exercise;

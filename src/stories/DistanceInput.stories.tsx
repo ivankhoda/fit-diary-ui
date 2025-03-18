@@ -5,7 +5,6 @@ import { StoryObj } from '@storybook/react';
 import { ExerciseInterface } from '../store/exercisesStore';
 import DistanceInput from '../components/Common/DistanceInput';
 
-
 export default {
     component: DistanceInput,
     title: 'Components/DistanceInput',

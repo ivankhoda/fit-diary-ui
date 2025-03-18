@@ -3,7 +3,6 @@ import { StoryFn, Meta as MetaType } from '@storybook/react';
 import { CurrentExercise, CurrentExerciseProps } from '../components/User/workouts/CurrentWorkout/CurrentExercise/CurrentExercise';
 import { ExerciseInterface } from '../store/exercisesStore';
 
-
 const mockExercise: ExerciseInterface = {
     distance: '',
     id: 1,
@@ -13,13 +12,11 @@ const mockExercise: ExerciseInterface = {
     weight: '100',
 };
 
-
 const handleRepetitionsChange = (exercise: ExerciseInterface) => console.log('Repetitions changed:', exercise);
 const handleWeightChange = (exercise: ExerciseInterface) => console.log('Weight changed:', exercise);
 const handleDistanceChange = (exercise: ExerciseInterface) => console.log('Distance changed:', exercise);
 const handleDurationChange = (duration: string, exercise?: ExerciseInterface) => console.log('Duration changed:', duration, exercise);
 const setDone = () => console.log('Exercise marked as done');
-
 
 export default {
     argTypes: {
@@ -40,10 +37,7 @@ export default {
     title: 'Components/CurrentExercise',
 } as MetaType<typeof CurrentExercise>;
 
-
-
 const Template: StoryFn<CurrentExerciseProps> = args => <CurrentExercise {...args} />;
-
 
 export const Default = Template.bind({});
 Default.args = {
@@ -68,7 +62,6 @@ RepsOnly.args = {
     handleWeightChange,
     setDone,
 };
-
 
 export const DurationOnly = Template.bind({});
 DurationOnly.args = {
@@ -99,7 +92,6 @@ DurationAndReps.args = {
     setDone,
 };
 
-
 export const Cardio = Template.bind({});
 Cardio.args = {
     exercise: {
@@ -116,7 +108,6 @@ Cardio.args = {
     handleWeightChange,
     setDone,
 };
-
 
 export const DurationAndDistance = Template.bind({});
 DurationAndDistance.args = {

@@ -5,8 +5,6 @@ import React, { ChangeEvent } from 'react';
 import ExercisesController from '../../../../controllers/ExercisesController';
 import ExercisesStore from '../../../../store/exercisesStore';
 
-
-
 interface ExerciseRepsInterface  {
     exercisesStore?: ExercisesStore;
     exercisesController?: ExercisesController;

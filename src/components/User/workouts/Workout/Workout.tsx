@@ -24,12 +24,12 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
 
     const handleStartClick = useCallback(() => {
         workoutsController.startWorkout(workout.id);
-        navigate(`/me/workout/${workout.id}`);
+        navigate(`/workout/${workout.id}`);
     }, [workout.id]);
 
     const handleEditClick = useCallback((wo: WorkoutInterface) => {
         workoutsStore.setDraftWorkout(wo);
-        navigate(`/me/workouts/${wo.id}/edit`);
+        navigate(`/workouts/${wo.id}/edit`);
     }, [workout.id]);
 
     const handleClick = (wo: WorkoutInterface) => () => {
@@ -41,7 +41,7 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
     }, [workout.id]);
 
     const handleResumeClick = useCallback(() => {
-        window.location.pathname = `/me/workout/${workout.id}`;
+        window.location.pathname = `/workout/${workout.id}`;
     }, [workout.id]);
 
     const handleFinishClick = useCallback(() => {
@@ -87,7 +87,6 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
                     </button>
                 </div>
             )}
-
 
             {isExpanded && workout.exercises && (
                 <div className="exercises-container">

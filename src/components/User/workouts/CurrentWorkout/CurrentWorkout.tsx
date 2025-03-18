@@ -15,7 +15,6 @@ import { CurrentExercise } from './CurrentExercise/CurrentExercise';
 import { UserExercisesList } from './UserExercisesList/UserExercisesList';
 import i18next from 'i18next';
 
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -117,7 +116,6 @@ export const CurrentWorkout: React.FC<Props> =
                 weight_and_reps: ['weight', 'repetitions'],
             };
 
-
             const requiredFields = measurementConfig[type_of_measurement];
 
             if (requiredFields && requiredFields.every(field => values[field] !== '' && values[field] !== '0')) {
@@ -132,7 +130,6 @@ export const CurrentWorkout: React.FC<Props> =
             repetitions,
             duration,
             distance]);
-
 
         const deleteSet = useCallback((id: string, userExerciseId: number) => {workoutsController.deleteSet(id, userExerciseId);}, []);
 

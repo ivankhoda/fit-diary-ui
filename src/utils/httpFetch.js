@@ -3,12 +3,10 @@
 // @ts-ignore
 import getToken from './getToken';
 
-
 function objectToURIComponent(data) { return Object.keys(data)
     .filter(analyticsKey =>data[analyticsKey])
     .map(analyticsKey => `${analyticsKey  }=${  encodeURIComponent(data[analyticsKey])}`).join('&');
 }
-
 
 class HttpFetch {
     constructor(options) {

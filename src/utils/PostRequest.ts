@@ -1,6 +1,5 @@
 import Get from './GetRequest';
 
-
 export default class Post extends Get {
     method = 'POST';
 

@@ -36,7 +36,6 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
         adminExercisesController.getExercises();
     }, [adminExercisesController]);
 
-
     const handleExerciseClick = useCallback((exercise: AdminExerciseProfile) => {
         navigate(`/admin/exercises/${exercise.id}`);
     }, [navigate]);

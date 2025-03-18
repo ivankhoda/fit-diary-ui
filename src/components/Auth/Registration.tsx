@@ -46,7 +46,6 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
         event.preventDefault();
         setErrors([]);
 
-
         if (password.length < MIN_PASSWORD_LENGTH) {
             setErrors([`Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`]);
             return;
@@ -56,7 +55,6 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
             setErrors(['Passwords do not match.']);
             return;
         }
-
 
         const token = await registerUser({
             user: {

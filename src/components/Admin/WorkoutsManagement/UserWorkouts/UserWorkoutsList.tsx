@@ -59,7 +59,6 @@ const UserWorkoutList: React.FC<WorkoutListProps> = observer(({adminUsersStore, 
         setCurrentPage(0);
     }, []);
 
-
     const filteredWorkouts = Array.isArray(userWorkouts)
         ? userWorkouts
             .filter(workout =>
@@ -79,8 +78,6 @@ const UserWorkoutList: React.FC<WorkoutListProps> = observer(({adminUsersStore, 
     const handleWorkoutClick = useCallback((workout: AdminWorkoutProfile) => {
         navigate(`/admin/workouts/${workout.id}`);
     }, [navigate]);
-
-
 
     return (
         <AdminPanel>

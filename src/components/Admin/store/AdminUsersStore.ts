@@ -1,7 +1,6 @@
 import { action, makeObservable, observable } from 'mobx';
 import { AdminWorkoutProfile } from './AdminWorkoutsStore';
 
-
 export interface UserMeasurement {
     id: number;
     weight: number;
@@ -57,7 +56,6 @@ export default class AdminUsersStore {
     setUserProfile(profile: AdminUserProfile): void {
         this.userProfile = profile;
     }
-
 
     @action
     addUserProfile(profile: AdminUserProfile): void {
