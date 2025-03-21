@@ -5,7 +5,7 @@
 
 import React, { useCallback, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faTrash } from '@fortawesome/free-solid-svg-icons';
 import i18n from 'i18next';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
 import './SelectedExercise.style.scss';
@@ -15,7 +15,6 @@ import WeightInput from '../../../Common/WeightInput';
 import TimeInput from '../../../Common/TimeInput';
 import DistanceInput from '../../../Common/DistanceInput';
 import { useDrag, useDrop } from 'react-dnd';
-import NumberInput from '../../../Common/NumberInput';
 
 const ItemType = { EXERCISE: 'exercise' };
 
@@ -28,16 +27,15 @@ interface SelectedExerciseProps {
   onClick?: (exercise: ExerciseInterface) => void;
   index?: number
   moveExercise?: (id: number, atIndex: number) => void;
+  length?: number;
 }
 
 const SelectedExercise: React.FC<SelectedExerciseProps> = ({
     exercise,
     handleExerciseDetailChange,
-    handleExerciseDelete, editWorkoutExercise, mode, onClick, index, moveExercise
+    handleExerciseDelete, editWorkoutExercise, mode, onClick, index, moveExercise, length
 }) => {
     const { id, name, type_of_measurement, sets, repetitions, weight, duration, distance } = exercise;
-
-    const [hide] = React.useState(false);
 
     const handleSetsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const {value} = e.target;
@@ -47,10 +45,6 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleSetsBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
         handleBlur('sets', e.target.value);
-    }, [exercise]);
-
-    const handleOrderBlur = useCallback((field: string, value: string | number | null) => {
-        handleBlur(field, value);
     }, [exercise]);
 
     const handleDelete = useCallback(() => {
@@ -71,10 +65,6 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleDistanceChange = useCallback((d: string) => {
         handleExerciseDetailChange(id, 'distance', d);
-    }, []);
-
-    const handleOrder = useCallback((r: string) => {
-        handleExerciseDetailChange(id, 'order', r);
     }, []);
 
     const handleBlur = useCallback((field: string, value: string | number | null) => {
@@ -116,6 +106,16 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
         };
     }, [drag, drop]);
 
+    const moveExerciseUp = useCallback(() => {
+        if (index === 0) {return;}
+        moveExercise(index, index - 1);
+    }, [index, moveExercise]);
+
+    const moveExerciseDown = useCallback(() => {
+        if (index === length - 1) {return;}
+        moveExercise(index, index + 1);
+    }, [index, moveExercise]);
+
     return (
         <div ref={mode ==='view' ? null : ref} className={`exercise-small-table ${mode === 'view'? '_mode': ''}`}
             onClick={mode === 'view' ?
@@ -123,16 +123,9 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                 : null}
             role={mode === 'view' ? 'button' : null} tabIndex={mode === 'view' ? 0 : null}>
             <div>
-                <strong>{name}</strong>
+                <strong>{exercise.order}. {name}</strong>
 
             </div>
-
-            {hide && <div className="exercise-fields">
-                <div>
-                    <label>{'Порядок'}</label>
-                    <NumberInput onChange={handleOrder} exercise={exercise} onBlur={handleOrderBlur} order={(index+1).toString()}/>
-                </div>
-            </div>}
 
             <div className='exercise-small-table-data'>
                 {type_of_measurement === 'weight_and_reps' && (
@@ -271,6 +264,15 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         >
                             <FontAwesomeIcon icon={faTrash} />
                         </button>
+
+                        {<div className="move-buttons">
+                            <button type="button" onClick={moveExerciseUp}>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                            </button>
+                            <button type="button" onClick={moveExerciseDown}>
+                                <FontAwesomeIcon icon={faArrowDown} />
+                            </button>
+                        </div>}
                     </div>
                     : null}
             </div>

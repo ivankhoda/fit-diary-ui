@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserProfile } from '../../../../store/userStore';
 import SelectedExercise from './SelectedExercise';
 import { DndProvider } from 'react-dnd';
-import { TouchBackend } from 'react-dnd-touch-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 export interface NewWorkoutProps {
   workoutsStore?: WorkoutsStore;
@@ -103,11 +103,13 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             'repetitions',
             'weight',
             'duration',
-            'distance'].includes(field)) {return;}
+            'distance'].includes(field)) {
+            return;
+        }
 
         setSelectedExercises(prevExercises =>
             prevExercises.map(exercise =>
-                exercise.id === id  ? { ...exercise, [field]: value } : exercise));
+                exercise.id === id ? { ...exercise, [field]: value } : exercise));
     };
 
     const handleEditWorkoutExercise = (editedExercise: ExerciseInterface) => {
@@ -138,7 +140,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
 
         const newWorkout = {
             name: workoutName,
-            description
+            description,
         };
 
         try {
@@ -167,7 +169,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             workoutsController?.reorderWorkoutExercises(workoutId, updatedExercises);
             return updatedExercises;
         });
-    }, []);
+    }, [workoutsController, workoutId]);
 
     return (
         <div className="new-workout-section">
@@ -192,7 +194,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         placeholder={i18n.t('workoutData.workoutDescriptionPlaceholder')}
                     />
                 </div>
-                <button type="submit" className='save-button'>
+                <button type="submit" className="save-button">
                     {isEditing ? i18n.t('workoutData.saveChanges') : i18n.t('workoutData.saveWorkout')}
                 </button>
 
@@ -226,19 +228,22 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         <label>{i18n.t('workoutData.selectedExercises')}</label>
                     </div>
                 )}
-                <DndProvider backend={TouchBackend} key='touch'>
-                    {selectedExercises.length > 0 && selectedExercises.map((e, index) => (
-                        <SelectedExercise
-                            key={e.id}
-                            index={index}
-                            exercise={e}
-                            handleExerciseDelete={handleExerciseDelete}
-                            handleExerciseDetailChange={handleExerciseDetailChange}
-                            editWorkoutExercise={handleEditWorkoutExercise}
-                            moveExercise={moveExercise}
-                            mode="edit"
-                        />
-                    ))}
+                <DndProvider backend={HTML5Backend}>
+                    {selectedExercises.length > 0 &&
+            selectedExercises.map((e, index) => (
+                <div key={e.id} className="selected-exercise-container">
+                    <SelectedExercise
+                        index={index}
+                        exercise={e}
+                        handleExerciseDelete={handleExerciseDelete}
+                        handleExerciseDetailChange={handleExerciseDetailChange}
+                        editWorkoutExercise={handleEditWorkoutExercise}
+                        moveExercise={moveExercise}
+                        mode="edit"
+                        length={selectedExercises.length}
+                    />
+                </div>
+            ))}
                 </DndProvider>
 
                 {selectedUsers.length > 0 && (
@@ -248,10 +253,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                             {selectedUsers.map(user => (
                                 <li key={user.id}>
                                     {user.email}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleUserDelete(user.id)}
-                                    >
+                                    <button type="button" onClick={() => handleUserDelete(user.id)}>
                                         <FontAwesomeIcon icon={faTrash} />
                                     </button>
                                 </li>
