@@ -17,6 +17,7 @@ export interface AdminExerciseProfile {
     repetitions?: number;
     type_of_measurement?: string;
     sets?: number
+    order?: string
 }
 const NOT_FOUND = -1;
 

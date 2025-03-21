@@ -20,6 +20,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
+import { DndProvider } from 'react-dnd';
+import { TouchBackend } from 'react-dnd-touch-backend';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -45,7 +47,16 @@ export const CurrentWorkout: React.FC<Props> =
                 workoutsController.getUserWorkout(workoutId);
             }
             if(currentWorkout){
-                setSelectedExercises(currentWorkout.workout_exercises?.sort((a, b) => a.id - b.id));
+                setSelectedExercises(currentWorkout.workout_exercises?.sort((a, b) => {
+                    const orderA = a.order || 0;
+                    const orderB = b.order || 0;
+
+                    if (orderA !== 0 && orderB !== 0) {
+                        return Number(orderA) - Number(orderB);
+                    }
+
+                    return a.id - b.id;
+                }));
             }
         }, [navigate,
             sets,
@@ -163,17 +174,20 @@ export const CurrentWorkout: React.FC<Props> =
             ? (
                 <div className='workout-container'>
                     <h2 className='workout-name'>{currentWorkout.name}</h2>
+
                     {currentWorkout.workout_exercises.length > 0
-                        ? ( <div className="exercises-container">
-                            <Swiper
-                                modules={[Navigation, Pagination]}
-                                spaceBetween={15}
-                                slidesPerView={1}
-                                pagination={{ clickable: true }}
-                                className="exercise-swiper"
-                                onSlideChange={handleSlideChangeRef}
-                            >
-                                {selectedExercises.length > 0 &&
+                        ? (
+                            <div className="exercises-container">
+                                <DndProvider backend={TouchBackend}>
+                                    <Swiper
+                                        modules={[Navigation, Pagination]}
+                                        spaceBetween={15}
+                                        slidesPerView={1}
+                                        pagination={{ clickable: true }}
+                                        className="exercise-swiper"
+                                        onSlideChange={handleSlideChangeRef}
+                                    >
+                                        {selectedExercises.length > 0 &&
                                         selectedExercises.map(exercise => (
                                             <SwiperSlide key={exercise.id}>
                                                 <SelectedExercise
@@ -184,8 +198,10 @@ export const CurrentWorkout: React.FC<Props> =
                                                 />
                                             </SwiperSlide>
                                         ))}
-                            </Swiper>
-                        </div>)
+                                    </Swiper>
+                                </DndProvider>
+                            </div>
+                        )
                         : (<p>Нет упраженений для тренировки.</p>)}
 
                     {selectedExercise && <CurrentExercise exercise={selectedExercise}

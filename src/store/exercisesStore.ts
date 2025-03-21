@@ -18,6 +18,7 @@ export interface ExerciseInterface {
     duration?: number;
     formatted_duration?: string;
     started_at?: string;
+    order?: string
   }
 
 export interface SetInterface {

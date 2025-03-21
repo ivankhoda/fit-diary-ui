@@ -25,12 +25,9 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
       }
     }, [userController]);
 
-console.log(location.pathname === "/")
-console.log((userStore?.userProfile?.has_exercises))
-console.log((userStore?.userProfile?.has_workouts))
     return (
       <div className="working-panel">
-        {location.pathname === "/" &&  (userStore?.userProfile?.has_exercises && userStore?.userProfile?.has_workouts) && (
+        {location.pathname === "/" &&  (!userStore?.userProfile?.has_exercises && !userStore?.userProfile?.has_workouts) && (
           <div className="widgets">
             <StartWidget />
           </div>

@@ -1,8 +1,9 @@
+/* eslint-disable max-statements */
 /* eslint-disable max-lines-per-function */
 
 /* eslint-disable complexity */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import i18n from 'i18next';
@@ -13,6 +14,10 @@ import RepetitionsInput from '../../../Common/RepetitionsInput';
 import WeightInput from '../../../Common/WeightInput';
 import TimeInput from '../../../Common/TimeInput';
 import DistanceInput from '../../../Common/DistanceInput';
+import { useDrag, useDrop } from 'react-dnd';
+import NumberInput from '../../../Common/NumberInput';
+
+const ItemType = { EXERCISE: 'exercise' };
 
 interface SelectedExerciseProps {
   exercise: ExerciseInterface;
@@ -21,14 +26,18 @@ interface SelectedExerciseProps {
   editWorkoutExercise?: (editedExercise: ExerciseInterface) => void;
   mode: 'edit' | 'view';
   onClick?: (exercise: ExerciseInterface) => void;
+  index?: number
+  moveExercise?: (id: number, atIndex: number) => void;
 }
 
 const SelectedExercise: React.FC<SelectedExerciseProps> = ({
     exercise,
     handleExerciseDetailChange,
-    handleExerciseDelete, editWorkoutExercise, mode, onClick
+    handleExerciseDelete, editWorkoutExercise, mode, onClick, index, moveExercise
 }) => {
     const { id, name, type_of_measurement, sets, repetitions, weight, duration, distance } = exercise;
+
+    const [hide] = React.useState(false);
 
     const handleSetsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const {value} = e.target;
@@ -38,6 +47,10 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleSetsBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
         handleBlur('sets', e.target.value);
+    }, [exercise]);
+
+    const handleOrderBlur = useCallback((field: string, value: string | number | null) => {
+        handleBlur(field, value);
     }, [exercise]);
 
     const handleDelete = useCallback(() => {
@@ -60,6 +73,10 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
         handleExerciseDetailChange(id, 'distance', d);
     }, []);
 
+    const handleOrder = useCallback((r: string) => {
+        handleExerciseDetailChange(id, 'order', r);
+    }, []);
+
     const handleBlur = useCallback((field: string, value: string | number | null) => {
         const updatedExercise = { ...exercise, [field]: value };
         editWorkoutExercise(updatedExercise);
@@ -71,15 +88,51 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
         }
     };
 
+    const ref = useRef(null);
+
+    const [, drag] = useDrag({
+        collect: monitor => ({
+            isDragging: monitor.isDragging(),
+        }),
+        item: { id, index },
+        type: ItemType.EXERCISE,
+    });
+
+    const [, drop] = useDrop({
+        accept: ItemType.EXERCISE,
+        hover: (draggedItem: { id: number; index: number }) => {
+            if (draggedItem.index !== index) {
+                moveExercise(draggedItem.index, index);
+                draggedItem.index = index;
+            }
+        },
+    });
+
+    useEffect(() => {
+        drag(drop(ref));
+        return () => {
+            drag(null);
+            drop(null);
+        };
+    }, [drag, drop]);
+
     return (
-        <div className={`exercise-small-table ${mode === 'view'? '_mode': ''}`}
+        <div ref={mode ==='view' ? null : ref} className={`exercise-small-table ${mode === 'view'? '_mode': ''}`}
             onClick={mode === 'view' ?
                 handleClick
                 : null}
             role={mode === 'view' ? 'button' : null} tabIndex={mode === 'view' ? 0 : null}>
             <div>
                 <strong>{name}</strong>
+
             </div>
+
+            {hide && <div className="exercise-fields">
+                <div>
+                    <label>{'Порядок'}</label>
+                    <NumberInput onChange={handleOrder} exercise={exercise} onBlur={handleOrderBlur} order={(index+1).toString()}/>
+                </div>
+            </div>}
 
             <div className='exercise-small-table-data'>
                 {type_of_measurement === 'weight_and_reps' && (

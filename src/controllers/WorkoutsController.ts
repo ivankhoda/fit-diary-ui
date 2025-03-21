@@ -199,6 +199,29 @@ export default class WorkoutController extends BaseController {
   }
 
   @action
+  async reorderWorkoutExercises(workoutId: string, exercises: ExerciseInterface[]): Promise<void> {
+      try {
+          const payload = {
+              workout: {
+                  id: workoutId,
+                  exercises: exercises.map(ex => ({ id: ex.id, order: ex.order })),
+              },
+          };
+
+          const response = await new Patch({
+              params: payload,
+              url: `${getApiBaseUrl()}/workouts/reorder_exercises`,
+          }).execute();
+
+          const result = await response.json();
+
+          this.workoutsStore.updateWorkoutExercisesOrder(workoutId, result.exercises);
+      } catch (error) {
+          console.error('Ошибка при обновлении порядка упражнений:', error);
+      }
+  }
+
+  @action
   archiveWorkout(id: number): void {
       new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/archive`}).execute()
           .then(r => r.json())

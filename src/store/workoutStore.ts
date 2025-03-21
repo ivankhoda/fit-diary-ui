@@ -141,11 +141,20 @@ export default class WorkoutsStore {
     }
 
     @action
-     deleteDraftWorkoutExercise(exerciseId: number): void {
-         if (this.draftWorkout) {
-             this.draftWorkout.workout_exercises = this.draftWorkout.workout_exercises.filter(ex => ex.id !== exerciseId);
-         }
+     updateWorkoutExercisesOrder(workoutId: number | string, updatedExercises: ExerciseInterface[]): void {
+         const workout = this.workouts.find(w => w.id === workoutId);
+
+         if (!workout) {return;}
+
+         workout.exercises = updatedExercises;
      }
+
+    @action
+    deleteDraftWorkoutExercise(exerciseId: number): void {
+        if (this.draftWorkout) {
+            this.draftWorkout.workout_exercises = this.draftWorkout.workout_exercises.filter(ex => ex.id !== exerciseId);
+        }
+    }
 
     @action
     changeDraftWorkoutName(name: string): void {

@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import type { Preview } from "@storybook/react";
 
 import '../src/styles.scss';
+import '/src/components/User/workouts/NewWorkout/NewWorkout.style.scss';
 import { I18nextProvider } from 'react-i18next';
 import i18n from "./i18ForTest";
 

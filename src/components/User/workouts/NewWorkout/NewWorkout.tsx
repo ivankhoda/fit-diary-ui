@@ -3,7 +3,7 @@
 /* eslint-disable max-statements */
 /* eslint-disable no-alert */
 /* eslint-disable max-lines-per-function */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
 import i18n from 'i18next';
 import { useNavigate, useParams } from 'react-router';
@@ -16,8 +16,10 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserProfile } from '../../../../store/userStore';
 import SelectedExercise from './SelectedExercise';
+import { DndProvider } from 'react-dnd';
+import { TouchBackend } from 'react-dnd-touch-backend';
 
-interface NewWorkoutProps {
+export interface NewWorkoutProps {
   workoutsStore?: WorkoutsStore;
   exercisesStore?: ExercisesStore;
   workoutsController?: WorkoutsController;
@@ -61,7 +63,12 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             setWorkoutName(fetchedWorkout.name || '');
             setDescription(fetchedWorkout.description || '');
             setSelectedExercises(
-                (fetchedWorkout.exercises || []).sort((a, b) => a.id - b.id)
+                (fetchedWorkout.exercises || []).sort((a, b) => {
+                    if (a.order === b.order) {
+                        return a.id - b.id;
+                    }
+                    return Number(a.order) - Number(b.order);
+                })
             );
             setSelectedUsers(fetchedWorkout.users || []);
         }
@@ -149,6 +156,19 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     exercisesStore?.generalExercises?.filter(exercise =>
         exercise?.name?.toLowerCase().includes(exerciseSearchTerm.toLowerCase())) || [];
 
+    const moveExercise = useCallback((dragIndex: number, hoverIndex: number) => {
+        setSelectedExercises(prevExercises => {
+            const updatedExercises = [...prevExercises];
+            const [draggedItem] = updatedExercises.splice(dragIndex, 1);
+            updatedExercises.splice(hoverIndex, 0, draggedItem);
+            updatedExercises.forEach((exercise, index) => {
+                exercise.order = (index + 1).toString();
+            });
+            workoutsController?.reorderWorkoutExercises(workoutId, updatedExercises);
+            return updatedExercises;
+        });
+    }, []);
+
     return (
         <div className="new-workout-section">
             <h2>{isEditing ? i18n.t('workoutData.editWorkout') : i18n.t('workoutData.createNewWorkout')}</h2>
@@ -172,7 +192,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         placeholder={i18n.t('workoutData.workoutDescriptionPlaceholder')}
                     />
                 </div>
-                <button type="submit">
+                <button type="submit" className='save-button'>
                     {isEditing ? i18n.t('workoutData.saveChanges') : i18n.t('workoutData.saveWorkout')}
                 </button>
 
@@ -206,18 +226,20 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         <label>{i18n.t('workoutData.selectedExercises')}</label>
                     </div>
                 )}
-
-                {selectedExercises.length > 0 && selectedExercises.map(e => (
-                    <><SelectedExercise
-                        key={e.id}
-                        exercise={e}
-                        handleExerciseDelete={handleExerciseDelete}
-                        handleExerciseDetailChange={handleExerciseDetailChange}
-                        editWorkoutExercise={handleEditWorkoutExercise}
-                        mode="edit"
-                    />
-                    </>
-                ))}
+                <DndProvider backend={TouchBackend} key='touch'>
+                    {selectedExercises.length > 0 && selectedExercises.map((e, index) => (
+                        <SelectedExercise
+                            key={e.id}
+                            index={index}
+                            exercise={e}
+                            handleExerciseDelete={handleExerciseDelete}
+                            handleExerciseDetailChange={handleExerciseDetailChange}
+                            editWorkoutExercise={handleEditWorkoutExercise}
+                            moveExercise={moveExercise}
+                            mode="edit"
+                        />
+                    ))}
+                </DndProvider>
 
                 {selectedUsers.length > 0 && (
                     <div>
