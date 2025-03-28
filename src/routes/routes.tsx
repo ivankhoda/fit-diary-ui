@@ -17,6 +17,7 @@ import { ConfirmRegistration } from '../components/Auth/ConfirmationRegistration
 import Permissions from '../components/User/Permissons/Permissions';
 import NewPermission from '../components/User/Permissons/NewPermission';
 import WorkoutSummary from '../components/User/workouts/WorkoutSummary/WorkoutSummary';
+import UserWorkoutsArchived from '../components/User/workouts/UserWorkoutsArchived';
 
 // eslint-disable-next-line func-style
 function useQuery() {
@@ -41,6 +42,7 @@ export const routes = [
     {Component:  <Workouts />, name: 'Workouts', path: '/workouts'},
     {Component:  <UserWorkoutsInProgress />, name: 'Workouts in progress', path: '/workouts/in-progress'},
     {Component:  <UserWorkouts />, name: 'Workouts done', path: '/workouts/done'},
+    {Component:  <UserWorkoutsArchived />, name: 'Workouts archive', path: '/workouts/archive'},
     {Component:  <NewWorkout />, name: 'Exercise', path: '/workout/new'},
     {Component:  <NewWorkout />, name: 'Workout', path: '/workouts/:workoutId/edit'},
     {Component:  <WorkoutSummary />, name: 'Workout', path: '/workouts/:workoutId/summary'},

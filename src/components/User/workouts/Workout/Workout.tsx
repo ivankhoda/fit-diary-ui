@@ -40,6 +40,10 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
         workoutsController.archiveWorkout(workout.id);
     }, [workout.id]);
 
+    const handleUnarchiveClick = useCallback(() => {
+        workoutsController.unarchiveWorkout(workout.id);
+    }, [workout.id]);
+
     const handleResumeClick = useCallback(() => {
         window.location.pathname = `/workout/${workout.id}`;
     }, [workout.id]);
@@ -48,7 +52,8 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
         workoutsController.finishWorkout(workout.id);
     }, [workout.id]);
 
-    const toggleExpanded = () => {
+    const toggleExpanded = (e: React.MouseEvent) => {
+        e.preventDefault();
         setIsExpanded(prev => !prev);
     };
 
@@ -58,7 +63,7 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
             <p>{workout.name}  {workout.created_at?.split(' ')[0] || workout.date}</p>
             {state === 'completed' && <p>{t('workout.duration')}: {workout.duration}</p>}
             {state === 'completed' && workout.comment && <p>{t('workout.comment')}: {workout.comment}</p>}
-            {!state && (
+            {!state && !workout.deleted && (
                 <div className='workout-actions'>
                     <button className="save-btn" onClick={handleStartClick}>
                         {t('workout.start')}
@@ -73,7 +78,20 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
                             </button>
                         </>
                     )}
-                    {workout.exercises && workout.exercises.length> 0 && <button className="toggle-btn" onClick={toggleExpanded}>
+                    {workout.exercises && workout.exercises.length> 0 && <button className="save-btn" onClick={toggleExpanded}>
+                        {isExpanded ? t('workout.hideExercises') : t('workout.showExercises')}
+                    </button>}
+                </div>
+            )}
+
+            {workout.deleted && (
+                <div className='workout-actions'>
+                    {workout.creator_id === userStore.userProfile?.id && (
+                        <button className="save-btn" onClick={handleUnarchiveClick}>
+                            {t('workout.unarchive')}
+                        </button>
+                    )}
+                    {workout.exercises && workout.exercises.length> 0 && <button className="save-btn" onClick={toggleExpanded}>
                         {isExpanded ? t('workout.hideExercises') : t('workout.showExercises')}
                     </button>}
                 </div>
@@ -93,9 +111,7 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
                 <div className="exercises-container">
                     <h4>{t('workout.exercises')}</h4>
                     {workout.exercises.map((exercise: ExerciseInterface) => (
-                        <>
-                            <p>{exercise.name}</p>
-                        </>
+                        <p key={exercise.id}>{exercise.name}</p>
                     ))}
                 </div>
             )}

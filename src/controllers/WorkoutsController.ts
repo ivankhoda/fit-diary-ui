@@ -70,7 +70,7 @@ export default class WorkoutController extends BaseController {
                   this.workoutsStore.setSummaryWorkout(res.user_workout);
               }});
   }
-
+    @action
     getUserWorkouts(): void {
         new Get({url: `${getApiBaseUrl()}/user_workouts`}).execute()
             .then(r => r.json())
@@ -78,6 +78,16 @@ export default class WorkoutController extends BaseController {
                 if(res.status === 'ok') {
                     this.workoutsStore.setUserWorkoutsDone(res.user_workouts_done);
                     this.workoutsStore.setUserWorkoutsInProgress(res.user_workouts_in_progress);
+                }});
+    }
+
+    @action
+    getArchivedUserWorkouts(): void {
+        new Get({url: `${getApiBaseUrl()}/workouts/archived`}).execute()
+            .then(r => r.json())
+            .then(res => {
+                if(res) {
+                    this.workoutsStore.setArchivedUserWorkouts(res);
                 }});
     }
 
@@ -251,6 +261,15 @@ export default class WorkoutController extends BaseController {
           .then(res => {
               this.workoutsStore.updateWorkouts(res.workout.id);
               this.workoutsStore.updatArchivedWorkouts(res.workout);});
+  }
+
+  @action
+  unarchiveWorkout(id: number): void {
+      new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/unarchive`}).execute()
+          .then(r => r.json())
+          .then(res => {
+              this.workoutsStore.unarchiveWorkouts(res.workout.id);
+          });
   }
 
   @action

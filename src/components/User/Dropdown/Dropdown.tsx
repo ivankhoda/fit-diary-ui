@@ -25,6 +25,7 @@ const options: OptionInterface[] = [
             { linkTo: '/workouts', text: 'Все тренировки' },
             { linkTo: '/workouts/in-progress', text: 'Тренировки в процессе' },
             { linkTo: '/workouts/done', text: 'Завершённые тренировки' },
+            { linkTo: '/workouts/archive', text: 'Архив' },
         ],
         text: 'Тренировки',
     },

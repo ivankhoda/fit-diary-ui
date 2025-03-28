@@ -300,6 +300,7 @@
     "start": "Start",
     "edit": "Edit",
     "archive": "Archive",
+    "unarchive": "Unarchive",
     "finish": "Finish workout",
     "resume": "Resume",
     "showExercises": "Show Exercises",

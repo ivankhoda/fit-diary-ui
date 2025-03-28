@@ -18,6 +18,7 @@ export interface WorkoutInterface {
     creator_id?: number;
     created_at?: string;
     comment?: string;
+    deleted?: boolean;
   }
 
 const NOT_FOUND = -1;
@@ -66,6 +67,11 @@ export default class WorkoutsStore {
     }
 
     @action
+    setArchivedUserWorkouts(workouts: WorkoutInterface[]): void {
+        this.archivedWorkouts = workouts;
+    }
+
+    @action
     updateUserWorkoutsInProgress(id: number): void {
         const index = this.userWorkoutsInProgress.findIndex(workout => workout.id === id);
         const notFound = -1;
@@ -101,7 +107,7 @@ export default class WorkoutsStore {
 
     @action
     updatArchivedWorkouts(updatedWorkout: WorkoutInterface): void {
-        const index = this.userWorkoutsDone.findIndex(workout => workout.id === updatedWorkout.id);
+        const index = this.userWorkoutsDone.findIndex(workout => workout.id === updatedWorkout.id && updatedWorkout.deleted);
         const notFound = -1;
 
         if (index === notFound) {
@@ -109,6 +115,17 @@ export default class WorkoutsStore {
         }
 
         this.archivedWorkouts[index] = updatedWorkout;
+    }
+
+    @action
+    unarchiveWorkouts(id: number): void {
+        const index = this.archivedWorkouts.findIndex(workout => workout.id === id);
+        const notFound = -1;
+
+        if (index === notFound) {
+            return;
+        }
+        this.archivedWorkouts.splice(index, 1);
     }
 
     @action
