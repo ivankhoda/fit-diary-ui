@@ -1,6 +1,7 @@
 {
   "hello": "Hello, world!",
   "buttonLabel": "Click me!",
+  "characters_min": "Min {{count}} characters",
   "statistics":"Statistics",
   "login": "Login",
   "password": "Password",

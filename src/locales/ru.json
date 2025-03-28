@@ -1,5 +1,6 @@
 {
   "required": "Обязательно",
+  "characters_min": "Минимум {{count}} символов",
   "buttonLabel": "Click me!",
   "statistics": "Статистика",
   "login": "Почта",

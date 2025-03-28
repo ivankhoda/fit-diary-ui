@@ -34,11 +34,10 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
         const data = await response.json();
 
         if (!response.ok) {
-            // If server returned errors, set them
             setErrors(data.errors || []);
             return null;
         }
-
+        window.location.reload();
         return data.jwt;
     };
 
@@ -102,7 +101,7 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="password" className="form-label">
-                        {t('password')}
+                        {`${t('password')} (${t('characters_min', { count: MIN_PASSWORD_LENGTH })})`}
                         <input
                             id="password"
                             className="form-input"
@@ -125,7 +124,11 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
                     </label>
                 </div>
 
-                {/* Display errors */}
+                <div className="form-group">
+                    <button className="form-button" type="submit" disabled={!email || !password || !confirmPassword}>
+                        {t('button_register')}
+                    </button>
+                </div>
                 {errors.length > 0 && (
                     <div className="form-error">
                         {errors.map((error, index) => (
@@ -133,12 +136,6 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
                         ))}
                     </div>
                 )}
-
-                <div className="form-group">
-                    <button className="form-button" type="submit" disabled={!email || !password || !confirmPassword}>
-                        {t('button_register')}
-                    </button>
-                </div>
             </form>
         </div>
     );
