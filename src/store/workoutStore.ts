@@ -1,6 +1,7 @@
 import { action, makeObservable, observable } from 'mobx';
 import { ExerciseInterface, SetInterface } from './exercisesStore';
 import { UserProfile } from './userStore';
+import { WorkoutSummaryProps } from '../components/User/workouts/WorkoutSummary/WorkoutSummary';
 
 export interface WorkoutInterface {
     id?: number;
@@ -16,6 +17,7 @@ export interface WorkoutInterface {
     users?: UserProfile[];
     creator_id?: number;
     created_at?: string;
+    comment?: string;
   }
 
 const NOT_FOUND = -1;
@@ -35,6 +37,9 @@ export default class WorkoutsStore {
 
      @observable
     currentUserWorkout: WorkoutInterface = null;
+
+    @observable
+    summaryUserWorkout: WorkoutSummaryProps = null;
 
     @observable
     userWorkoutsDone: WorkoutInterface[] = [];
@@ -128,17 +133,22 @@ export default class WorkoutsStore {
      }
 
      @action
-    updateOrAddDraftWorkoutExercise(newExercise: ExerciseInterface): void {
-        if (this.draftWorkout) {
-            const index = this.draftWorkout.exercises.findIndex(ex => ex.id === newExercise.id);
-
-            if (index === NOT_FOUND) {
-                this.draftWorkout.exercises = [...this.draftWorkout.exercises, newExercise];
-            } else {
-                this.draftWorkout.exercises[index] = newExercise;
-            }
-        }
+    setSummaryWorkout(workout: WorkoutSummaryProps): void {
+        this.summaryUserWorkout = workout;
     }
+
+     @action
+     updateOrAddDraftWorkoutExercise(newExercise: ExerciseInterface): void {
+         if (this.draftWorkout) {
+             const index = this.draftWorkout.exercises.findIndex(ex => ex.id === newExercise.id);
+
+             if (index === NOT_FOUND) {
+                 this.draftWorkout.exercises = [...this.draftWorkout.exercises, newExercise];
+             } else {
+                 this.draftWorkout.exercises[index] = newExercise;
+             }
+         }
+     }
 
     @action
      updateWorkoutExercisesOrder(workoutId: number | string, updatedExercises: ExerciseInterface[]): void {

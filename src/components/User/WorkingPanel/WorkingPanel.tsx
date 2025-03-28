@@ -27,7 +27,7 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
 
     return (
       <div className="working-panel">
-        {location.pathname === "/" &&  (!userStore?.userProfile?.has_exercises && !userStore?.userProfile?.has_workouts) && (
+        {location.pathname === "/" && userStore?.userProfile &&  (!userStore?.userProfile?.has_exercises && !userStore?.userProfile?.has_workouts) && (
           <div className="widgets">
             <StartWidget />
           </div>

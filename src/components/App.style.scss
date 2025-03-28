@@ -51,7 +51,7 @@ body {
 
 h2, h3, p, button, input {
   font-family: 'Roboto', cursive;
-  font-size: 1.4rem; /* Slightly larger font size to resemble handwriting */
+  font-size: styles.$base-font-size;
 }
 
 button {
@@ -80,7 +80,7 @@ input, textarea {
 .toggle-button {
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: styles.$base-font-size;
   text-decoration: underline;
   color: styles.$button-dark;
   margin-top: 10px;

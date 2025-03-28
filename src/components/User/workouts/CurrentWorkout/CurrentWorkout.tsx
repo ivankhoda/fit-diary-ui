@@ -43,25 +43,19 @@ export const CurrentWorkout: React.FC<Props> =
         const currentWorkout = workoutsStore.currentUserWorkout;
 
         useEffect(() => {
-            if (!currentWorkout){
+            if (!currentWorkout) {
                 workoutsController.getUserWorkout(workoutId);
-            }
-            if(currentWorkout){
-                setSelectedExercises(currentWorkout.workout_exercises?.sort((a, b) => {
-                    const orderA = a.order || 0;
-                    const orderB = b.order || 0;
-
-                    if (orderA !== 0 && orderB !== 0) {
-                        return Number(orderA) - Number(orderB);
-                    }
-
-                    return a.id - b.id;
-                }));
             }
         }, [navigate,
             sets,
             currentWorkout,
             selectedExercise]);
+
+        useEffect(() => {
+            if (currentWorkout) {
+                setSelectedExercises(currentWorkout.workout_exercises);
+            }
+        }, [currentWorkout]);
 
         const handleWeight = useCallback((w: string) => {setSelectedExercise(prev => ({...prev,weight: w}));
             setWeight(w);
@@ -148,23 +142,11 @@ export const CurrentWorkout: React.FC<Props> =
 
         const handleFinishClick = useCallback(() => {
             if (currentWorkout) {
-                workoutsController.finishWorkout(currentWorkout.id);
+                workoutsController.finishWorkout(currentWorkout.id, navigate);
             }
         }, [currentWorkout?.id]);
 
         const handleExerciseClickFactory = (exercise: ExerciseInterface) => () => {handleExerciseClick(exercise);};
-
-        interface SwiperInstance {
-            previousIndex: number;
-        }
-
-        const handleSlideChangeRef = useCallback((swiper: SwiperInstance) => {
-            const prevExercise = selectedExercises[swiper.previousIndex];
-
-            if(prevExercise.id === selectedExercise?.id) {
-                workoutsController.finishExercise(prevExercise.exercise_id, currentWorkout.id, prevExercise.id);
-            }
-        }, [selectedExercises, selectedExercise]);
 
         const handleFinishExercise = useCallback(() => {
             workoutsController.finishExercise(selectedExercise.exercise_id, currentWorkout.id, selectedExercise.id);
@@ -185,7 +167,7 @@ export const CurrentWorkout: React.FC<Props> =
                                         slidesPerView={1}
                                         pagination={{ clickable: true }}
                                         className="exercise-swiper"
-                                        onSlideChange={handleSlideChangeRef}
+
                                     >
                                         {selectedExercises.length > 0 &&
                                         selectedExercises.map(exercise => (

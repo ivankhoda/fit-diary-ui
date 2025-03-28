@@ -150,6 +150,12 @@
   "date": "Дата",
     "workoutData": {
       "exercises": "Упражнения",
+      "comment": "Комментарий",
+      "add_comment": "Добавить комментарий",
+      "ok": "Ok",
+      "save": "Сохранить",
+      "sets_planned": "Сетов по плану",
+      "sets_done": "Сетов выполнено",
     "createNewWorkout": "Создать новый тренинг",
     "workoutInformation": "Информация о тренинге",
     "name": "Название",
@@ -365,7 +371,8 @@
     "startSet": "Начать сет",
     "finishSet": "Закончить сет",
     "finishExercise": "Закончить упражнение",
-    "duration": "Продолжительность"
+    "duration": "Продолжительность",
+    "comment": "Комментарий"
   },
   "desc": {
   "title": "Добро пожаловать в Планку",

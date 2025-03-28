@@ -1,6 +1,5 @@
 /* eslint-disable max-statements */
 /* eslint-disable max-lines-per-function */
-
 /* eslint-disable complexity */
 
 import React, { useCallback, useEffect, useRef } from 'react';
@@ -142,11 +141,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         </div>
                         :
                         <div className='exercise-fields_mode'>
-                            {i18n.t('exercise.reps')}:  {repetitions}
+                            {repetitions ? `${i18n.t('exercise.reps')}: ${repetitions}` : null}
                             <b/>
-                            {i18n.t('exercise.weight')}: {weight}
+                            {weight ? `${i18n.t('exercise.weight')}: ${weight}` : null}
                             <b/>
-                            {i18n.t('workoutData.sets')}: {sets}
+                            {sets ? `${i18n.t('workoutData.sets')}: ${sets}` : null}
                         </div>
                 )}
 
@@ -159,9 +158,9 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                             </div>
                         </div>
                         : <div className='exercise-fields_mode'>
-                            {i18n.t('exercise.reps')}: {repetitions}
+                            {repetitions ? `${i18n.t('exercise.reps')}: ${repetitions}` : null}
                             <b/>
-                            {i18n.t('workoutData.sets')}: {sets}
+                            {sets ? `${i18n.t('workoutData.sets')}: ${sets}` : null}
                         </div>
                 )}
 
@@ -175,9 +174,9 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                         </div>
                         :
                         <div className='exercise-fields_mode'>
-                            {i18n.t('exercise.duration')}: {duration ? convertDurationToMMSS(duration) : '00:00'}
+                            {duration ? `${i18n.t('exercise.duration')}: ${convertDurationToMMSS(duration)}` : null}
                             <b/>
-                            {i18n.t('workoutData.sets')}: {sets}
+                            {sets ? `${i18n.t('workoutData.sets')}: ${sets}` : null}
                         </div>
                 )}
 
@@ -194,11 +193,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                             </div>
                         </div>
                         : <div className={'exercise-fields_mode'}>
-                            {i18n.t('exercise.reps')}: {repetitions}
+                            {repetitions ? `${i18n.t('exercise.reps')}: ${repetitions}` : null}
                             <b/>
-                            {i18n.t('exercise.duration')}: {duration ? convertDurationToMMSS(duration) : '00:00'}
+                            {duration ? `${i18n.t('exercise.duration')}: ${convertDurationToMMSS(duration)}` : null}
                             <b/>
-                            {i18n.t('workoutData.sets')}: {sets}
+                            {sets ? `${i18n.t('workoutData.sets')}: ${sets}` : null}
                         </div>
                 )}
 
@@ -215,11 +214,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                             </div>
                         </div>
                         :<div className='exercise-fields_mode'>
-                            {i18n.t('exercise.duration')}: {duration ? convertDurationToMMSS(duration) : '00:00'}
+                            {duration ? `${i18n.t('exercise.duration')}: ${convertDurationToMMSS(duration)}` : null}
                             <b/>
-                            {i18n.t('exercise.distance')}: {distance}
+                            {distance ? `${i18n.t('exercise.distance')}: ${distance}` : null}
                             <b/>
-                            {i18n.t('workoutData.sets')}: {sets}
+                            {sets ? `${i18n.t('workoutData.sets')}: ${sets}` : null}
                         </div>
 
                 )}
@@ -237,11 +236,11 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                             </div>
                         </div>
                         : <div className='exercise-fields_mode'>
-                            {i18n.t('exercise.duration')}: {duration ? convertDurationToMMSS(duration) : '00:00'}
+                            {duration ? `${i18n.t('exercise.duration')}: ${convertDurationToMMSS(duration)}` : null}
                             <b/>
-                            {i18n.t('exercise.distance')}: {distance}
+                            {distance ? `${i18n.t('exercise.distance')}: ${distance}` : null}
                             <b/>
-                            {i18n.t('workoutData.sets')}: {sets}
+                            {sets ? `${i18n.t('workoutData.sets')}: ${sets}` : null}
                         </div>
                 )}
                 { mode === 'edit'

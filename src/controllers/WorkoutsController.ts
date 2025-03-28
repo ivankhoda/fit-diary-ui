@@ -61,23 +61,33 @@ export default class WorkoutController extends BaseController {
                 }});
     }
 
-  getUserWorkouts(): void {
-      new Get({url: `${getApiBaseUrl()}/user_workouts`}).execute()
+    @action
+  getUserSummaryWorkout(id?: string): void {
+      new Get({url: `${getApiBaseUrl()}/user_workouts/${id}/summary`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status === 'ok') {
-                  this.workoutsStore.setUserWorkoutsDone(res.user_workouts_done);
-                  this.workoutsStore.setUserWorkoutsInProgress(res.user_workouts_in_progress);
+                  this.workoutsStore.setSummaryWorkout(res.user_workout);
               }});
   }
 
+    getUserWorkouts(): void {
+        new Get({url: `${getApiBaseUrl()}/user_workouts`}).execute()
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === 'ok') {
+                    this.workoutsStore.setUserWorkoutsDone(res.user_workouts_done);
+                    this.workoutsStore.setUserWorkoutsInProgress(res.user_workouts_in_progress);
+                }});
+    }
+
   @action
-  initWorkout(name?: string): void {
-      new Post({params: {workout: {name}}, url: `${getApiBaseUrl()}/workouts/initialize_draft`}).execute()
-          .then(r => r.json())
-          .then(res => {this.workoutsStore.setDraftWorkout(res);
-              this.exerciseStore.setWorkoutExercises(res.exercises);});
-  }
+    initWorkout(name?: string): void {
+        new Post({params: {workout: {name}}, url: `${getApiBaseUrl()}/workouts/initialize_draft`}).execute()
+            .then(r => r.json())
+            .then(res => {this.workoutsStore.setDraftWorkout(res);
+                this.exerciseStore.setWorkoutExercises(res.exercises);});
+    }
 
   @action
   deleteWorkout(id?: number): void {
@@ -87,13 +97,26 @@ export default class WorkoutController extends BaseController {
   }
 
   @action
-  finishWorkout(id?: number): void {
+  finishWorkout(id?: number, navigate?: (path: string) => void ): void {
       new Post({params: {user_workout: {id}}, url: `${getApiBaseUrl()}/user_workouts/finish_workout`}).execute()
           .then(r => r.json())
           .then(res => {
               this.workoutsStore.updateUserWorkoutsDone(res.user_workout);
               this.workoutsStore.updateUserWorkoutsInProgress(res.user_workout.id);
               this.workoutsStore.setCurrentUserWorkout(null);
+              this.workoutsStore.setSummaryWorkout(res.user_workout);
+              navigate(`/workouts/${id}/summary`);
+          });
+  }
+
+  @action
+  updateUserWorkout(id: string, comment: string, navigate?: (path: string) => void ): void {
+      new Patch({params: {user_workout: {id, comment}}, url: `${getApiBaseUrl()}/user_workouts/${id}`}).execute()
+          .then(r => r.json())
+          .then(res => {
+              if(res.ok){
+                  navigate('/');
+              }
           });
   }
 

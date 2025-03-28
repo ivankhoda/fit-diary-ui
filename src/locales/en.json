@@ -131,6 +131,12 @@
   "date":"Date",
   "workoutData": {
     "exercises": "Exercises ",
+    "comment": "Comment",
+    "add_comment": "Add Comment",
+    "ok": "OK",
+    "save": "Save",
+    "sets_planned": "Sets planned",
+    "sets_done": "Sets done",
     "createNewWorkout": "Create New Workout",
     "workoutInformation": "Workout Information",
     "name": "Name",
@@ -302,7 +308,8 @@
     "startSet": "Start Set",
     "finishSet": "Finish Set",
     "finishExercise": "Finish Exercise",
-    "duration": "Duration"
+    "duration": "Duration",
+    "comment": "Comment"
   },
   "progress": "Progress",
   "desc": {
