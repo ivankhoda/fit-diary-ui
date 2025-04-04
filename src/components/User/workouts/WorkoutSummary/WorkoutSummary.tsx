@@ -24,21 +24,31 @@ export interface WorkoutSummaryProps {
 const WorkoutSummary: React.FC<WorkoutSummaryProps> = ({ workoutsStore, workoutsController }) => {
     const [currentWorkout, setCurrentWorkout] = useState<WorkoutSummaryProps['workoutsStore']['summaryUserWorkout'] | null>(null);
     const [comment, setComment] = useState(workoutsStore?.summaryUserWorkout?.comment || '');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const { workoutId } = useParams();
-    const MAX_COMMENT_LENGTH = 500;
+    const MAX_COMMENT_LENGTH = 250;
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchWorkout = async() => {
-            if (!workoutsStore?.summaryUserWorkout) {
-                await workoutsController?.getUserSummaryWorkout(workoutId);
+            setIsLoading(true);
+            try {
+                if (!workoutsStore?.summaryUserWorkout) {
+                    await workoutsController?.getUserSummaryWorkout(workoutId);
+                }
+                setCurrentWorkout(workoutsStore?.summaryUserWorkout);
+                setComment(workoutsStore?.summaryUserWorkout?.comment || '');
+            } catch (error) {
+                console.error('Error fetching workout:', error);
+            } finally {
+                setIsLoading(false);
             }
-            setCurrentWorkout(workoutsStore?.summaryUserWorkout);
-            setComment(workoutsStore?.summaryUserWorkout?.comment || '');
         };
 
-        fetchWorkout();
+        if (workoutId) {
+            fetchWorkout();
+        }
     }, [workoutId,
         workoutsController,
         workoutsStore?.summaryUserWorkout]);
@@ -59,6 +69,10 @@ const WorkoutSummary: React.FC<WorkoutSummaryProps> = ({ workoutsStore, workouts
         workoutsController,
         workoutId,
         navigate]);
+
+    if (isLoading) {
+        return <div className="loading-indicator">{t('workoutData.loading')}</div>;
+    }
 
     if (!currentWorkout) {
         return <div className="no-workout">{t('workoutData.no_workout')}</div>;
@@ -93,6 +107,7 @@ const WorkoutSummary: React.FC<WorkoutSummaryProps> = ({ workoutsStore, workouts
                     placeholder={t('workoutData.add_comment')}
                     maxLength={MAX_COMMENT_LENGTH}
                 />
+                <div className="comment-length">{comment.length}/{MAX_COMMENT_LENGTH}</div>
             </div>
 
             <button

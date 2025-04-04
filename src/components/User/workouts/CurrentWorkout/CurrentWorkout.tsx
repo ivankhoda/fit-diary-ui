@@ -74,8 +74,7 @@ export const CurrentWorkout: React.FC<Props> =
         }, []);
 
         const handleExerciseClick = useCallback((exercise: ExerciseInterface) => {
-            workoutsController.startOrResumeExercise(exercise.exercise_id, currentWorkout.id, exercise.id);
-
+            exercisesStore.setCurrentExercise(null);
             const updates: Partial<ExerciseInterface> = {
                 distance: exercise.distance?.toString() || '0.0',
                 duration: exercise.duration ? Number(exercise.duration) : 0,
@@ -103,6 +102,10 @@ export const CurrentWorkout: React.FC<Props> =
             selectedExercise,
             setSelectedExercise,
             repetitions]);
+
+        const handleExerciseStartClick = useCallback((exercise: ExerciseInterface) => {
+            workoutsController.startOrResumeExercise(exercise.exercise_id, currentWorkout.id, exercise.id);
+        }, [currentWorkout]);
 
         const setDone = useCallback(() => {
             if (!selectedExercise) {return;}
@@ -193,7 +196,9 @@ export const CurrentWorkout: React.FC<Props> =
                         handleRepetitionsChange={handleReps}
                         handleDurationChange={handleDuration}
                         handleDistanceChange={handleDistance}
+                        startExerciseClick={handleExerciseStartClick}
                         finishExerciseClick={handleFinishExercise}
+                        currentUserExercise={exercisesStore.currentExercise}
                     />
                     }
 

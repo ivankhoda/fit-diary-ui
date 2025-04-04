@@ -168,7 +168,9 @@
     "kg": "kg",
     "date": "Date",
     "exercise_duration": "Completion time",
-    "setDuration": "Set Duration"
+    "setDuration": "Time",
+    "setsCount": "Sets",
+    "loading": "Loading..."
   },
   "permissionManagement": "Permission Management",
   "searchUser": "Search by user",
@@ -310,6 +312,7 @@
     "startSet": "Start Set",
     "finishSet": "Finish Set",
     "finishExercise": "Finish Exercise",
+    "startExercise": "Start Exercise",
     "duration": "Duration",
     "comment": "Comment"
   },

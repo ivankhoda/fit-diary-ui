@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ExerciseInterface } from '../../../../../store/exercisesStore';
 import { UserExerciseSets } from '../UserExerciseSets/UserExerciseSets';
 import './UserExercisesList.style.scss';
+import { FaRegClock, FaRedoAlt } from 'react-icons/fa';
 
 interface UserExercisesListProps {
   userExercises: ExerciseInterface[];
@@ -29,17 +30,25 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
     return (
         <div className="user-exercises-container">
             <h2>{t('workoutData.exercisesDone')}</h2>
+            <div className="user-exercise-table-header">
+                <span>{t('workoutData.exerciseName')}</span>
+                <div className='user-exercise-table-summary'>
+                    <span><FaRegClock /></span>
+                    <span><FaRedoAlt /></span>
+                </div>
+            </div>
+
             {userExercises.map(userExercise => (
                 userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && (
                     <div key={userExercise.id} className="exercise-item">
                         <div className="exercise-header" onClick={handleToggleExpand(userExercise)}>
                             <p className="exercise-name">{userExercise.name}</p>
-                            <p className="exercise-sets">{t('workoutData.sets')}: {userExercise.number_of_sets.length}</p>
+                            <div className='exercise-mini-summary'>
+                                {userExercise.formatted_duration && <p className="exercise-sets">{userExercise.formatted_duration}</p>}
+                                {userExercise.number_of_sets && <p className="exercise-sets">{userExercise.number_of_sets.length}</p>}
+
+                            </div>
                         </div>
-                        {userExercise.formatted_duration &&
-                        <div className="exercise-header">
-                            <p className="exercise-name">{t('workoutData.exercise_duration')}: {userExercise.formatted_duration}</p>
-                        </div>}
 
                         {expandedExerciseIds.includes(userExercise.id) && (
                             <UserExerciseSets

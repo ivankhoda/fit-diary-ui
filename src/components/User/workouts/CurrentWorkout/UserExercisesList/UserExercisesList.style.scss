@@ -1,12 +1,41 @@
 .user-exercises-container{
+  margin: 5px;
+  .user-exercise-table-header {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    padding: 8px 0;
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+    margin: 8px;
+  }
+
+  .user-exercise-table-header span {
+    text-align: left;
+  }
+
+  .user-exercise-table-header span:nth-child(2) {
+    text-align: center;
+  }
+
+  .user-exercise-table-header span:nth-child(3) {
+    text-align: center;
+  }
+
+  .user-exercise-table-summary{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+
   h2 {
-    font-size: 14px;
+    font-size: 18px;
     padding-right: 10px;
     padding-left: 10px;
     margin-top: 10px;
   }
 
-  .exercise-item{
+  .exercise-item {
   display: flex;
   flex-direction: column;
   align-items: baseline;
@@ -21,18 +50,27 @@
     width: 100%
   }
 
+  .exercise-mini-summary{
+    display: flex;
+    flex-direction: row;
+    min-width: 100px;
+    justify-content: space-between;
+  }
+  .exercise-mini-summary > *:only-child {
+    margin-left: auto;
+}
+
+
 
     .exercise-name, .exercise-sets, p {
-      font-size: 14px;
-      margin: 5px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
     }
 
     .user-set-details{
       width: 100%;
       margin-top: 15px;
-      div{
-        margin-top: 10px;
-      }
     }
   }
 }

@@ -16,11 +16,14 @@ export interface CurrentExerciseProps {
     handleDurationChange: (duration: string, exercise?: ExerciseInterface, ) => void;
     handleDistanceChange: (distance: string, exercise: ExerciseInterface) => void;
     finishExerciseClick?: (exercise?: ExerciseInterface) => void;
+    startExerciseClick?: (exercise?: ExerciseInterface) => void;
+    currentUserExercise?: ExerciseInterface;
 }
 
 export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
     handleRepetitionsChange,
-    handleWeightChange, handleDistanceChange, setDone, handleDurationChange, finishExerciseClick}): React.JSX.Element => {
+    handleWeightChange, handleDistanceChange,
+    setDone, handleDurationChange, startExerciseClick, finishExerciseClick, currentUserExercise}): React.JSX.Element => {
     const { type_of_measurement} = exercise;
     const { t, i18n } = useTranslation();
 
@@ -31,6 +34,10 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
     const handleFinishExerciseClick = useCallback(() => {
         finishExerciseClick(exercise);
     }, [finishExerciseClick, exercise]);
+
+    const handleStartExerciseClick = useCallback(() => {
+        startExerciseClick(exercise);
+    }, [startExerciseClick, exercise]);
 
     return (
         <div className='current-exercise'>
@@ -62,6 +69,7 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
                 {type_of_measurement === 'duration' && (
                     <div className="exercise-fields">
                         <div>
+                            <label>{i18n.t('exercise.duration')}</label>
                             <TimeInput onChange={handleDurationChange} exercise={exercise}/>
                         </div>
                     </div>
@@ -105,9 +113,15 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
                         </div>
                     </div>
                 )}
-
-                <button onClick={handleSetDone}>{t('workout.setDone')}</button>
-                {<button onClick={handleFinishExerciseClick}>{t('workout.finishExercise')}</button>}
+                <div className='button-group'>
+                    {currentUserExercise && currentUserExercise?.started_at && <button onClick={handleFinishExerciseClick}>
+                        {t('workout.finishExercise')}
+                    </button>}
+                    {currentUserExercise && currentUserExercise?.started_at && <button onClick={handleSetDone}>{t('workout.setDone')}</button>}
+                    {!currentUserExercise && !currentUserExercise?.started_at && <button onClick={handleStartExerciseClick}>
+                        {t('workout.startExercise')}
+                    </button>}
+                </div>
             </div>
         </div>
     );

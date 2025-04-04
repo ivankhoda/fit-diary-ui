@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-bind */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SetInterface } from '../../../../../store/exercisesStore';
@@ -12,80 +11,80 @@ interface UserExerciseSetsProps {
   exerciseId: number;
 }
 
-export const UserExerciseSets: React.FC<UserExerciseSetsProps> = ({ sets, measurementType, deleteSet, exerciseId }) => {
+const MEASUREMENT_CONFIG: Record<string, string[]> = {
+    cardio: ['distance', 'duration'],
+    distance: ['distance'],
+    duration: ['duration'],
+    duration_and_distance: ['duration', 'distance'],
+    duration_and_reps: ['duration', 'repetitions'],
+    reps: ['repetitions'],
+    weight_and_reps: ['repetitions', 'weight'],
+};
+
+export const UserExerciseSets: React.FC<UserExerciseSetsProps> = ({
+    sets,
+    measurementType,
+    deleteSet,
+    exerciseId,
+}) => {
     const { t } = useTranslation();
 
-    const renderSetDetails = (set: SetInterface, index: number) => {
-        switch (measurementType) {
-        case 'weight_and_reps':
-            return (
-                <p>
-                    {index + 1} <br/>
-                    {t('workoutData.repetitions')}: {set.repetitions} <br/>
-                    {t('workoutData.weight')}: {set.weight}
-                </p>
-            );
-        case 'reps':
-            return (
-                <p>
-                    {index + 1}  <br/>
-                    {t('workoutData.repetitions')}: {set.repetitions}
-                </p>
-            );
-        case 'duration':
-            return (
-                <p>
-                    {index + 1} <br/>
-                    {t('workoutData.duration')}: {convertDurationToMMSS(set.duration)}
-                </p>
-            );
-        case 'duration_and_reps':
-            return (
-                <p>
-                    {index + 1} <br/>
-                    {t('workoutData.duration')}: {convertDurationToMMSS(set.duration)} <br/>
-                    {t('workoutData.repetitions')}: {set.repetitions}
-                </p>
-            );
-        case 'cardio':
-            return (
-                <p>
-                    {index + 1} -  <br/>
-                    {t('workoutData.duration')}: {convertDurationToMMSS(set.duration)}  <br/>
-                    {t('workoutData.distance')}: {set.distance}
-                </p>
-            );
-        case 'duration_and_distance':
-            return (
-                <p>
-                    {index + 1} <br/>
-                    {t('workoutData.duration')}: {convertDurationToMMSS(set.duration)}  <br/>
-                    {t('workoutData.distance')}: {set.distance}
-                </p>
-            );
-        default:
-            return (
-                <p>
-                    {index + 1} <br/>
-                    {t('workoutData.result')}: {set.repetitions}
-                </p>
-            );
+    const fields = MEASUREMENT_CONFIG[measurementType] || ['reps'];
+    // eslint-disable-next-line no-magic-numbers
+    const columnCount = fields.length + 2;
+
+    const gridClass = `columns-${columnCount}`;
+
+    const renderHeaders = () => (
+        <>
+            <span>#</span>
+            {fields.map(field => (
+                <span key={field}>{t(`workoutData.${field}`)}</span>
+            ))}
+            <span />
+        </>
+    );
+
+    const handleDeleteSet = (setId: string) => () => {
+        if (deleteSet) {
+            deleteSet(setId, exerciseId);
         }
     };
 
+    const renderRow = (set: SetInterface, index: number) => {
+        const cells = [
+            <span key="index">{index + 1}</span>,
+            ...fields.map(field => {
+                let value: string | number | undefined = set[field as keyof SetInterface];
+                if (field === 'duration' && typeof value === 'number') {
+                    value = convertDurationToMMSS(value);
+                }
+                return <span key={field}>{value}</span>;
+            }),
+            <span key="delete">
+                {deleteSet && (
+                    <button
+                        onClick={handleDeleteSet(set.id)}
+                        className="delete-button"
+                        aria-label={t('workoutData.deleteSet')}
+                    >
+                        X
+                    </button>
+                )}
+            </span>,
+        ];
+
+        return (
+            <div key={set.id} className={`user-set-row ${gridClass}`}>
+                {cells}
+            </div>
+        );
+    };
+
     return (
-        <div className="user-set-details">
-            {sets.map((set, index) => (
-                <div key={set.id} className='user-set-container'>
-                    <div >
-                        {renderSetDetails(set, index)}
-                        {set.formatted_duration && <p>{t('workoutData.setDuration')}: {set.formatted_duration}</p>}
-                    </div>
-                    {deleteSet && <button onClick={() => {deleteSet(set.id, exerciseId);}}>
-                      X
-                    </button>}
-                </div>
-            ))}
+        <div className="user-set-details-table">
+            <div className={`user-set-header ${gridClass}`}>{renderHeaders()}</div>
+            {sets.map(renderRow)}
         </div>
     );
 };
