@@ -1,0 +1,30 @@
+.progress-bar {
+
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  height: 24px;
+  overflow: hidden;
+  margin: 5px;
+
+  .progress-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    transition: width 0.4s ease;
+
+    &.low {
+      background-color: #f44336; // Красный
+    }
+
+    &.medium {
+      background-color: #ff9800; // Оранжевый
+    }
+
+    &.high {
+      background-color: #4caf50; // Зелёный
+    }
+  }
+}

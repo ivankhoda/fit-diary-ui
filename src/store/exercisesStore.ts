@@ -20,6 +20,7 @@ export interface ExerciseInterface {
     started_at?: string;
     ended_at?: string;
     order?: string
+    workout_exercise_id?: number;
   }
 
 export interface SetInterface {

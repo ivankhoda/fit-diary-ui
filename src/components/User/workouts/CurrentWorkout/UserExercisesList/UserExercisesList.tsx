@@ -39,7 +39,7 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
             </div>
 
             {userExercises.map(userExercise => (
-                userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && (
+                (
                     <div key={userExercise.id} className="exercise-item">
                         <div className="exercise-header" onClick={handleToggleExpand(userExercise)}>
                             <p className="exercise-name">{userExercise.name}</p>
@@ -50,7 +50,7 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
                             </div>
                         </div>
 
-                        {expandedExerciseIds.includes(userExercise.id) && (
+                        { userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && expandedExerciseIds.includes(userExercise.id) && (
                             <UserExerciseSets
                                 sets={userExercise.number_of_sets}
                                 measurementType={userExercise.type_of_measurement}

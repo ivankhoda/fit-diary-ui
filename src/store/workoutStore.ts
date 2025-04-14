@@ -12,6 +12,8 @@ export interface WorkoutInterface {
     workout_exercises?: ExerciseInterface[];
     exercises?: ExerciseInterface[];
     user_exercises?: ExerciseInterface[];
+    current_workout_exercise?: ExerciseInterface;
+    current_user_exercise?: ExerciseInterface;
     current_set?: SetInterface
     duration?: string
     users?: UserProfile[];
@@ -19,6 +21,8 @@ export interface WorkoutInterface {
     created_at?: string;
     comment?: string;
     deleted?: boolean;
+    started_at?: number;
+    completion_rate?: number;
   }
 
 const NOT_FOUND = -1;
@@ -198,6 +202,18 @@ export default class WorkoutsStore {
             this.currentUserWorkout = {
                 ...this.currentUserWorkout,
                 user_exercises: userExercises
+            };
+        } else {
+            console.error('No current user workout is set');
+        }
+    }
+
+    @action
+    updateCurrentWorkoutCompletionRate(completion_rate: number): void {
+        if (this.currentUserWorkout) {
+            this.currentUserWorkout = {
+                ...this.currentUserWorkout,
+                completion_rate
             };
         } else {
             console.error('No current user workout is set');

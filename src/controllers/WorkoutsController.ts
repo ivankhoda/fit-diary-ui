@@ -56,20 +56,33 @@ export default class WorkoutController extends BaseController {
             .then(res => {
                 if(res.status === 'ok') {
                     this.workoutsStore.setCurrentUserWorkout(res.user_workout);
-                    this.exerciseStore.setCurrentUserExercise(res.exercise);
+                    this.exerciseStore.setCurrentUserExercise(res.user_workout.current_user_exercise);
+                    this.exerciseStore.setCurrentExercise(res.user_workout.current_workout_exercise);
                     res.exercise && this.exerciseStore.setCurrentUserExerciseSets(res.exercise.number_of_sets);
                 }});
     }
-
     @action
-  getUserSummaryWorkout(id?: string): void {
-      new Get({url: `${getApiBaseUrl()}/user_workouts/${id}/summary`}).execute()
+  getActiveUserWorkout(): void {
+      new Get({url: `${getApiBaseUrl()}/user_workouts/active`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status === 'ok') {
-                  this.workoutsStore.setSummaryWorkout(res.user_workout);
+                  this.workoutsStore.setCurrentUserWorkout(res.user_workout);
+                  this.exerciseStore.setCurrentUserExercise(res.user_workout.current_user_exercise);
+                  this.exerciseStore.setCurrentExercise(res.user_workout.current_workout_exercise);
+                  res.exercise && this.exerciseStore.setCurrentUserExerciseSets(res.exercise.number_of_sets);
               }});
   }
+
+    @action
+    getUserSummaryWorkout(id?: string): void {
+        new Get({url: `${getApiBaseUrl()}/user_workouts/${id}/summary`}).execute()
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === 'ok') {
+                    this.workoutsStore.setSummaryWorkout(res.user_workout);
+                }});
+    }
     @action
     getUserWorkouts(): void {
         new Get({url: `${getApiBaseUrl()}/user_workouts`}).execute()
@@ -294,7 +307,7 @@ export default class WorkoutController extends BaseController {
           .then(res => {
               if(res.ok){
                   this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
-                  this.exerciseStore.setCurrentExercise(res.user_exercise);
+                  this.exerciseStore.setCurrentUserExercise(res.user_exercise);
               }
           });
   }
@@ -307,7 +320,8 @@ export default class WorkoutController extends BaseController {
           .then(res => {
               if(res.ok){
                   this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
-                  this.exerciseStore.setCurrentExercise(res.user_exercise);
+                  this.workoutsStore.updateCurrentWorkoutCompletionRate(res.workout_completion_rate);
+                  this.exerciseStore.setCurrentUserExercise(res.user_exercise);
               }
           });
   }
@@ -342,7 +356,6 @@ export default class WorkoutController extends BaseController {
           params.user_workout.duration = p.duration;
           params.user_workout.distance = p.distance;
       }
-
       new Post({
           params,
           url: `${getApiBaseUrl()}/user_workouts/set_done`

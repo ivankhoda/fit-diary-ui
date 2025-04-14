@@ -22,6 +22,7 @@ import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
+import ProgressBar from '../../../Common/ProgressBar';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -41,40 +42,44 @@ export const CurrentWorkout: React.FC<Props> =
         const [sets] = useState(exercisesStore.currentUserExerciseSets);
         const navigate = useNavigate();
         const currentWorkout = workoutsStore.currentUserWorkout;
+        const {currentUserExercise} = exercisesStore;
+        const {currentExercise} = exercisesStore;
 
         useEffect(() => {
-            if (!currentWorkout) {
-                workoutsController.getUserWorkout(workoutId);
-            }
+            if (!currentWorkout) {workoutsController.getUserWorkout(workoutId);}
+            if (currentExercise) {handleExerciseClick(currentExercise);}
         }, [navigate,
             sets,
             currentWorkout,
-            selectedExercise]);
+            selectedExercise,
+            currentExercise,
+            currentUserExercise]);
 
         useEffect(() => {
-            if (currentWorkout) {
-                setSelectedExercises(currentWorkout.workout_exercises);
-            }
+            if (currentWorkout) {setSelectedExercises(currentWorkout.workout_exercises);}
         }, [currentWorkout]);
 
         const handleWeight = useCallback((w: string) => {setSelectedExercise(prev => ({...prev,weight: w}));
             setWeight(w);
-        }, []);
+        }, [weight]);
 
         const handleReps = useCallback((r: string) => {setSelectedExercise(prev => ({...prev,repetitions: Number(r)}));
             setRepetitions(r);
-        }, []);
+        }, [repetitions]);
 
         const handleDuration = useCallback((d: string) => {setSelectedExercise(prev => ({...prev,duration: Number(d)}));
             setDuration(d);
-        }, []);
+        }, [duration]);
 
         const handleDistance = useCallback((d: string) => {setSelectedExercise(prev => ({...prev,distance: d}));
             setDistance(d);
-        }, []);
+        }, [distance]);
 
         const handleExerciseClick = useCallback((exercise: ExerciseInterface) => {
             exercisesStore.setCurrentExercise(null);
+
+            if(exercise.id !== currentUserExercise?.workout_exercise_id) {exercisesStore.setCurrentUserExercise(null); }
+
             const updates: Partial<ExerciseInterface> = {
                 distance: exercise.distance?.toString() || '0.0',
                 duration: exercise.duration ? Number(exercise.duration) : 0,
@@ -111,7 +116,7 @@ export const CurrentWorkout: React.FC<Props> =
             if (!selectedExercise) {return;}
 
             const { type_of_measurement } = selectedExercise;
-            const { id } = exercisesStore.currentExercise;
+            const { id } = exercisesStore.currentUserExercise;
 
             const values = { distance, duration, repetitions, weight };
 
@@ -128,7 +133,6 @@ export const CurrentWorkout: React.FC<Props> =
 
             if (requiredFields && requiredFields.every(field => values[field] !== '' && values[field] !== '0')) {
                 const payload = requiredFields.reduce((acc, field) => ({ ...acc, [field]: values[field] }), { id });
-
                 workoutsController.setDone(selectedExercise, payload);
             } else {
                 console.log('Unknown or invalid type of measurement:', type_of_measurement);
@@ -198,11 +202,11 @@ export const CurrentWorkout: React.FC<Props> =
                         handleDistanceChange={handleDistance}
                         startExerciseClick={handleExerciseStartClick}
                         finishExerciseClick={handleFinishExercise}
-                        currentUserExercise={exercisesStore.currentExercise}
+                        currentUserExercise={exercisesStore.currentUserExercise}
                     />
                     }
-
-                    {currentWorkout.user_exercises.length > 0 && (
+                    {currentWorkout.completion_rate > 0 && <ProgressBar value={currentWorkout.completion_rate} />}
+                    {currentWorkout?.user_exercises?.length > 0 && (
                         <UserExercisesList userExercises={currentWorkout.user_exercises.slice().sort((a, b) => a.id - b.id)} deleteSet={deleteSet}/>)}
 
                     <button className='save-btn' onClick={handleFinishClick}>

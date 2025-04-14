@@ -22,6 +22,7 @@ export interface UserProfile {
     email: string;
     has_workouts: boolean;
     has_exercises: boolean;
+    has_active_workout: boolean;
 }
 
 export interface PermissionProfile{
