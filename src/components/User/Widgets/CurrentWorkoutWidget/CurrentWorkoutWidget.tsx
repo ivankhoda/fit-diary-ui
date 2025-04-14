@@ -34,7 +34,6 @@ export const CurrentWorkoutWidget = observer((): React.JSX.Element | null => {
     if (!currentWorkout) {
         return null;
     }
-    console.log('currentExe', currentExercise);
 
     const startedAtMs = currentWorkout.started_at * 1000;
     const durationMs = Date.now() - startedAtMs;
