@@ -43,9 +43,10 @@
   .button-group {
     display: flex;
     width: 100%;
+    min-height: 80px;
     gap: 10px;
     justify-content: center;
-    align-items: center;
+    align-items: start;
 
     flex-wrap: wrap;
 

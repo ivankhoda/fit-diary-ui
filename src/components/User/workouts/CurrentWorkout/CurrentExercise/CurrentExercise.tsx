@@ -6,6 +6,7 @@ import { TimeInput } from '../../../../Common/TimeInput';
 import RepetitionsInput from '../../../../Common/RepetitionsInput';
 import WeightInput from '../../../../Common/WeightInput';
 import DistanceInput from '../../../../Common/DistanceInput';
+import CommentInput from '../../../../Common/CommentInput';
 
 export interface CurrentExerciseProps {
   exercise: ExerciseInterface;
@@ -17,13 +18,15 @@ export interface CurrentExerciseProps {
     handleDistanceChange: (distance: string, exercise: ExerciseInterface) => void;
     finishExerciseClick?: (exercise?: ExerciseInterface) => void;
     startExerciseClick?: (exercise?: ExerciseInterface) => void;
+    handleCommentChange: (comment: string, exercise: ExerciseInterface) => void;
     currentUserExercise?: ExerciseInterface;
 }
 
 export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
     handleRepetitionsChange,
     handleWeightChange, handleDistanceChange,
-    setDone, handleDurationChange, startExerciseClick, finishExerciseClick, currentUserExercise}): React.JSX.Element => {
+    setDone, handleDurationChange, startExerciseClick, finishExerciseClick, currentUserExercise,
+    handleCommentChange}): React.JSX.Element => {
     const { type_of_measurement} = exercise;
     const { t, i18n } = useTranslation();
 
@@ -121,6 +124,9 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
                     {!currentUserExercise && !currentUserExercise?.started_at && <button onClick={handleStartExerciseClick}>
                         {t('workout.startExercise')}
                     </button>}
+
+                    {currentUserExercise && currentUserExercise?.started_at && <CommentInput  exercise={currentUserExercise}
+                        onChange={handleCommentChange}/>}
                 </div>
             </div>
         </div>

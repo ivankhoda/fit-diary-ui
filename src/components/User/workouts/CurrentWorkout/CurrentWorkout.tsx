@@ -36,6 +36,7 @@ export const CurrentWorkout: React.FC<Props> =
         const [repetitions, setRepetitions] = useState(selectedExercise?.repetitions?.toString() || '0');
         const [duration, setDuration] = useState(selectedExercise?.duration ? selectedExercise?.duration : '');
         const [distance, setDistance] = useState(selectedExercise?.distance?.toString() || '0');
+        const [comment, setComment] = useState(selectedExercise?.comment?.toString() || '0');
 
         const { workoutId } = useParams<{ workoutId: string }>();
 
@@ -75,12 +76,17 @@ export const CurrentWorkout: React.FC<Props> =
             setDistance(d);
         }, [distance]);
 
+        const handleCommentChange = useCallback((d: string) => {setSelectedExercise(prev => ({...prev,comment: d}));
+            setComment(d);
+        }, [comment]);
+
         const handleExerciseClick = useCallback((exercise: ExerciseInterface) => {
             exercisesStore.setCurrentExercise(null);
 
             if(exercise.id !== currentUserExercise?.workout_exercise_id) {exercisesStore.setCurrentUserExercise(null); }
 
             const updates: Partial<ExerciseInterface> = {
+                comment: exercise.comment || '',
                 distance: exercise.distance?.toString() || '0.0',
                 duration: exercise.duration ? Number(exercise.duration) : 0,
                 repetitions: exercise.repetitions || 0,
@@ -156,7 +162,7 @@ export const CurrentWorkout: React.FC<Props> =
         const handleExerciseClickFactory = (exercise: ExerciseInterface) => () => {handleExerciseClick(exercise);};
 
         const handleFinishExercise = useCallback(() => {
-            workoutsController.finishExercise(selectedExercise.exercise_id, currentWorkout.id, selectedExercise.id);
+            workoutsController.finishExercise(selectedExercise.exercise_id, currentWorkout.id, selectedExercise);
         }, [selectedExercise]);
 
         return currentWorkout
@@ -202,6 +208,7 @@ export const CurrentWorkout: React.FC<Props> =
                         handleDistanceChange={handleDistance}
                         startExerciseClick={handleExerciseStartClick}
                         finishExerciseClick={handleFinishExercise}
+                        handleCommentChange={handleCommentChange}
                         currentUserExercise={exercisesStore.currentUserExercise}
                     />
                     }

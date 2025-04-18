@@ -46,7 +46,8 @@ export default class WorkoutController extends BaseController {
       new Get({url: `${getApiBaseUrl()}/workouts/${id}`}).execute()
           .then(r => r.json())
           .then(res => {
-              this.workoutsStore.setDraftWorkout(res.workout);});
+              this.workoutsStore.setDraftWorkout(res.workout);
+              this.exerciseStore.setWorkoutExercises(res.workout.workout_exercises);});
   }
 
   @action
@@ -250,7 +251,7 @@ export default class WorkoutController extends BaseController {
           const payload = {
               workout: {
                   id: workoutId,
-                  exercises: exercises.map(ex => ({ id: ex.id, order: ex.order })),
+                  workout_exercises: exercises.map(ex => ({ id: ex.id, order: ex.order })),
               },
           };
 
@@ -313,12 +314,13 @@ export default class WorkoutController extends BaseController {
   }
 
   @action
-  finishExercise(exercise_id: number, workout_id: number, id: number): void {
-      new Post({params: {user_workout: {exercise_id, workout_id, id }},
+  finishExercise(exercise_id: number, workout_id: number, exercise: ExerciseInterface): void {
+      new Post({params: {user_workout: {exercise_id, workout_id, id: exercise.id, exercise }},
           url: `${getApiBaseUrl()}/user_workouts/finish_exercise`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.ok){
+                  console.log(res);
                   this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
                   this.workoutsStore.updateCurrentWorkoutCompletionRate(res.workout_completion_rate);
                   this.exerciseStore.setCurrentUserExercise(res.user_exercise);

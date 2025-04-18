@@ -14,6 +14,7 @@ import WeightInput from '../../../Common/WeightInput';
 import TimeInput from '../../../Common/TimeInput';
 import DistanceInput from '../../../Common/DistanceInput';
 import { useDrag, useDrop } from 'react-dnd';
+import CommentInput from '../../../Common/CommentInput';
 
 const ItemType = { EXERCISE: 'exercise' };
 
@@ -34,7 +35,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
     handleExerciseDetailChange,
     handleExerciseDelete, editWorkoutExercise, mode, onClick, index, moveExercise, length
 }) => {
-    const { id, name, type_of_measurement, sets, repetitions, weight, duration, distance } = exercise;
+    const { id, name, type_of_measurement, sets, repetitions, weight, duration, distance, order, comment } = exercise;
 
     const handleSetsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const {value} = e.target;
@@ -64,6 +65,10 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleDistanceChange = useCallback((d: string) => {
         handleExerciseDetailChange(id, 'distance', d);
+    }, []);
+
+    const handleCommentChange = useCallback((d: string) => {
+        handleExerciseDetailChange(id, 'comment', d);
     }, []);
 
     const handleBlur = useCallback((field: string, value: string | number | null) => {
@@ -122,8 +127,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                 : null}
             role={mode === 'view' ? 'button' : null} tabIndex={mode === 'view' ? 0 : null}>
             <div>
-                <strong>{exercise.order}. {name}</strong>
-
+                <strong>{order}. {name}</strong>
             </div>
 
             <div className='exercise-small-table-data'>
@@ -272,8 +276,21 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
                                 <FontAwesomeIcon icon={faArrowDown} />
                             </button>
                         </div>}
+
                     </div>
+
                     : null}
+                {mode === 'edit' && (
+                    <CommentInput
+                        exercise={exercise}
+                        onChange={handleCommentChange}
+                        onBlur={handleBlur}
+                    />
+
+                )}
+                {mode === 'view' && <div>
+                    <span>{comment}</span>
+                </div>}
             </div>
         </div>
     );

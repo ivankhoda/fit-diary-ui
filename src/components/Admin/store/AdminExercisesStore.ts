@@ -18,6 +18,7 @@ export interface AdminExerciseProfile {
     type_of_measurement?: string;
     sets?: number
     order?: string
+    comment?: string;
 }
 const NOT_FOUND = -1;
 

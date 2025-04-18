@@ -21,6 +21,7 @@ export interface ExerciseInterface {
     ended_at?: string;
     order?: string
     workout_exercise_id?: number;
+    comment?: string;
   }
 
 export interface SetInterface {
@@ -96,7 +97,7 @@ export default class ExercisesStore {
 
     @action
     setWorkoutExercises(exercises: ExerciseInterface[]): void {
-        this.workoutExercises = exercises;
+        this.workoutExercises = [...this.workoutExercises,...exercises];
     }
 
     @action

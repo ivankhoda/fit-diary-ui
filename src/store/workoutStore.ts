@@ -161,12 +161,12 @@ export default class WorkoutsStore {
      @action
      updateOrAddDraftWorkoutExercise(newExercise: ExerciseInterface): void {
          if (this.draftWorkout) {
-             const index = this.draftWorkout.exercises.findIndex(ex => ex.id === newExercise.id);
+             const index = this.draftWorkout.workout_exercises.findIndex(ex => ex.id === newExercise.id);
 
              if (index === NOT_FOUND) {
-                 this.draftWorkout.exercises = [...this.draftWorkout.exercises, newExercise];
+                 this.draftWorkout.workout_exercises = [...this.draftWorkout.workout_exercises, newExercise];
              } else {
-                 this.draftWorkout.exercises[index] = newExercise;
+                 this.draftWorkout.workout_exercises[index] = newExercise;
              }
          }
      }
@@ -177,7 +177,7 @@ export default class WorkoutsStore {
 
          if (!workout) {return;}
 
-         workout.exercises = updatedExercises;
+         workout.workout_exercises = updatedExercises;
      }
 
     @action

@@ -42,12 +42,17 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
                 (
                     <div key={userExercise.id} className="exercise-item">
                         <div className="exercise-header" onClick={handleToggleExpand(userExercise)}>
-                            <p className="exercise-name">{userExercise.name}</p>
-                            <div className='exercise-mini-summary'>
-                                {userExercise.formatted_duration && <p className="exercise-sets">{userExercise.formatted_duration}</p>}
-                                {userExercise.number_of_sets && <p className="exercise-sets">{userExercise.number_of_sets.length}</p>}
-
+                            <div className="header-top-row">
+                                <p className="exercise-name">{userExercise.name}</p>
+                                <div className="exercise-mini-summary">
+                                    {userExercise.formatted_duration && <p className="exercise-sets">{userExercise.formatted_duration}</p>}
+                                    {userExercise.number_of_sets && <p className="exercise-sets">{userExercise.number_of_sets.length}</p>}
+                                </div>
                             </div>
+
+                            {userExercise.comment && (
+                                <p className="user-exercise-comment">{userExercise.comment}</p>
+                            )}
                         </div>
 
                         { userExercise.number_of_sets && userExercise.number_of_sets.length > 0 && expandedExerciseIds.includes(userExercise.id) && (

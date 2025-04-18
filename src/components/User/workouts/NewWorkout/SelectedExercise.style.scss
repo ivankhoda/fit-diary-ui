@@ -62,6 +62,60 @@
     display: flex;
     flex-direction: column; /* All child divs stack vertically */
   }
+  .comment-button {
+    font-size: 1.5rem;
+  }
+  .exercise-commen {
+    width: 100%;
+  }
+}
+
+.comment-block {
+  display: flex;
+  align-items: center;  /* выравниваем кнопку и поле по центру */
+  gap: 10px;
+  min-height: 40px;  /* резервируем место, чтобы верстка не прыгала */
+}
+
+.comment-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.comment-field {
+  flex: 1;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.exercise-comment.hidden {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  height: 20px;
+}
+
+.exercise-comment.visible {
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  height: 20px;
+}
+
+.exercise-comment {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin: 0;
+}
+.exercise-comment::placeholder {
+  font-size: 12px;
+  color: #999;
+  opacity: 1;
 }
 
 .exercise-fields_mode {

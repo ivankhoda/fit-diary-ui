@@ -63,34 +63,30 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             setWorkoutName(fetchedWorkout.name || '');
             setDescription(fetchedWorkout.description || '');
             setSelectedExercises(
-                (fetchedWorkout.exercises || []).sort((a, b) => {
+                (fetchedWorkout.workout_exercises || []).sort((a, b) => {
                     if (a.order === b.order) {
                         return a.id - b.id;
                     }
                     return Number(a.order) - Number(b.order);
                 })
             );
+
             setSelectedUsers(fetchedWorkout.users || []);
         }
     }, [workoutsStore?.draftWorkout]);
 
     const handleExerciseClick = async(exercise: ExerciseInterface) => {
         try {
-            const addedExercise = await exercisesController?.addWorkoutExercise(workoutId, exercise.id);
+            await exercisesController?.addWorkoutExercise(workoutId, exercise.id);
 
-            if (addedExercise) {
-                const exerciseWithUuid = {
-                    ...exercise,
-                    id: addedExercise.id,
-                };
-
-                setSelectedExercises(prevExercises => {
-                    if (!prevExercises.find(e => e.id === exerciseWithUuid.id)) {
-                        return [...prevExercises, exerciseWithUuid];
+            setSelectedExercises(
+                exercisesStore?.workoutExercises.sort((a, b) => {
+                    if (a.order === b.order) {
+                        return a.id - b.id;
                     }
-                    return prevExercises;
-                });
-            }
+                    return Number(a.order) - Number(b.order);
+                }) || []
+            );
 
             setExerciseSearchTerm('');
         } catch (error) {
