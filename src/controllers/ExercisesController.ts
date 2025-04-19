@@ -145,6 +145,7 @@ export default class ExercisesController extends BaseController {
                 .then(r => r.json())
                 .then(res => {
                     this.workoutsStore.updateOrAddDraftWorkoutExercise(res);
+                    this.exerciseStore.updateWorkoutExercise(res);
                 })
                 .catch(error => {
                     console.error('Failed to edit workout exercise:', error);

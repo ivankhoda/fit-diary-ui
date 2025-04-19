@@ -63,7 +63,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             setWorkoutName(fetchedWorkout.name || '');
             setDescription(fetchedWorkout.description || '');
             setSelectedExercises(
-                (fetchedWorkout.workout_exercises || []).sort((a, b) => {
+                (exercisesStore?.workoutExercises || []).sort((a, b) => {
                     if (a.order === b.order) {
                         return a.id - b.id;
                     }
