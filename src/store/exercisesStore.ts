@@ -97,7 +97,7 @@ export default class ExercisesStore {
 
     @action
     setWorkoutExercises(exercises: ExerciseInterface[]): void {
-        this.workoutExercises = [...this.workoutExercises,...exercises];
+        this.workoutExercises = exercises;
     }
 
     @action
