@@ -24,7 +24,7 @@ export const FastAccessWorkout: React.FC<Props> = observer(({ workout }) => {
             <div className='workout-header'>
                 <h4 className='workout-title'>{workout.name}</h4>
                 <div className='workout-meta'>
-                    <span>{new Date(workout.created_at).toLocaleDateString()}</span>
+                    <span>{workout.created_at}</span>
                 </div>
             </div>
             <button className="save-btn" onClick={handleStartClick}>
