@@ -7,6 +7,7 @@ import UserController from "../../../controllers/UserController";
 import UserStore from "../../../store/userStore";
 import FloatingWidget from "../Widgets/FloatingWidget";
 import { CurrentWorkoutWidget } from "../Widgets/CurrentWorkoutWidget/CurrentWorkoutWidget";
+import { LastWorkoutsWidget } from "../Widgets/LastWorkoutWidget/LastWorkoutWidget";
 
 interface WorkingPanelProps {
   children: any;
@@ -34,6 +35,14 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
             <StartWidget />
           </div>
         )}
+
+        {location.pathname === "/" && userStore?.userProfile && !userStore.userProfile.has_active_workout && (
+                  <div className="widgets">
+                    <FloatingWidget>
+                      <LastWorkoutsWidget />
+                    </FloatingWidget>
+                  </div>
+                )}
          {location.pathname === "/" && userStore?.userProfile &&  userStore.userProfile.has_active_workout && <FloatingWidget>
         <div className="widget-content">
           <CurrentWorkoutWidget/>

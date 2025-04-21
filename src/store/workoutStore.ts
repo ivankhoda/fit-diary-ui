@@ -55,9 +55,17 @@ export default class WorkoutsStore {
     @observable
     usersWithPermissions: UserProfile[] = null;
 
+    @observable
+    lastUserWorkouts: WorkoutInterface[] = [];
+
     @action
     setUsersWithPermissions(users: UserProfile[]): void {
         this.usersWithPermissions = users;
+    }
+
+    @action
+    setLastWorkouts(workouts: WorkoutInterface[]): void {
+        this.lastUserWorkouts = workouts;
     }
 
     @action

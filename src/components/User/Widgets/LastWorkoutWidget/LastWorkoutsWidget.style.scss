@@ -1,0 +1,48 @@
+.last-workouts-widget {
+  padding: 16px;
+  border-radius: 12px;
+
+  .widget-title {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      color: var(--text-primary);
+  }
+
+  .workout-card {
+      padding: 12px;
+      border-bottom: 1px solid;
+
+      .workout-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+      }
+
+      .workout-title {
+          margin: 0;
+          font-size: 16px;
+
+      }
+
+      .workout-meta {
+          display: flex;
+          gap: 8px;
+          font-size: 12px;
+
+      }
+
+      .repeat-btn {
+          width: 100%;
+          padding: 8px;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: opacity 0.2s;
+
+          &:hover {
+              opacity: 0.9;
+          }
+      }
+  }
+}

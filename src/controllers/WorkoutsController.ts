@@ -51,17 +51,31 @@ export default class WorkoutController extends BaseController {
   }
 
   @action
-    getUserWorkout(id?: string): void {
-        new Get({url: `${getApiBaseUrl()}/user_workouts/${id}`}).execute()
-            .then(r => r.json())
-            .then(res => {
-                if(res.status === 'ok') {
-                    this.workoutsStore.setCurrentUserWorkout(res.user_workout);
-                    this.exerciseStore.setCurrentUserExercise(res.user_workout.current_user_exercise);
-                    this.exerciseStore.setCurrentExercise(res.user_workout.current_workout_exercise);
-                    res.exercise && this.exerciseStore.setCurrentUserExerciseSets(res.exercise.number_of_sets);
-                }});
+    getLastUserWorkouts(limit: number): void {
+        try {
+            new Get({url: `${getApiBaseUrl()}/workouts/last?limit=${limit}`}).execute()
+                .then(r => r.json())
+                .then(res => {
+                    if(res.ok) {
+                        this.workoutsStore.setLastWorkouts(res.data);
+                    }});
+        } catch (error) {
+            console.error('Failed to fetch last workouts', error);
+        }
     }
+
+  @action
+  getUserWorkout(id?: string): void {
+      new Get({url: `${getApiBaseUrl()}/user_workouts/${id}`}).execute()
+          .then(r => r.json())
+          .then(res => {
+              if(res.status === 'ok') {
+                  this.workoutsStore.setCurrentUserWorkout(res.user_workout);
+                  this.exerciseStore.setCurrentUserExercise(res.user_workout.current_user_exercise);
+                  this.exerciseStore.setCurrentExercise(res.user_workout.current_workout_exercise);
+                  res.exercise && this.exerciseStore.setCurrentUserExerciseSets(res.exercise.number_of_sets);
+              }});
+  }
     @action
   getActiveUserWorkout(): void {
       new Get({url: `${getApiBaseUrl()}/user_workouts/active`}).execute()
