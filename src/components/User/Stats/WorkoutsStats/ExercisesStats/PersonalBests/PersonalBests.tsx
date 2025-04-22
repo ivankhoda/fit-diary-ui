@@ -51,10 +51,21 @@ export const PersonalBests: React.FC<PersonalBestsProps> = ({ personalBests, typ
 
     const translationKeys = getTranslationKeys();
 
-    const formatLocalDate = (utcDate: string) => {
-        const date = new Date(utcDate);
+    const parseUTCStringToLocale = (dateStr:string) => {
+        const isoString = dateStr.replace(' ', 'T').replace(' UTC', 'Z');
+
+        const date = new Date(isoString);
+
+        if (isNaN(date.getTime())) {
+            return 'Invalid Date';
+        }
 
         return date.toLocaleString('en-GB', { hour12: false });
+    };
+
+    const formatLocalDate = (utcDate: string) => {
+        const date = parseUTCStringToLocale(utcDate);
+        return date;
     };
 
     return (
