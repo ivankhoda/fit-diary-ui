@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+/* eslint-disable no-magic-numbers */
+import React, { useCallback, useEffect, useState } from 'react';
 import './CurrentExercise.style.scss';
 import { useTranslation } from 'react-i18next';
 import { ExerciseInterface } from '../../../../../store/exercisesStore';
@@ -29,6 +30,7 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
     handleCommentChange}): React.JSX.Element => {
     const { type_of_measurement} = exercise;
     const { t, i18n } = useTranslation();
+    const [duration, setDuration] = useState<string>('00:00');
 
     const handleSetDone = useCallback(() => {
         setDone();
@@ -42,9 +44,53 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
         startExerciseClick(exercise);
     }, [startExerciseClick, exercise]);
 
+    const formatDuration = (elapsed: number): string => {
+        const hours = Math.floor(elapsed / (1000 * 60 * 60));
+        const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+        if (hours > 0) {
+            return [
+                hours.toString().padStart(2, '0'),
+                minutes.toString().padStart(2, '0'),
+                seconds.toString().padStart(2, '0')
+            ].join(':');
+        }
+
+        return [
+            minutes.toString().padStart(2, '0'), seconds.toString().padStart(2, '0')
+        ].join(':');
+    };
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout | undefined = null;
+
+        if (currentUserExercise?.started_at) {
+            const startTime = new Date(currentUserExercise.started_at).getTime();
+
+            interval = setInterval(() => {
+                const now = new Date().getTime();
+                const elapsed = now - startTime;
+                setDuration(formatDuration(elapsed));
+            }, 1000);
+        }
+
+        return () => {
+            if (interval) {clearInterval(interval);}
+        };
+    }, [currentUserExercise, exercise]);
+
+    useEffect(() => {
+        setDuration('00:00');
+    }, [exercise.id]);
+
     return (
         <div className='current-exercise'>
-            <h2>{exercise.name}</h2>
+            <div className='exercise-small-table-header'>
+                <h2>{exercise.name}</h2>
+                {currentUserExercise?.started_at && !currentUserExercise?.formatted_duration && <p>{duration}</p>}
+            </div>
+
             <div className='exercise-small-table-data'>
                 {type_of_measurement === 'weight_and_reps' && (
 

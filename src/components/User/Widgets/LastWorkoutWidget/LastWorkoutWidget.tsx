@@ -12,6 +12,10 @@ export const LastWorkoutsWidget = observer((): React.JSX.Element | null => {
         workoutsController.getLastUserWorkouts(2);
     }, [workoutsController, workoutsStore]);
 
+    if (lastWorkouts.length === 0) {
+        return null;
+    }
+
     return (
         <div className='last-workouts-widget'>
 

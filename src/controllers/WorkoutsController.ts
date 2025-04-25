@@ -334,7 +334,6 @@ export default class WorkoutController extends BaseController {
           .then(r => r.json())
           .then(res => {
               if(res.ok){
-                  console.log(res);
                   this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
                   this.workoutsStore.updateCurrentWorkoutCompletionRate(res.workout_completion_rate);
                   this.exerciseStore.setCurrentUserExercise(res.user_exercise);

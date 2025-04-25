@@ -2,7 +2,7 @@
 /* eslint-disable max-statements */
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { exercisesStore, workoutsStore } from '../../../../store/global';
 import { WorkoutInterface } from '../../../../store/workoutStore';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
@@ -15,7 +15,7 @@ import { CurrentExercise } from './CurrentExercise/CurrentExercise';
 import { UserExercisesList } from './UserExercisesList/UserExercisesList';
 import i18next from 'i18next';
 
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -41,6 +41,10 @@ export const CurrentWorkout: React.FC<Props> =
         const { workoutId } = useParams<{ workoutId: string }>();
 
         const [sets] = useState(exercisesStore.currentUserExerciseSets);
+
+        const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+        const swiperRef = useRef<SwiperClass | null>(null);
+
         const navigate = useNavigate();
         const currentWorkout = workoutsStore.currentUserWorkout;
         const {currentUserExercise} = exercisesStore;
@@ -48,13 +52,30 @@ export const CurrentWorkout: React.FC<Props> =
 
         useEffect(() => {
             if (!currentWorkout) {workoutsController.getUserWorkout(workoutId);}
-            if (currentExercise) {handleExerciseClick(currentExercise);}
+            if (currentExercise) {handleExerciseClick(currentExercise);
+                const exerciseIndex = currentWorkout.workout_exercises.findIndex(ex => ex.id === currentExercise.id);
+
+                if (exerciseIndex >= 0) {
+                    setActiveSlideIndex(exerciseIndex);
+                    swiperRef.current?.slideTo(exerciseIndex);
+                }
+            }
         }, [navigate,
             sets,
             currentWorkout,
             selectedExercise,
             currentExercise,
-            currentUserExercise]);
+            currentUserExercise,
+            activeSlideIndex]);
+
+        const onSwiper = useCallback((swiper: SwiperClass) => {
+            swiperRef.current = swiper;
+        }, []);
+
+        const handleSlideChange = useCallback((swiper: SwiperClass) => {
+            const newIndex = swiper.activeIndex;
+            setActiveSlideIndex(newIndex);
+        }, []);
 
         useEffect(() => {
             if (currentWorkout) {setSelectedExercises(currentWorkout.workout_exercises);}
@@ -162,6 +183,7 @@ export const CurrentWorkout: React.FC<Props> =
         const handleExerciseClickFactory = (exercise: ExerciseInterface) => () => {handleExerciseClick(exercise);};
 
         const handleFinishExercise = useCallback(() => {
+            exercisesStore.setCurrentUserExercise(null);
             workoutsController.finishExercise(selectedExercise.exercise_id, currentWorkout.id, selectedExercise);
         }, [selectedExercise]);
 
@@ -180,7 +202,9 @@ export const CurrentWorkout: React.FC<Props> =
                                         slidesPerView={1}
                                         pagination={{ clickable: true }}
                                         className="exercise-swiper"
-
+                                        initialSlide={activeSlideIndex}
+                                        onSwiper={onSwiper}
+                                        onSlideChange={handleSlideChange}
                                     >
                                         {selectedExercises.length > 0 &&
                                         selectedExercises.map(exercise => (
