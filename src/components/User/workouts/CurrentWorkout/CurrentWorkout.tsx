@@ -52,7 +52,14 @@ export const CurrentWorkout: React.FC<Props> =
 
         useEffect(() => {
             if (!currentWorkout) {workoutsController.getUserWorkout(workoutId);}
-            if (currentExercise) {handleExerciseClick(currentExercise);
+        }, [
+
+            currentWorkout,
+        ]);
+
+        useEffect(() => {
+            if (currentExercise && currentExercise.id !== selectedExercise?.id) {
+                handleExerciseClick(currentExercise);
                 const exerciseIndex = currentWorkout.workout_exercises.findIndex(ex => ex.id === currentExercise.id);
 
                 if (exerciseIndex >= 0) {
@@ -60,17 +67,44 @@ export const CurrentWorkout: React.FC<Props> =
                     swiperRef.current?.slideTo(exerciseIndex);
                 }
             }
-        }, [navigate,
+        }, [
             sets,
             currentWorkout,
-            selectedExercise,
             currentExercise,
-            currentUserExercise,
-            activeSlideIndex]);
+            selectedExercise?.id,
+        ]);
+
+        useEffect(() => {
+            if (currentWorkout && !currentExercise && !currentUserExercise) {
+                const userExercises = currentWorkout.user_exercises.map(ex => ({
+                    id: ex.id,
+                    workout_exercise_id: ex.workout_exercise_id,
+                }));
+
+                const nextExercise = currentWorkout.workout_exercises.find(
+                    ex => !userExercises.some(userEx => userEx.workout_exercise_id === ex.id)
+                );
+
+                if (nextExercise) {
+                    const index = currentWorkout.workout_exercises.findIndex(ex => ex.id === nextExercise.id);
+                    setActiveSlideIndex(index);
+
+                    if (swiperRef.current) {
+                        swiperRef.current.slideTo(index);
+                    }
+                }
+            }
+        }, [currentWorkout,
+            currentExercise,
+            currentWorkout?.user_exercises]);
 
         const onSwiper = useCallback((swiper: SwiperClass) => {
             swiperRef.current = swiper;
-        }, []);
+
+            if (typeof activeSlideIndex === 'number') {
+                swiper.slideTo(activeSlideIndex);
+            }
+        }, [activeSlideIndex]);
 
         const handleSlideChange = useCallback((swiper: SwiperClass) => {
             const newIndex = swiper.activeIndex;
@@ -185,7 +219,7 @@ export const CurrentWorkout: React.FC<Props> =
         const handleFinishExercise = useCallback(() => {
             exercisesStore.setCurrentUserExercise(null);
             workoutsController.finishExercise(selectedExercise.exercise_id, currentWorkout.id, selectedExercise);
-        }, [selectedExercise]);
+        }, [selectedExercise, currentUserExercise]);
 
         return currentWorkout
             ? (
