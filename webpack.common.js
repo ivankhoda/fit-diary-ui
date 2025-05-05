@@ -6,6 +6,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './src/index.tsx',
@@ -86,6 +87,12 @@ module.exports = {
             favicon: './public/plank.png'
         }),
         new ForkTsCheckerWebpackPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [
+              { from: 'public/manifest.json', to: 'manifest.json' },
+              { from: 'public/icons', to: 'icons' } // если у тебя есть иконки
+            ]
+          }),
         new ESLintPlugin({
             extensions: [
                 '.tsx',
