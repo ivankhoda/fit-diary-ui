@@ -33,8 +33,6 @@ const TrainingGoals: React.FC = (() => {
     }, []);
 
     const toggleGoalExpansion = useCallback((goalId: number) => {setExpandedGoals(prev => ({...prev,[goalId]: !prev[goalId]} ));}, []);
-    console.log('active goals', trainingGoalsStore.activeGoals );
-    console.log('completed goals', trainingGoalsStore.completedGoals );
 
     const handleToggleGoalExpansion = (goalId: number) => () => {
         toggleGoalExpansion(goalId);
@@ -132,18 +130,28 @@ const TrainingGoals: React.FC = (() => {
                 </div>
             </div>
 
-            <div className="goals-list">
-                {trainingGoalsStore.activeGoals.map(renderGoalItem)}
-            </div>
-
-            {trainingGoalsStore.completedGoals.length > 0 && (
-                <div className="training-goals__completed">
-                    <h2>Выполненные цели</h2>
-                    <div className="training-goals__grid">
-                        {trainingGoalsStore.completedGoals.map(renderGoalItem)}
+            {trainingGoalsStore.activeGoals.length === 0
+                ? (
+                    <div>
+                        <p>{'Нет активных целей'}</p>
                     </div>
-                </div>
-            )}
+                )
+                : (
+                    <>
+                        <div className="goals-list">
+                            {trainingGoalsStore.activeGoals.map(renderGoalItem)}
+                        </div>
+
+                        {trainingGoalsStore.completedGoals.length > 0 && (
+                            <div className="training-goals__completed">
+                                <h2>Выполненные цели</h2>
+                                <div className="training-goals__grid">
+                                    {trainingGoalsStore.completedGoals.map(renderGoalItem)}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
         </div>
     );
 });
