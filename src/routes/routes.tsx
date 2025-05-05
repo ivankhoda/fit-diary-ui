@@ -18,6 +18,8 @@ import Permissions from '../components/User/Permissons/Permissions';
 import NewPermission from '../components/User/Permissons/NewPermission';
 import WorkoutSummary from '../components/User/workouts/WorkoutSummary/WorkoutSummary';
 import UserWorkoutsArchived from '../components/User/workouts/UserWorkoutsArchived';
+import TrainingGoals from '../components/User/TrainingGoals/TrainingGoals';
+import TrainingGoal from '../components/User/TrainingGoals/TrainingGoal/TrainingGoal';
 
 // eslint-disable-next-line func-style
 function useQuery() {
@@ -39,6 +41,8 @@ export const ConfirmRegistrationWithToken: React.FC = () => {
 
 export const routes = [
     {Component:  <Commands />, name: 'Commands', path: '/commands'},
+    {Component:  <TrainingGoals />, name: 'Goals', path: '/training_goals'},
+    {Component:  <TrainingGoal />, name: 'Goal', path: '/training-goals/:id'},
     {Component:  <Workouts />, name: 'Workouts', path: '/workouts'},
     {Component:  <UserWorkoutsInProgress />, name: 'Workouts in progress', path: '/workouts/in-progress'},
     {Component:  <UserWorkouts />, name: 'Workouts done', path: '/workouts/done'},

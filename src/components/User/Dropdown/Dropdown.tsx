@@ -11,6 +11,7 @@ export interface OptionInterface {
 
 // Main menu options
 const options: OptionInterface[] = [
+    { linkTo: '/training_goals', text: 'Цели' },
     { linkTo: '/exercises', text: 'Упражнения' },
 
     {
