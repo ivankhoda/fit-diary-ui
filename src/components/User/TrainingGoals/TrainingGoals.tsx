@@ -110,14 +110,6 @@ const TrainingGoals: React.FC = (() => {
         );
     }
 
-    if (trainingGoalsStore.activeGoals.length === 0 && !isLoading) {
-        return (
-            <div>
-                <p>{'Нет активных целей'}</p>
-            </div>
-        );
-    }
-
     return (
         <div className='container training-goals'>
             <div className="training-goals__header">
