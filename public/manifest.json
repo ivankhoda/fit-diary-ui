@@ -4,7 +4,7 @@
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#007bff",
+  "theme_color": "#f8fafd",
   "orientation": "portrait",
   "icons": [
     {
@@ -17,5 +17,11 @@
       "type": "image/png",
       "sizes": "512x512"
     }
+  ],
+  "description": "Приложение для тренировок.",
+  "categories": [
+    "entertainment",
+    "fitness",
+    "sports"
   ]
 }
