@@ -69,7 +69,7 @@ export default class TrainingGoalsController extends BaseController {
                     .then(r => r.json())
                     .then(res => {
                         if (res.ok) {
-                            this.trainingGoalsStore.addGoal(res);
+                            this.trainingGoalsStore.addGoal(res.goal);
                             resolve(res);
                         } else {
                             reject(res.error);

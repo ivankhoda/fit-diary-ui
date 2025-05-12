@@ -104,6 +104,7 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
                 navigate('/training_goals');
             } else {
                 trainingGoalsController.createGoal(formData);
+                navigate('/training_goals');
             }
         } catch {
             setError('Не удалось сохранить цель. Попробуйте снова.');
