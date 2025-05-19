@@ -23,6 +23,7 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import ProgressBar from '../../../Common/ProgressBar';
+import AddExerciseModal from '../../../Common/modal/AddExerciseModal';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -37,6 +38,7 @@ export const CurrentWorkout: React.FC<Props> =
         const [duration, setDuration] = useState(selectedExercise?.duration ? selectedExercise?.duration : '');
         const [distance, setDistance] = useState(selectedExercise?.distance?.toString() || '0');
         const [comment, setComment] = useState(selectedExercise?.comment?.toString() || '0');
+        const [isModalOpen, setIsModalOpen] = useState(false);
 
         const { workoutId } = useParams<{ workoutId: string }>();
 
@@ -137,9 +139,7 @@ export const CurrentWorkout: React.FC<Props> =
 
         const handleExerciseClick = useCallback((exercise: ExerciseInterface) => {
             exercisesStore.setCurrentExercise(null);
-
-            if(exercise.id !== currentUserExercise?.workout_exercise_id) {exercisesStore.setCurrentUserExercise(null); }
-
+            exercisesStore.setCurrentUserExercise(exercise);
             const updates: Partial<ExerciseInterface> = {
                 comment: exercise.comment || '',
                 distance: exercise.distance?.toString() || '0.0',
@@ -174,9 +174,9 @@ export const CurrentWorkout: React.FC<Props> =
         }, [currentWorkout]);
 
         const setDone = useCallback(() => {
-            if (!selectedExercise) {return;}
+            if (!currentUserExercise) {return;}
 
-            const { type_of_measurement } = selectedExercise;
+            const { type_of_measurement } = currentUserExercise;
             const { id } = exercisesStore.currentUserExercise;
 
             const values = { distance, duration, repetitions, weight };
@@ -194,7 +194,7 @@ export const CurrentWorkout: React.FC<Props> =
 
             if (requiredFields && requiredFields.every(field => values[field] !== '' && values[field] !== '0')) {
                 const payload = requiredFields.reduce((acc, field) => ({ ...acc, [field]: values[field] }), { id });
-                workoutsController.setDone(selectedExercise, payload);
+                workoutsController.setDone(currentUserExercise, payload);
             } else {
                 console.log('Unknown or invalid type of measurement:', type_of_measurement);
             }
@@ -214,11 +214,19 @@ export const CurrentWorkout: React.FC<Props> =
             }
         }, [currentWorkout?.id]);
 
+        const handleAddExercise = useCallback(() => {
+            setIsModalOpen(true);
+            setSelectedExercise(null);
+        }, [currentWorkout?.id]);
+
+        const handleModalClose = useCallback(() => {
+            setIsModalOpen(false);
+        }, []);
+
         const handleExerciseClickFactory = (exercise: ExerciseInterface) => () => {handleExerciseClick(exercise);};
 
         const handleFinishExercise = useCallback(() => {
-            exercisesStore.setCurrentUserExercise(null);
-            workoutsController.finishExercise(selectedExercise.exercise_id, currentWorkout.id, selectedExercise);
+            workoutsController.finishExercise(currentUserExercise.exercise_id, currentWorkout.id, selectedExercise);
         }, [selectedExercise, currentUserExercise]);
 
         return currentWorkout
@@ -257,7 +265,7 @@ export const CurrentWorkout: React.FC<Props> =
                         )
                         : (<p>Нет упраженений для тренировки.</p>)}
 
-                    {selectedExercise && <CurrentExercise exercise={selectedExercise}
+                    {<CurrentExercise exercise={exercisesStore.currentUserExercise}
                         setDone={setDone}
                         exerciseDone={exerciseDone}
                         handleWeightChange={handleWeight}
@@ -273,10 +281,21 @@ export const CurrentWorkout: React.FC<Props> =
                     {currentWorkout.completion_rate > 0 && <ProgressBar value={currentWorkout.completion_rate} />}
                     {currentWorkout?.user_exercises?.length > 0 && (
                         <UserExercisesList userExercises={currentWorkout.user_exercises.slice().sort((a, b) => a.id - b.id)} deleteSet={deleteSet}/>)}
-
                     <button className='save-btn' onClick={handleFinishClick}>
                         {i18next.t('workout.finish')}
                     </button>
+
+                    {/* {isModalOpen && (<SimpleModal onClose={handleModalClose}/>)} */}
+                    {isModalOpen && (<AddExerciseModal
+                        onClose={handleModalClose}
+                        visible={isModalOpen}
+                        onSelect={handleExerciseStartClick}
+                        currentWorkoutId={currentWorkout.id}
+                    />)}
+
+                    {<button className='save-btn' onClick={handleAddExercise}>
+                        {i18next.t('workout.add_exercise')}
+                    </button>}
                 </div>
             )
             : (

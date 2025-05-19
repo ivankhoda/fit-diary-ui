@@ -28,7 +28,11 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
     handleWeightChange, handleDistanceChange,
     setDone, handleDurationChange, startExerciseClick, finishExerciseClick, currentUserExercise,
     handleCommentChange}): React.JSX.Element => {
-    const { type_of_measurement} = exercise;
+    if (!currentUserExercise){
+        return <></>;
+    }
+
+    const { type_of_measurement} = currentUserExercise;
     const { t, i18n } = useTranslation();
     const [duration, setDuration] = useState<string>('00:00');
 
@@ -167,7 +171,7 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
                         {t('workout.finishExercise')}
                     </button>}
                     {currentUserExercise && currentUserExercise?.started_at && <button onClick={handleSetDone}>{t('workout.setDone')}</button>}
-                    {!currentUserExercise && !currentUserExercise?.started_at && <button onClick={handleStartExerciseClick}>
+                    {currentUserExercise && !currentUserExercise?.started_at && <button onClick={handleStartExerciseClick}>
                         {t('workout.startExercise')}
                     </button>}
 

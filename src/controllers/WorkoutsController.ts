@@ -315,7 +315,7 @@ export default class WorkoutController extends BaseController {
 
   // eslint-disable-next-line max-params
   @action
-  startOrResumeExercise(exercise_id: number, workout_id: number, id: number): void {
+  startOrResumeExercise(exercise_id: number, workout_id: number, id?: number): void {
       new Post({params: {user_workout: {exercise_id, workout_id, id }},
           url: `${getApiBaseUrl()}/user_workouts/start_exercise`}).execute()
           .then(r => r.json())
@@ -336,7 +336,7 @@ export default class WorkoutController extends BaseController {
               if(res.ok){
                   this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
                   this.workoutsStore.updateCurrentWorkoutCompletionRate(res.workout_completion_rate);
-                  this.exerciseStore.setCurrentUserExercise(res.user_exercise);
+                  this.exerciseStore.setCurrentUserExercise(null);
               }
           });
   }

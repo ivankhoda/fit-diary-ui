@@ -314,7 +314,8 @@
     "finishExercise": "Finish Exercise",
     "startExercise": "Start Exercise",
     "duration": "Duration",
-    "comment": "Comment"
+    "comment": "Comment",
+    "add_exercise": "Do extra exercise"
   },
   "progress": "Progress",
   "desc": {

@@ -24,7 +24,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ value }) => {
                 className={`progress-fill ${progressClass}`}
                 style={{ width: `${safeValue}%` }}
             >
-                {safeValue}%
+                {value}%
             </div>
         </div>
     );
