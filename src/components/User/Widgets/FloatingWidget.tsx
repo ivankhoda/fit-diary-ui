@@ -118,7 +118,6 @@ const FloatingWidget: React.FC<FloatingWidgetProps> = ({
             style={{
                 cursor: isDragging ? 'grabbing' : 'grab',
                 left: `${position.x}px`,
-                position: 'fixed',
                 top: `${position.y}px`,
                 transition: isDragging ? 'none' : 'top 0.3s ease'
             }}

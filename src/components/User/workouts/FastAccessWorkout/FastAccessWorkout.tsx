@@ -7,16 +7,17 @@ import { WorkoutInterface } from '../../../../store/workoutStore';
 
 interface Props {
     workout?: WorkoutInterface;
+    plan_id?: number;
 
 }
 
-export const FastAccessWorkout: React.FC<Props> = observer(({ workout }) => {
+export const FastAccessWorkout: React.FC<Props> = observer(({ workout, plan_id }) => {
     const navigate = useNavigate();
 
     const handleStartClick = useCallback(() => {
-        workoutsController.startWorkout(workout.id);
+        workoutsController.startWorkout(workout.id, plan_id);
         navigate(`/workout/${workout.id}`);
-    }, [workout]);
+    }, [workout, plan_id]);
 
     return (
         <>
@@ -28,7 +29,7 @@ export const FastAccessWorkout: React.FC<Props> = observer(({ workout }) => {
                 </div>
             </div>
             <button className="save-btn" onClick={handleStartClick}>
-                {'Повторить'}
+                {plan_id ? 'Начать' :'Повторить'}
             </button>
 
         </>

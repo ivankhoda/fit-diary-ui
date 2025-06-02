@@ -317,6 +317,12 @@
     "comment": "Comment",
     "add_exercise": "Do extra exercise"
   },
+  "workout_day": {
+    "by_date": "By Date",
+    "by_weekday": "By Weekday",
+    "by_day_number": "By Day Number",
+    "floating": "Floating"
+  },
   "progress": "Progress",
   "desc": {
   "title": "Welcome to Planka",
@@ -328,6 +334,12 @@
   "auth": {
     "no_account": "Don't have an account? Sign Up",
     "have_account": "Already have an account? Sign In"
-  }
-
+  },
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday"
 }

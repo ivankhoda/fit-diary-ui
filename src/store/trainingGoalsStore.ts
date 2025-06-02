@@ -78,7 +78,7 @@ export default class TrainingGoalsStore {
     @action
     updateGoal(updatedGoal: TrainingGoalInterface): void {
         const clonedGoal = { ...updatedGoal };
-        console.log('clonedGoal', clonedGoal);
+
         this.goals = this.goals.map(goal => goal.id === clonedGoal.id ? clonedGoal : goal);
     }
 

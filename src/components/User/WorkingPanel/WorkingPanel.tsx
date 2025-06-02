@@ -8,6 +8,7 @@ import UserStore from "../../../store/userStore";
 import FloatingWidget from "../Widgets/FloatingWidget";
 import { CurrentWorkoutWidget } from "../Widgets/CurrentWorkoutWidget/CurrentWorkoutWidget";
 import { LastWorkoutsWidget } from "../Widgets/LastWorkoutWidget/LastWorkoutWidget";
+import { ActivePlanWidget } from "../Widgets/ActivePlanWidget/ActivePlanWidget";
 
 interface WorkingPanelProps {
   children: any;
@@ -28,28 +29,38 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
       }
     }, [userController]);
 
+
     return (
       <div className="working-panel">
-        {location.pathname === "/" && userStore?.userProfile &&  (!userStore?.userProfile?.has_exercises && !userStore?.userProfile?.has_workouts) && (
-          <div className="widgets">
-            <StartWidget />
-          </div>
-        )}
+    <div className="widgets">
+      {location.pathname === "/" && userStore?.userProfile && (!userStore?.userProfile?.has_exercises && !userStore?.userProfile?.has_workouts) && (
+        <StartWidget />
+      )}
 
-        {location.pathname === "/" && userStore?.userProfile && !userStore.userProfile.has_active_workout && (
-                  <div className="widgets">
-                    <FloatingWidget>
-                      <LastWorkoutsWidget />
-                    </FloatingWidget>
-                  </div>
-                )}
-         {location.pathname === "/" && userStore?.userProfile &&  userStore.userProfile.has_active_workout && <FloatingWidget>
-        <div className="widget-content">
-          <CurrentWorkoutWidget/>
-        </div>
-      </FloatingWidget>}
-        {children}
-      </div>
+      {location.pathname === "/" && userStore?.userProfile?.active_plan?.has_active_plan && (
+        <FloatingWidget>
+          <ActivePlanWidget />
+        </FloatingWidget>
+      )}
+
+      {location.pathname === "/" && userStore?.userProfile && !userStore.userProfile.has_active_workout || !userStore?.userProfile?.active_plan?.has_active_plan && (
+        <FloatingWidget>
+          <LastWorkoutsWidget />
+        </FloatingWidget>
+      )}
+
+      {location.pathname === "/" && userStore?.userProfile?.has_active_workout && (
+        <FloatingWidget>
+          <div className="widget-content">
+            <CurrentWorkoutWidget />
+          </div>
+        </FloatingWidget>
+      )}
+    </div>
+
+    {children}
+  </div>
+
     );
   })
 );

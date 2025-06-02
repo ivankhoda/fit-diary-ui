@@ -23,6 +23,10 @@ export interface UserProfile {
     has_workouts: boolean;
     has_exercises: boolean;
     has_active_workout: boolean;
+    active_plan: {
+        has_active_plan: number;
+        plan_id: number
+    }
 }
 
 export interface PermissionProfile{

@@ -1,0 +1,219 @@
+@use "../../../../styles.scss" as styles;
+
+.workout-day-view {
+  max-width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  }
+
+  &.expanded {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .day-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 15px;
+    font-size: 1rem;
+
+    .day-name {
+      font-weight: 600;
+      color: #2c3e50;
+      flex: 1;
+    }
+
+    &_info{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+
+    }
+
+    .day-number {
+      background-color: #e0f7fa;
+      color: styles.$primary-color;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .workout-name {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      flex: 2;
+      text-align: right;
+    }
+  }
+
+  .day-details {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+
+    p {
+      margin: 8px 0;
+      color: #34495e;
+      line-height: 1.5;
+
+      b {
+        color: #2c3e50;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .day-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:first-child {
+        background-color: styles.$primary-color;
+        color: white;
+
+        &:hover {
+          background-color: #2980b9;
+        }
+      }
+
+      &:last-child {
+        background-color: #e74c3c;
+        color: white;
+
+        &:hover {
+          background-color: #c0392b;
+        }
+      }
+    }
+  }
+}
+
+.workout-day-form {
+  max-width: 800px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-size: 1.5rem;
+  }
+
+  .form-group {
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+
+      &:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &.secondary {
+        background-color: #ecf0f1;
+        color: #7f8c8d;
+
+        &:hover {
+          background-color: #bdc3c7;
+          color: #2c3e50;
+        }
+      }
+
+      &:not(.secondary) {
+        background-color: #2ecc71;
+        color: white;
+
+        &:hover {
+          background-color: #27ae60;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .workout-day-view {
+    .day-summary {
+      gap: 8px;
+
+      .workout-name {
+        text-align: left;
+        flex: 1 1 100%;
+      }
+    }
+  }
+
+  .workout-day-form {
+    h4 {
+      font-size: 1.3rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}

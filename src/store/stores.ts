@@ -1,5 +1,5 @@
 
-import { exercisesStore, workoutsStore, userStore, trainingGoalsStore } from './global';
-const stores = {exercisesStore, trainingGoalsStore, userStore, workoutsStore };
+import { exercisesStore, workoutsStore, userStore, trainingGoalsStore, plansStore } from './global';
+const stores = {exercisesStore, plansStore, trainingGoalsStore, userStore, workoutsStore };
 
 export default stores;

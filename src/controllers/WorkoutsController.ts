@@ -301,8 +301,8 @@ export default class WorkoutController extends BaseController {
   }
 
   @action
-  startWorkout(id: number): void {
-      new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/start`}).execute()
+  startWorkout(id: number, plan_id?: number): void {
+      new Post({params: {workout: {id, plan_id}}, url: `${getApiBaseUrl()}/workouts/start`}).execute()
           .then(r => r.json())
           .then(res => {
               if(res.status ==='ok') {

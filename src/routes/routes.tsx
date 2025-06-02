@@ -20,6 +20,8 @@ import WorkoutSummary from '../components/User/workouts/WorkoutSummary/WorkoutSu
 import UserWorkoutsArchived from '../components/User/workouts/UserWorkoutsArchived';
 import TrainingGoals from '../components/User/TrainingGoals/TrainingGoals';
 import TrainingGoal from '../components/User/TrainingGoals/TrainingGoal/TrainingGoal';
+import Plans from '../components/User/Plans/Plans';
+import PlanForm from '../components/User/Plans/PlanForm/PlanForm';
 
 // eslint-disable-next-line func-style
 function useQuery() {
@@ -43,6 +45,8 @@ export const routes = [
     {Component:  <Commands />, name: 'Commands', path: '/commands'},
     {Component:  <TrainingGoals />, name: 'Goals', path: '/training_goals'},
     {Component:  <TrainingGoal />, name: 'Goal', path: '/training-goals/:id'},
+    {Component:  <Plans />, name: 'Plans', path: '/plans'},
+    {Component:  <PlanForm />, name: 'Plan', path: '/plans/:id'},
     {Component:  <Workouts />, name: 'Workouts', path: '/workouts'},
     {Component:  <UserWorkoutsInProgress />, name: 'Workouts in progress', path: '/workouts/in-progress'},
     {Component:  <UserWorkouts />, name: 'Workouts done', path: '/workouts/done'},

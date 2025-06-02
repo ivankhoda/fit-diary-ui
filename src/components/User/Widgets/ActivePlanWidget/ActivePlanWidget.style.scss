@@ -1,0 +1,49 @@
+.active-plan-widget {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+
+    .widget-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .plan-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .plan-header {
+        .plan-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .plan-description {
+            font-size: 14px;
+            color: #666;
+        }
+    }
+
+    .current-day-info {
+        background: #f9f9f9;
+        border-left: 4px solid #4caf50;
+        padding: 10px 15px;
+        border-radius: 6px;
+
+        p {
+            margin: 4px 0;
+            font-size: 14px;
+        }
+
+        .day-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+    }
+}

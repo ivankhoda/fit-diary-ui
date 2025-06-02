@@ -1,0 +1,83 @@
+.plan-workout-container {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  p {
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .plan-workout-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+
+    button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  .exercises-container {
+    margin-top: 12px;
+    padding-left: 16px;
+
+    h4 {
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+    }
+
+    p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #555;
+    }
+  }
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 600px) {
+  .plan-workout-container {
+    padding: 10px;
+
+
+    .plan-workout-actions {
+      flex-direction: column;
+      gap: 8px;
+
+      button {
+        width: 100%;
+        font-size: 16px;
+        padding: 10px 0;
+      }
+    }
+
+    .exercises-container {
+      padding-left: 12px;
+
+      h4 {
+        font-size: 14px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+    }
+  }
+}
