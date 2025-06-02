@@ -43,11 +43,11 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
         </FloatingWidget>
       )}
 
-      {location.pathname === "/" && userStore?.userProfile && !userStore.userProfile.has_active_workout || !userStore?.userProfile?.active_plan?.has_active_plan && (
+      {/* {location.pathname === "/" && userStore?.userProfile && !userStore.userProfile.has_active_workout || !userStore?.userProfile?.active_plan?.has_active_plan && (
         <FloatingWidget>
           <LastWorkoutsWidget />
         </FloatingWidget>
-      )}
+      )} */}
 
       {location.pathname === "/" && userStore?.userProfile?.has_active_workout && (
         <FloatingWidget>
