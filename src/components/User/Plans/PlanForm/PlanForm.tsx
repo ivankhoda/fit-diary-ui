@@ -157,7 +157,6 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
         <div className="plan-form">
             <h2>{isEditMode ? 'Редактирование плана' : 'Создание нового плана'}</h2>
 
-            {/* Общие ошибки */}
             {generalError && <div className="error-message general-error">{generalError}</div>}
 
             <form onSubmit={handleSubmit} className="plan-form__form">
@@ -229,10 +228,10 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                     {fieldErrors.status && <div className="error-message">{fieldErrors.status}</div>}
 
                 </div>
-                <WorkoutDaysSection
+                {id && <WorkoutDaysSection
                     planId={Number(id)}
                     availableWorkouts={workoutsStore.workouts.map(w => ({ id: w.id, name: w.name }))}
-                />
+                />}
                 <div className="form-actions">
                     {isEditMode && (
                         <>

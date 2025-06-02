@@ -30,13 +30,13 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan }) => (
             )
         </div>
         }
-        <div>{plan.current_workout_day.workouts.length > 0 &&
-        <>
-            <p>{t('workout.name')}</p>
-            <FastAccessWorkout workout={plan.current_workout_day.workouts[0]} plan_id={plan.id}/>
-
-        </>
-        }
+        <div>
+            {plan.current_workout_day?.workouts && plan.current_workout_day.workouts.length > 0 && (
+                <>
+                    <p>{t('workout.name')}</p>
+                    <FastAccessWorkout workout={plan.current_workout_day.workouts[0]} plan_id={plan.id}/>
+                </>
+            )}
         </div>
 
         <Link

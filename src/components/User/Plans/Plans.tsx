@@ -48,7 +48,7 @@ const Plans: React.FC = () => {
 
     const filteredPlans = plansStore.plans.filter(plan => plan?.status === selectedStatus);
 
-    if (isLoading && plansStore.plans.length === 0) {
+    if (isLoading && plansStore.plans?.length === 0) {
         return <div className="plans__loading">Загружаем планы...</div>;
     }
 
