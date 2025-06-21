@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable react/jsx-no-bind */
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
@@ -58,7 +59,7 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
     };
 
     return (
-        <div className="workout-container">
+        <div className={`workout-container ${workout.assigned_to_user ? 'assigned-workout' : ''}`}>
 
             <p>{workout.name}  {workout.created_at?.split(' ')[0] || workout.date}</p>
             {state === 'completed' && <p>{t('workout.duration')}: {workout.duration}</p>}

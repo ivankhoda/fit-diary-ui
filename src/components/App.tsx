@@ -20,6 +20,9 @@ import { useTranslation } from "react-i18next";
 import boosty from "../images/boosty.png";
 import { t } from "i18next";
 import Footer from "./User/Footer/Footer";
+import { CoachModeProvider, useCoachMode } from "./Coach/CoachContext";
+import { coachRoutes } from "./Coach/routes/routes";
+import { CoachPanel } from "./Coach/CoachPanel";
 
 export const App = observer((): JSX.Element => {
   const { token, setToken, isAdmin } = useToken();
@@ -34,7 +37,9 @@ export const App = observer((): JSX.Element => {
     setIsDescriptionVisible(false);
   };
 
+
   return (
+     <CoachModeProvider>
     <Router>
       <Routes>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
@@ -67,6 +72,7 @@ export const App = observer((): JSX.Element => {
         )}
       </Routes>
     </Router>
+    </CoachModeProvider>
   );
 });
 
@@ -122,19 +128,29 @@ const AdminRoutes = (): JSX.Element => {
   );
 };
 
-const MainAppRoutes = ({ token }: { token: string }) => (
-  <>
-    <Header />
-    <WorkingPanel>
-      <Routes>
-        {routes.map(({ path, Component }) => (
-          <Route key={path} path={path} element={Component} />
-        ))}
-      </Routes>
-    </WorkingPanel>
-    <Footer />
-  </>
-);
+const MainAppRoutes = ({ token }: { token: string }) => {
+  const { mode } = useCoachMode();
+
+
+  return (
+    <>
+      {mode === "coach" ?
+      <CoachPanel/> :
+      <>
+      <Header />
+      <WorkingPanel>
+        <Routes>
+          {routes.map(({ path, Component }) => (
+            <Route key={path} path={path} element={Component} />
+          ))}
+        </Routes>
+      </WorkingPanel>
+      <Footer />
+      </>
+      }
+    </>
+  );
+};
 
 const AuthRoutes = ({
   isLogin,

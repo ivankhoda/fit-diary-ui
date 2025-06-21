@@ -1,0 +1,104 @@
+.admin-aside {
+
+  background-color: #f7f7f7; /* Light background color */
+  padding: 20px;
+  border-right: 1px solid #ccc; /* Separator border */
+
+  bottom: 0; /* Stretches to the bottom of the viewport */
+  height: 100vh; /* Full height of the viewport */
+  overflow-y: auto; /* Enable scrolling for long content */
+  z-index: 100; /* Ensure it stays on top of other content */
+  transition: transform 0.3s ease, width 0.3s ease; /* Smooth transitions for opening/closing */
+}
+
+/* Styling for the title of the aside panel */
+.admin-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Main navigation list in the aside */
+.admin-nav {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0;
+
+  li {
+    margin-bottom: 15px;
+
+    /* Styling for the links inside the navigation */
+    a {
+      display: block; /* Ensure links take full width */
+      text-decoration: none; /* Remove underline */
+      color: #333; /* Link color */
+      padding: 10px 15px;
+      border-radius: 4px;
+      transition: background 0.3s, color 0.3s;
+
+      &:hover {
+        background-color: #ddd; /* Background on hover */
+        color: #000; /* Text color on hover */
+      }
+
+      &.active {
+        background-color: #007bff; /* Active background */
+        color: white; /* Active text color */
+      }
+    }
+  }
+}
+
+/* Sub-menu styling */
+.sub-menu {
+  list-style-type: none; /* Remove bullet points */
+  padding-left: 20px; /* Indentation for sub-menu */
+  margin-top: 10px;
+
+  li {
+    margin-bottom: 10px;
+
+    a {
+      font-size: 0.9em; /* Smaller font for sub-menu items */
+      padding: 8px 15px;
+      color: #555; /* Slightly dimmer text color */
+
+      &:hover {
+        background-color: #eaeaea;
+        color: #333;
+      }
+    }
+  }
+}
+
+/* Toggle button for sub-menu */
+.nav-item-toggle {
+  display: block;
+  background: none;
+  border: none;
+  font-size: 1em;
+  font-weight: bold;
+  color: #333;
+  padding: 10px 15px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+
+  &:hover {
+    background-color: #ddd;
+  }
+}
+
+/* Styling for active sub-menu toggle */
+.nav-item-toggle.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Adjustments for when the aside panel is hidden (collapsed state) */
+.aside-hidden {
+  transform: translateX(-100%); /* Hide the aside panel off the screen */
+  width: 0; /* Collapse the width */
+}

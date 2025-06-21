@@ -23,6 +23,8 @@ export interface WorkoutInterface {
     deleted?: boolean;
     started_at?: number;
     completion_rate?: number;
+    assigned_users?: UserProfile[];
+    assigned_to_user?:boolean
   }
 
 const NOT_FOUND = -1;

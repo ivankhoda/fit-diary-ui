@@ -1,0 +1,59 @@
+.user-set-details-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+
+  .user-set-header,
+  .user-set-row {
+    display: grid;
+    gap: 12px;
+    align-items: center;
+    padding: 4px 0;
+  }
+
+  .user-set-header {
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+  }
+
+  .user-set-row {
+    border-bottom: 1px dashed #e0e0e0;
+
+    .delete-button {
+      min-width: 25px;
+      min-height: 25px;
+      background: none;
+      border: none;
+      color: #d11a2a;
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s ease;
+
+      svg {
+        pointer-events: none;
+      }
+
+      &:hover {
+        color: #a50e1d;
+      }
+    }
+  }
+
+  // Grid column definitions
+  .columns-3 {
+    grid-template-columns: 40px 1fr 40px;
+  }
+
+  .columns-4 {
+    grid-template-columns: 40px 1fr 1fr 40px;
+  }
+
+  .columns-5 {
+    grid-template-columns: 40px 1fr 1fr 1fr 40px;
+  }
+
+  .columns-6 {
+    grid-template-columns: 40px 1fr 1fr 1fr 1fr 40px;
+  }
+}

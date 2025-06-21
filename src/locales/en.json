@@ -227,6 +227,8 @@
       "previous": "Previous",
       "next": "Next"
     },
+    "all": "All",
+    "assigned": "Assigned",
     "createWorkoutButton": "Create New Workout"
   },
   "exercise": {

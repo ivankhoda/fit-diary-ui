@@ -120,7 +120,6 @@ export default class PlansStore {
             }
         }
 
-        // Также обновим currentPlan, если нужно
         if (this.currentPlan?.id === planId && this.currentPlan.workout_days) {
             const index = this.currentPlan.workout_days.findIndex(day => day.id === updatedDay.id);
 
@@ -138,7 +137,6 @@ export default class PlansStore {
             plan.workout_days = plan.workout_days.filter(day => day.id !== dayId);
         }
 
-        // Также обновим currentPlan, если нужно
         if (this.currentPlan?.id === planId && this.currentPlan.workout_days) {
             this.currentPlan.workout_days = this.currentPlan.workout_days.filter(day => day.id !== dayId);
         }

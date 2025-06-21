@@ -7,8 +7,18 @@
   flex-direction: column;
   height: 100vh;
 
+  .workouts-tabs{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .assigned-workout {
+  background-color: #f0f8ff;
+}
+
   h1 {
-    color: #000; /* Pantone text color */
+    color: #000;
     font-size: 24px;
     margin-bottom: 16px;
   }

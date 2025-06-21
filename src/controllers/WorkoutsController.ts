@@ -42,13 +42,20 @@ export default class WorkoutController extends BaseController {
     }
 
     @action
-  getWorkout(id: string): void {
-      new Get({url: `${getApiBaseUrl()}/workouts/${id}`}).execute()
+  getWorkoutsByCoach(): void {
+      new Get({url: `${getApiBaseUrl()}/workouts/by_coach`}).execute()
           .then(r => r.json())
-          .then(res => {
-              this.workoutsStore.setDraftWorkout(res.workout);
-              this.exerciseStore.setWorkoutExercises(res.workout.workout_exercises);});
+          .then(res => this.workoutsStore.setWorkouts(res));
   }
+
+    @action
+    getWorkout(id: string): void {
+        new Get({url: `${getApiBaseUrl()}/workouts/${id}`}).execute()
+            .then(r => r.json())
+            .then(res => {
+                this.workoutsStore.setDraftWorkout(res.workout);
+                this.exerciseStore.setWorkoutExercises(res.workout.workout_exercises);});
+    }
 
   @action
     getLastUserWorkouts(limit: number): void {

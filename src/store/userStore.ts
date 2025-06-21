@@ -19,6 +19,7 @@ export interface ExerciseStatistic {
 export interface UserProfile {
     id: number;
     username: string;
+    name: string;
     email: string;
     has_workouts: boolean;
     has_exercises: boolean;
@@ -27,6 +28,8 @@ export interface UserProfile {
         has_active_plan: number;
         plan_id: number
     }
+    has_coach_assigned_workouts: boolean;
+    roles: string[];
 }
 
 export interface PermissionProfile{
@@ -97,6 +100,7 @@ export default class UserStore {
     @observable userConsistencyStats: ConsistencyMetrics | null = null;
     @action
     setUserProfile(profile: UserProfile): void {
+        console.log('Setting user profile:', profile);
         this.userProfile = profile;
     }
 

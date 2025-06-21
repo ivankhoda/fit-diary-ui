@@ -1,0 +1,68 @@
+@use "../../../../styles.scss" as styles;
+
+.workout-container {
+  .exercises-container {
+    margin-top: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+
+
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 5px;
+  }
+
+  .exercises-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+    /* Keep the title fixed on top when scrolling */
+    position: sticky;
+    top: 0;
+    background-color: #f4f4f4;
+    z-index: 1;
+    padding-left: 10px;
+  }
+
+  .exercise-item {
+    padding: 0px 10px 0px 10px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .exercise-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .exercise-details {
+    font-size: 14px;
+    color: #666;
+  }
+  .workout-name {
+    max-width: 300px;
+    padding-left: 10px;
+  }
+  .save-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: styles.$primary-color;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}

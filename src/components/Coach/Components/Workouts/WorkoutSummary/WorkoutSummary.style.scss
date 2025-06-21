@@ -1,0 +1,99 @@
+.workout-summary {
+  max-width: 800px;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.workout-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.workout-date, .workout-duration {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.exercises-list {
+  margin-bottom: 20px;
+}
+
+.exercise {
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.exercise-name {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.exercise-detail {
+  font-size: 14px;
+  color: #666;
+}
+
+.comment-section {
+  margin-top: 20px;
+}
+
+.comment-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.comment-textarea {
+  height: 120px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  resize: vertical;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+
+  &:focus {
+      border-color: #007bff;
+  }
+}
+
+.comment-length {
+  font-size: 14px;
+  color: #888;
+  text-align: right;
+}
+
+.save-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+      background-color: #0056b3;
+  }
+}
+
+.no-workout {
+  text-align: center;
+  font-size: 18px;
+  color: #888;
+}

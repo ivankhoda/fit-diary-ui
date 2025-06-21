@@ -1,0 +1,53 @@
+.client-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, background-color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f9fafb;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  &__info {
+    flex-grow: 1;
+    cursor: pointer;
+  }
+
+  &__name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+
+  &__email {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 4px 0 0 0;
+  }
+
+  &__delete-button {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 6px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #b91c1c;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

@@ -1,4 +1,5 @@
-import React, { useEffect, useCallback, useState } from 'react';
+/* eslint-disable max-statements */
+import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import './Workouts.style.scss';
 
 import { inject, observer } from 'mobx-react';
@@ -30,14 +31,11 @@ const Workouts: React.FC<WorkoutsInterface> = ({
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
+    const [activeTab, setActiveTab] = useState<'own' | 'assigned'>('own');
 
     useEffect(() => {
-        if (exercisesController) {
-            exercisesController.getExercises();
-        }
-        if (workoutsController) {
-            workoutsController.getWorkouts();
-        }
+        if (exercisesController) {exercisesController.getExercises();}
+        if (workoutsController) {workoutsController.getWorkouts();}
         userController.getUser();
     }, [exercisesController, workoutsController]);
 
@@ -45,7 +43,26 @@ const Workouts: React.FC<WorkoutsInterface> = ({
         workoutsController.createWorkout(navigate);
     }, [navigate]);
 
-    const totalPages = Math.ceil((workoutsStore?.workouts.length || 0) / ITEMS_PER_PAGE);
+    const filteredWorkouts = useMemo(() => workoutsStore?.workouts || [], [workoutsStore?.workouts]);
+
+    const totalPages = useMemo(() => {
+        const count = activeTab === 'assigned'
+            ? filteredWorkouts.filter(w => w.assigned_to_user).length
+            : filteredWorkouts.length;
+
+        return Math.ceil(count / ITEMS_PER_PAGE);
+    }, [filteredWorkouts, activeTab]);
+
+    const paginatedWorkouts = useMemo(() => {
+        const visibleWorkouts = activeTab === 'assigned'
+            ? filteredWorkouts.filter(w => w.assigned_to_user)
+            : filteredWorkouts;
+
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return visibleWorkouts.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredWorkouts,
+        currentPage,
+        activeTab]);
 
     const handlePageClick = useCallback((page: number) => {
         setCurrentPage(page);
@@ -59,50 +76,74 @@ const Workouts: React.FC<WorkoutsInterface> = ({
         setCurrentPage(prev => Math.min(prev + 1, totalPages));
     }, [totalPages]);
 
-    const paginatedWorkouts = workoutsStore?.workouts.slice(
-        (currentPage - 1) * ITEMS_PER_PAGE,
-        currentPage * ITEMS_PER_PAGE
-    );
+    const handleTabChange = useCallback((tab: 'own' | 'assigned') => {
+        setActiveTab(tab);
+        setCurrentPage(1);
+    }, []);
+
+    const handleOwnTabClick = useCallback(() => {
+        handleTabChange('own');
+    }, [handleTabChange]);
+
+    const handleAssignedTabClick = useCallback(() => {
+        handleTabChange('assigned');
+    }, [handleTabChange]);
+
+    // Extracted handler to avoid inline arrow in JSX
+    const handlePaginationButtonClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+        const page = Number(event.currentTarget.dataset.page);
+
+        if (!isNaN(page)) {
+            handlePageClick(page);
+        }
+    }, [handlePageClick]);
+
+    const renderPaginationButtons = () => Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+        <button
+            key={page}
+            className={page === currentPage ? 'active' : ''}
+            data-page={page}
+            onClick={handlePaginationButtonClick}
+        >
+            {page}
+        </button>
+    ));
 
     return (
         <div className="workouts-section">
             <div className='workouts-header'>
                 <h1>{t('workouts.title')}</h1>
-
                 <button onClick={handleGoToCreateWorkout} className="create-workout-btn">
                     {t('workouts.createWorkoutButton')}
                 </button>
             </div>
+            <div className="workouts-tabs">
+                <button className="create-workout-btn" onClick={handleOwnTabClick}>
+                    {t('workouts.all')}
+                </button>
+                <button className="create-workout-btn" onClick={handleAssignedTabClick}>
+                    {t('workouts.assigned')}
+                </button>
+            </div>
+
             <div className="workouts-content">
                 <div className="workouts-list">
-                    {paginatedWorkouts?.map((workout, index) => (
+                    {paginatedWorkouts.map((workout, index) => (
                         <Workout key={workout.id || `workout-${index}`} workout={workout} />
                     ))}
                 </div>
-                <div className="pagination-controls">
-                    <button
-                        disabled={currentPage === 1}
-                        onClick={handlePreviousClick}
-                    >
-                        {t('workouts.pagination.previous')}
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                        <button
-                            key={page}
-                            className={page === currentPage ? 'active' : ''}
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onClick={handlePageClick.bind(null, page)}
-                        >
-                            {page}
+
+                {filteredWorkouts.length > 0 && (
+                    <div className="pagination-controls">
+                        <button disabled={currentPage === 1} onClick={handlePreviousClick}>
+                            {t('workouts.pagination.previous')}
                         </button>
-                    ))}
-                    <button
-                        disabled={currentPage === totalPages}
-                        onClick={handleNextClick}
-                    >
-                        {t('workouts.pagination.next')}
-                    </button>
-                </div>
+                        {renderPaginationButtons()}
+                        <button disabled={currentPage === totalPages} onClick={handleNextClick}>
+                            {t('workouts.pagination.next')}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

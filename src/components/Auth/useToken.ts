@@ -4,6 +4,12 @@ import { jwtDecode } from "jwt-decode";
 export interface DecodedToken {
   email: string;
   admin: boolean;
+  coach: boolean;
+  roles: {
+    admin: boolean;
+    coach: boolean;
+    sportsman: boolean;
+  };
   exp: number;
 }
 
@@ -48,11 +54,17 @@ export const useToken = () => {
     return decoded?.admin || false;
   };
 
+    const isCoach = (): boolean => {
+    const decoded = decodeToken();
+    return decoded?.roles?.coach ? true : false;
+  };
+
   return {
     token,
     setToken: saveToken,
     getToken,
     isAdmin,
+    isCoach,
     decodeToken,
   };
 };
