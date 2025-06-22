@@ -100,7 +100,6 @@ export default class UserStore {
     @observable userConsistencyStats: ConsistencyMetrics | null = null;
     @action
     setUserProfile(profile: UserProfile): void {
-        console.log('Setting user profile:', profile);
         this.userProfile = profile;
     }
 
