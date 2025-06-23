@@ -1,0 +1,74 @@
+.activity-graph-advanced {
+  &__title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &__filters {
+    margin-bottom: 1rem;
+
+    label {
+      font-weight: 600;
+
+      select {
+        margin-left: 0.5rem;
+        padding: 0.25rem 0.5rem;
+      }
+    }
+  }
+
+  &__table-wrapper {
+    overflow-x: auto;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+  }
+
+  &__row--success {
+    background-color: #d4edda;
+  }
+
+  &__row--partial {
+    background-color: #fff3cd;
+  }
+
+  &__row--missed {
+    background-color: #f8d7da;
+  }
+
+  .status-badge {
+    &--success {
+      color: #155724;
+      font-weight: bold;
+    }
+
+    &--partial {
+      color: #856404;
+      font-weight: bold;
+    }
+
+    &--missed {
+      color: #721c24;
+      font-weight: bold;
+    }
+  }
+
+  &__trend {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+}

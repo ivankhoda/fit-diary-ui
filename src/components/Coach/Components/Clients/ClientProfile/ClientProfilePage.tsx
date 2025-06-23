@@ -10,6 +10,8 @@ import AssignWorkoutSection from './AssignWorkoutSection/AssignWorkoutSection';
 import Tabs from './Tabs/Tabs';
 
 import './ClientProfilePage.scss';
+import BackButton from '../../../../Common/BackButton/BackButton';
+import ClientProgress from './ClientProgress/ClientProgress';
 
 const ClientProfilePage = (): JSX.Element => {
     const { clientId } = useParams<{ clientId: string }>();
@@ -29,6 +31,7 @@ const ClientProfilePage = (): JSX.Element => {
 
     return (
         <div className="client-profile">
+            <BackButton/>
             <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
 
             {activeTab === 'info' && (
@@ -47,9 +50,7 @@ const ClientProfilePage = (): JSX.Element => {
             )}
 
             {activeTab === 'progress' && (
-                <div className="client-profile__placeholder">
-                    Раздел прогресса будет добавлен позже.
-                </div>
+                <ClientProgress clientId={clientId} />
             )}
 
             {activeTab === 'goals' && (

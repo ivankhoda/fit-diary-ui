@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+/* eslint-disable no-magic-numbers */
 import React, { useCallback } from 'react';
 import { ClientInterface } from '../../store/clientsStore';
 import { FaTrash } from 'react-icons/fa';
@@ -6,33 +8,45 @@ import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
 import './ClientCard.scss';
 import { useNavigate } from 'react-router';
+import { formatDate } from '../../../Common/date/formatDate';
+
+const getActivityStatus = (lastActive: string) => {
+    const days = (Date.now() - new Date(lastActive).getTime()) / (1000 * 60 * 60 * 24);
+
+    if (days < 3) {return { status: 'Активен', color: 'green' };}
+    if (days < 7) {return { status: 'Малоактивен', color: 'orange' };}
+    return { status: 'Неактивен', color: 'red' };
+};
 
 const ClientCard = ({ client }: { client: ClientInterface }): JSX.Element => {
     const navigate = useNavigate();
 
     const handleDelete = useCallback(() => {
         // eslint-disable-next-line no-alert
-        if (confirm(`Удалить клиента ${client.email}?`)) {
+        if (confirm(`Удалить спортсмена ${client.email}?`)) {
             clientsController.removeClient(client.id);
         }
     }, [client.id, client.email]);
 
     const handleClick = useCallback(() => {
         navigate(`/coach/clients/${client.id}`);
-        console.log(`Клиент: ${client.name || 'Без имени'}, Email: ${client.email}`);
     }, [client.id]);
 
+    const activity = getActivityStatus(client.lastActive || client.updatedAt || client.createdAt);
+
     return (
-        <div className="client-card">
-            <div className="client-card__info" onClick={handleClick}>
-                <h4 className="client-card__name">{client.name || 'Без имени'}</h4>
-                <p className="client-card__email">{client.email}</p>
+        <div className="client-card" onClick={handleClick}>
+            <div className="client-card__header">
+                <h4>{client.name || 'Без имени'}</h4>
+                <span className={`status-dot ${activity.color}`} title={activity.status}></span>
             </div>
-            <button
-                onClick={handleDelete}
-                className="client-card__delete-button"
-                title="Удалить клиента"
-            >
+
+            <p className="client-card__email">{client.email}</p>
+            <p><strong>План:</strong> {client.planTitle || '—'}</p>
+            <p><strong>Прогресс:</strong> {client.completedWorkouts || 0} / {client.totalWorkouts || 0}</p>
+            <p><strong>Последняя:</strong> {formatDate(client.lastWorkoutDate)}</p>
+            <p><strong>Следующая:</strong> {formatDate(client.nextWorkoutDate)}</p>
+            <button onClick={handleDelete} className="client-card__delete-button">
                 <FaTrash />
             </button>
         </div>

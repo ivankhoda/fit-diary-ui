@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import AddClientModal from './AddClientModal';
-import ClientList from './ClientList';
+import ClientList from './ClientList/ClientList';
 import './ClientManager.style.scss';
 
 const ClientManager = (): JSX.Element => {

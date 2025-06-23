@@ -1,0 +1,21 @@
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0056b3;
+  }
+
+  &__icon {
+    stroke-width: 2;
+  }
+}
