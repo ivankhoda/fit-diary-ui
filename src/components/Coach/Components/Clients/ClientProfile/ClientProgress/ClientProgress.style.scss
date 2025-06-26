@@ -1,0 +1,234 @@
+/* ClientProgress.style.scss */
+
+.client-progress {
+  padding: 20px;
+  color: #222;
+
+  &__type-filters {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+
+  &__header {
+    margin-bottom: 20px;
+    text-align: center;
+
+    &__title {
+      margin: 0 0 5px;
+      font-size: 24px;
+    }
+
+    &__update {
+      font-size: 14px;
+      color: #666;
+    }
+  }
+
+  &__summary {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 16px;
+
+    .summary-item {
+      background: #f7f7f7;
+      padding: 12px 18px;
+      border-radius: 6px;
+      flex: 1;
+      text-align: center;
+      margin: 0 8px;
+      box-shadow: 0 0 5px #ddd;
+    }
+  }
+
+  &__filters {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+
+
+    .filter-search {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      min-width: 220px;
+      flex-grow: 1;
+      max-width: 350px;
+      font-size: 16px;
+    }
+
+    .filter-types {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      gap: 15px;
+
+      .filter-type-label {
+        font-size: 14px;
+        user-select: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        input[type='checkbox'] {
+          cursor: pointer;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  &__exercises {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+
+    .no-exercises {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      font-size: 16px;
+    }
+
+    .exercise-card {
+      background: #fff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgb(0 0 0 / 0.05);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+
+      &__name {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+        flex-basis: 100%;
+      }
+
+      &__stats {
+        font-size: 15px;
+        color: #444;
+        flex: 1 1 60%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        > div {
+          min-width: 140px;
+        }
+      }
+
+      &__graph {
+        flex-basis: 150px;
+        font-size: 14px;
+        color: #aaa;
+        text-align: center;
+      }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 15px;
+
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:disabled {
+          background: #aaa;
+          cursor: default;
+        }
+
+        &:hover:not(:disabled) {
+          background: #0056b3;
+        }
+      }
+
+      span {
+        font-size: 14px;
+        color: #555;
+      }
+    }
+  }
+
+  &__activity-graph,
+  &__history {
+    margin-bottom: 25px;
+
+    h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    & ul {
+      padding-left: 20px;
+
+      .history-note {
+        font-size: 14px;
+        margin-bottom: 6px;
+        color: #333;
+      }
+    }
+  }
+}
+
+/* Адаптив */
+
+@media (max-width: 720px) {
+  .client-progress__summary {
+    flex-direction: column;
+    gap: 12px;
+
+    .summary-item {
+      margin: 0 auto;
+      max-width: 280px;
+      flex: none;
+    }
+  }
+
+  .client-progress__filters {
+    flex-direction: column;
+    align-items: center;
+
+    .filter-types {
+      justify-content: center;
+      gap: 10px;
+    }
+  }
+
+  .client-progress__exercises {
+    .exercise-card {
+      flex-direction: column;
+      align-items: flex-start;
+
+      &__stats {
+        flex-basis: 100%;
+      }
+
+      &__graph {
+        flex-basis: 100%;
+        margin-top: 12px;
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+.client-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 0;
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__label {
+    font-size: 0.875rem;
+    color: #555;
+    font-weight: 500;
+  }
+
+  &__select,
+  &__input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: #fff;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+  }
+
+  &__select {
+    min-width: 150px;
+  }
+
+  &__input {
+    min-width: 200px;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+    &__group {
+      width: 100%;
+    }
+
+    &__select,
+    &__input {
+
+    }
+  }
+
+}

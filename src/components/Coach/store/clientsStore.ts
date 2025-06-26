@@ -1,12 +1,23 @@
 
 import { action, computed, makeObservable, observable } from 'mobx';
-
-export interface ClientInterface {
+import  UserInterface  from '../../../store/userStore';
+import { PlanInterface } from '../../../store/plansStore';
+export interface ClientInterface extends UserInterface {
     id: number;
     email: string;
     name?: string;
     joined_at?: string;
     invited?: boolean;
+    lastActive?: string;
+    updatedAt?: string;
+    createdAt?: string;
+    plan: PlanInterface;
+    planTitle?: string;
+    completedWorkouts?: number;
+    totalWorkouts?: number;
+    lastWorkoutDate?: string;
+    nextWorkoutDate?: string;
+
 }
 
 export default class ClientsStore {
