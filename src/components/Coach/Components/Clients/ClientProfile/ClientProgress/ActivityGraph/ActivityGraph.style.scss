@@ -1,6 +1,6 @@
 .activity-graph-advanced {
   &__title {
-    font-size: 1.5rem;
+    font-size: 12px;
     margin-bottom: 1rem;
   }
 
@@ -24,29 +24,13 @@
   &__table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: 14px;
 
     th, td {
       border: 1px solid #ccc;
       padding: 0.5rem 0.75rem;
       text-align: center;
     }
-
-    th {
-      background-color: #f4f4f4;
-    }
-  }
-
-  &__row--success {
-    background-color: #d4edda;
-  }
-
-  &__row--partial {
-    background-color: #fff3cd;
-  }
-
-  &__row--missed {
-    background-color: #f8d7da;
   }
 
   .status-badge {

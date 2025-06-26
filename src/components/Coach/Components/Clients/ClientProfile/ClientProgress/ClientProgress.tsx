@@ -1,9 +1,14 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable max-statements */
 /* eslint-disable sort-keys */
 /* ClientProgress.tsx */
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 
 import './ClientProgress.style.scss';
 import ActivityGraphAdvanced from './ActivityGraph/ActivityGraph';
+
+import Get from '../../../../../../utils/GetRequest';
+import getApiBaseUrl from '../../../../../../utils/apiUrl';
 
 type ExerciseType =
   | 'weight_and_reps'
@@ -32,82 +37,29 @@ interface Exercise {
 
 interface ActivityGraphPoint {
   date: string;
-  workouts: number;
+  actualWorkouts: number;
+  plannedWorkouts: number;
+  comment?: string;
+}
+
+interface ClientProgressData {
+  clientName: string;
+  clientEmail: string;
+  lastUpdate: string;
+  clientId: string;
+  summary: {
+    workoutsCount: number;
+    avgStrengthGrowth: string;
+    avgActivity: string;
+  };
+  exercises: Exercise[];
+  activityGraphData: ActivityGraphPoint[];
+  historyNotes: string[];
 }
 
 interface ClientProgressProps {
   clientId: string;
 }
-
-const stubData = {
-    clientName: 'Иван Иванов',
-    lastUpdate: '20 июня 2025',
-    clientId: '12345',
-    summary: {
-        workoutsCount: 25,
-        avgStrengthGrowth: '+15%',
-        avgActivity: '4 раза в неделю',
-    },
-    exercises: [
-        {
-            name: 'Жим лёжа',
-            type: 'weight_and_reps' as ExerciseType,
-            stats: {
-                weightFrom: 60,
-                weightTo: 75,
-                repsFrom: 10,
-                repsTo: 6,
-            },
-        },
-        {
-            name: 'Подтягивания',
-            type: 'reps' as ExerciseType,
-            stats: {
-                repsFrom: 5,
-                repsTo: 10,
-            },
-        },
-        {
-            name: 'Бег',
-            type: 'duration_and_distance' as ExerciseType,
-            stats: {
-                distanceFrom: 3.2,
-                distanceTo: 4.3,
-                durationFrom: 25,
-                durationTo: 28,
-            },
-        },
-        // Добавим для теста ещё упражнений:
-        {
-            name: 'Приседания',
-            type: 'weight_and_reps' as ExerciseType,
-            stats: { weightFrom: 80, weightTo: 100, repsFrom: 8, repsTo: 12 },
-        },
-        {
-            name: 'Планка',
-            type: 'duration' as ExerciseType,
-            stats: { durationFrom: 30, durationTo: 60 },
-        },
-        {
-            name: 'Велотренажер',
-            type: 'cardio' as ExerciseType,
-            stats: { durationFrom: 20, durationTo: 35 },
-        },
-        {
-            name: 'Скакалка',
-            type: 'duration_and_reps' as ExerciseType,
-            stats: { durationFrom: 5, durationTo: 7, repsFrom: 100, repsTo: 150 },
-        },
-    ] as Exercise[],
-    activityGraphData: [
-        { date: '2025-03-01', workouts: 2 },
-        { date: '2025-04-01', workouts: 5 },
-        { date: '2025-05-01', workouts: 4 },
-    ] as ActivityGraphPoint[],
-    historyNotes: [
-        '18 июня: улучшение жима на 5 кг', '15 июня: обсуждение целей с клиентом',
-    ] as string[],
-};
 
 const TYPES: ExerciseType[] = [
     'weight_and_reps',
@@ -130,14 +82,55 @@ const TYPE_LABELS: Record<ExerciseType, string> = {
 const ITEMS_PER_PAGE = 5;
 
 const ClientProgress: React.FC<ClientProgressProps> = ({ clientId }) => {
-    // В реальности здесь запрос по clientId
-    const { clientName, lastUpdate, summary, exercises, historyNotes } = stubData;
-
+    const [progressData, setProgressData] = useState<ClientProgressData | null>(null);
     const [search, setSearch] = useState('');
     const [selectedTypes, setSelectedTypes] = useState<ExerciseType[]>([]);
     const [page, setPage] = useState(1);
-    console.log('ClientProgress', clientId);
-    // Фильтрация по поиску и типам
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const fetchClient = async() => {
+            try {
+                const response = await new Get({
+                    url: `${getApiBaseUrl()}/coach/clients/${clientId}/progress`,
+                }).execute();
+
+                const res = await response.json();
+
+                if (!isMounted) {return;}
+
+                if (res.ok) {
+                    console.log('Client data fetched:', res.progress);
+                    setProgressData(res.progress);
+                } else {
+                    console.error('Failed to fetch client data:', res.error);
+                }
+            } catch (error) {
+                if (isMounted) {
+                    console.error('Network error while fetching client data:', error);
+                }
+            }
+        };
+
+        fetchClient();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [clientId]);
+
+    // Destructure exercises (and others) from progressData if available, else use defaults
+    const {
+        clientName = '',
+        clientEmail = '',
+        lastUpdate = '',
+        summary = { workoutsCount: 0, avgStrengthGrowth: '', avgActivity: '' },
+        exercises = [],
+        historyNotes = [],
+        activityGraphData = [],
+    } = progressData || {};
+
     const filteredExercises = useMemo(() => {
         let filtered = exercises;
 
@@ -155,11 +148,10 @@ const ClientProgress: React.FC<ClientProgressProps> = ({ clientId }) => {
         search,
         selectedTypes]);
 
-    // Пагинация
     const totalPages = Math.ceil(filteredExercises.length / ITEMS_PER_PAGE);
     const paginatedExercises = filteredExercises.slice(
         (page - 1) * ITEMS_PER_PAGE,
-        page * ITEMS_PER_PAGE,
+        page * ITEMS_PER_PAGE
     );
 
     const handlePrevPage = useCallback(() => {
@@ -173,32 +165,42 @@ const ClientProgress: React.FC<ClientProgressProps> = ({ clientId }) => {
     const toggleType = (type: ExerciseType) => {
         setPage(1);
         setSelectedTypes(types =>
-            types.includes(type) ? types.filter(t => t !== type) : [...types, type],);
+            types.includes(type) ? types.filter(t => t !== type) : [...types, type]);
     };
 
     const handleTypeChange = useCallback((type: ExerciseType) => {
         toggleType(type);
-    },[]);
+    }, []);
 
-    const handleTypeChangeInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        handleTypeChange(e.target.value as ExerciseType);
-    }, [handleTypeChange]);
+    const handleTypeChangeInput = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            handleTypeChange(e.target.value as ExerciseType);
+        },
+        [handleTypeChange]
+    );
 
     const onSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setPage(1);
         setSearch(e.target.value);
     }, []);
 
+    if (!progressData) {
+        return <div className="client-progress">Загрузка данных клиента...</div>;
+    }
+
+    console.log('Progress Data:', activityGraphData);
+
     return (
         <div className="client-progress">
             <header className="client-progress__header">
-                <h2 className="client-progress__title">Прогресс клиента: {clientName}</h2>
+                <h2 className="client-progress__title">
+          Прогресс клиента: {clientName || clientEmail}
+                </h2>
                 <p className="client-progress__update">Последнее обновление: {lastUpdate}</p>
             </header>
 
             <section className="client-progress__summary">
                 <div className="summary-item">Тренировок: {summary.workoutsCount}</div>
-                <div className="summary-item">Средний рост силы: {summary.avgStrengthGrowth}</div>
                 <div className="summary-item">Средняя активность: {summary.avgActivity}</div>
             </section>
 
@@ -267,19 +269,26 @@ const ClientProgress: React.FC<ClientProgressProps> = ({ clientId }) => {
                     )}
                 <div className="client-progress__pagination">
                     <button disabled={page === 1} onClick={handlePrevPage}>
-                        ← Назад
+            ←
                     </button>
                     <span>
-                        Страница {page} из {totalPages}
+            Страница {page} из {totalPages}
                     </span>
                     <button disabled={page === totalPages} onClick={handleNextPage}>
-                        Вперед →
+             →
                     </button>
                 </div>
             </section>
 
             <section className="client-progress__activity-graph">
-                <ActivityGraphAdvanced/>
+                <ActivityGraphAdvanced
+                    data={activityGraphData.map(p => ({
+                        date: p.date,
+                        actualWorkouts: p.actualWorkouts || 0,
+                        plannedWorkouts: p.plannedWorkouts || 0,
+                        comment: p.comment,
+                    }))}
+                />
             </section>
 
             <section className="client-progress__history">

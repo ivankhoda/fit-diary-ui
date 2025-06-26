@@ -1,6 +1,8 @@
-import React from 'react';
-import ExerciseProgressCard from './ExerciseProgressCard';
+/* eslint-disable sort-keys */
 
+import React from 'react';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const dummyExercises = [
     {
         id: '1',
@@ -38,9 +40,9 @@ const ProgressOverview: React.FC = () => (
     <div className="progress-overview">
         <h2 className="progress-overview__title">Прогресс клиента</h2>
         <div className="progress-overview__list">
-            {dummyExercises.map(exercise => (
+            {/* {dummyExercises.map(exercise => (
                 <ExerciseProgressCard key={exercise.id} exercise={exercise} />
-            ))}
+            ))} */}
         </div>
     </div>
 );
