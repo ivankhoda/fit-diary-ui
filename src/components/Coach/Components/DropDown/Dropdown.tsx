@@ -25,32 +25,20 @@ const options: OptionInterface[] = [
         ],
     },
     {
-        text: 'Программы',
+        text: 'Упражнения',
         subOptions: [
-            /*
-             * { linkTo: '/training_goals', text: 'Цели тренировок' },
-             * { linkTo: '/plans', text: 'Тренировочные планы' },
-             */
             { linkTo: '/exercises', text: 'Упражнения' },
         ],
     },
-    /*
-     * {
-     *     text: 'Статистика',
-     *     subOptions: [
-     *         { linkTo: '/exercises-stats', text: 'Статистика упражнений' },
-     *         { linkTo: '/client-progress', text: 'Прогресс клиентов' },
-     *         { linkTo: '/self-stats', text: 'Личная статистика' },
-     *     ],
-     * },
-     */
+    {
+        text: 'Тренировочные планы',
+        subOptions: [
+            { linkTo: '/plans', text: 'Тренировочные планы' }
+        ]
+    },
     {
         text: 'Тренировки',
         subOptions: [
-            /*
-             * { linkTo: '/workouts/in-progress', text: 'В процессе' },
-             * { linkTo: '/workouts/done', text: 'Завершённые' },
-             */
             { linkTo: '/workouts', text: 'Все тренировки' }, { linkTo: '/workouts/archive', text: 'Архив' },
         ],
     },

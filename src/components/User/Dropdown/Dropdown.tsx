@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 /* eslint-disable sort-keys */
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import DropDownIcon from '../../../icons/DropDownIcon';
@@ -7,14 +8,17 @@ import { useCoachMode } from '../../Coach/CoachContext';
 import { useToken } from '../../Auth/useToken';
 import { useNavigate } from 'react-router';
 import { userStore } from '../../../store/global';
-import { UserProfile } from '../../../store/userStore';
+import { userController } from '../../../controllers/global';
+import { observer } from 'mobx-react-lite';
+import { inject } from 'mobx-react';
 
 export interface OptionInterface {
   linkTo?: string;
   text: string;
   subOptions?: OptionInterface[];
-  visibleIf?: (userProfile: UserProfile) => boolean;
+  visibleIf?: boolean;
 }
+const {userProfile} = userStore;
 
 const options: OptionInterface[] = [
     { linkTo: '/training_goals', text: 'Цели' },
@@ -40,20 +44,16 @@ const options: OptionInterface[] = [
 
     {
         text: 'Тренерская',
-        visibleIf: userProfile => userProfile?.roles?.includes('coach'),
     },
 ];
 
 const filterOptionsByVisibility = (
     opts: OptionInterface[],
-    userProfile: UserProfile
+
 ): OptionInterface[] => opts
     .map(option => {
-        if (option.visibleIf && !option.visibleIf(userProfile)) {
-            return null;
-        }
         if (option.subOptions) {
-            const filteredSubs = filterOptionsByVisibility(option.subOptions, userProfile);
+            const filteredSubs = filterOptionsByVisibility(option.subOptions);
 
             // Если после фильтрации подопций ничего не осталось — скрыть весь пункт
             if (filteredSubs.length === 0) {return null;}
@@ -73,9 +73,7 @@ const Dropdown = (): React.ReactElement => {
     const {  setMode } = useCoachMode();
     const { isCoach } = useToken();
 
-    const {userProfile} = userStore;
-
-    const filteredOptions = useMemo(() => filterOptionsByVisibility(options, userProfile), [userProfile]);
+    const filteredOptions = useMemo(() => filterOptionsByVisibility(options), [userProfile]);
 
     const handleCoachModeClick = useCallback(() => {
         setMode('coach');
@@ -91,9 +89,16 @@ const Dropdown = (): React.ReactElement => {
                 setOpenSubMenu(null);
             }
         };
+
         document.addEventListener('click', handleOutsideClick);
         return () => document.removeEventListener('click', handleOutsideClick);
     }, []);
+
+    useEffect(()=> {
+        if(!userProfile){
+            userController.getUser();
+        }
+    }, [userStore]);
 
     const handleButtonClick = useCallback(() => {
         setIsOpen(prev => !prev);
@@ -178,4 +183,4 @@ const Dropdown = (): React.ReactElement => {
     );
 };
 
-export default Dropdown;
+export default inject('userStore', 'userController')(observer(Dropdown));
