@@ -1,42 +1,13 @@
 
 import { action, makeObservable, observable } from 'mobx';
-import { Exercise } from '../components/User/Exercises/Exercises';
+import { ExerciseInterface, SetInterface } from '../../../store/exercisesStore';
+import { Exercise } from '../../User/Exercises/Exercises';
 
-export interface ExerciseInterface {
-    exercise_id?: number
-    id: number;
-    uuid?: string;
-    name?: string;
-    description?: string;
-    sets?: number;
-    repetitions?: number;
-    weight?: string;
-    image?: string;
-    number_of_sets?: SetInterface[]
-    type_of_measurement?: string;
-    distance?: string;
-    duration?: number;
-    formatted_duration?: string;
-    started_at?: string;
-    ended_at?: string;
-    order?: string
-    workout_exercise_id?: number;
-    comment?: string;
-    own?: boolean
-  }
+export interface CoachExercise  extends Exercise{
+    public?: boolean
+}
 
-export interface SetInterface {
-    id: string;
-    result: string;
-    duration?: number;
-    weight?: number;
-    distance?: string;
-    repetitions: string;
-    user_exercise_id: number;
-    formatted_duration?: string;
-  }
-
-export default class ExercisesStore {
+export default class CoachExercisesStore {
     constructor() {
         makeObservable(this);
     }

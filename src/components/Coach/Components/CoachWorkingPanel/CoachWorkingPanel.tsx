@@ -7,7 +7,7 @@ interface CoachPanelProps {
 }
 
 const CoachPanel: React.FC<CoachPanelProps> = ({ children }) => (
-    <div className={'admin-grid'}>
+    <div className={'admin-grids' }>
 
         <main className="admin-main">
             {children}

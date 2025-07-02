@@ -10,6 +10,7 @@ export interface DecodedToken {
     coach: boolean;
     sportsman: boolean;
   };
+  verified_coach: boolean;
   exp: number;
 }
 
@@ -59,12 +60,17 @@ export const useToken = () => {
     return decoded?.roles?.coach ? true : false;
   };
 
+    const isVerifiedCoach = (): boolean => {
+    const decoded = decodeToken();
+    return decoded?.verified_coach;
+  };
+
   return {
     token,
     setToken: saveToken,
     getToken,
     isAdmin,
-    isCoach,
+    isCoach,isVerifiedCoach,
     decodeToken,
   };
 };

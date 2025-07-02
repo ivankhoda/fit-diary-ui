@@ -27,6 +27,7 @@
   "description": "Description",
   "category": "Category",
   "selectCategory": "Select Category",
+  "public": "Public",
   "difficulty": "Difficulty",
   "selectDifficulty": "Select Difficulty",
   "selectTypeOfMeasurement": "Select Type of Measurement",
@@ -217,7 +218,8 @@
       },
       "tabs": {
       "base": "Common",
-      "own": "Own"
+      "own": "Own",
+      "coach": "From coach"
     },
      "add": "Add"
     },

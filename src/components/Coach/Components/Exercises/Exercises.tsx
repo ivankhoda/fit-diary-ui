@@ -2,64 +2,50 @@
 /* eslint-disable max-statements */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import './Exercises.style.scss';
-import { inject, observer } from 'mobx-react';
-import ExercisesController from '../../../controllers/ExercisesController';
-import ExercisesStore from '../../../store/exercisesStore';
-import ExerciseItem from './ExerciseItem/ExerciseItem';
+import { toJS } from 'mobx';
+import { inject } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
+import { muscleGroups } from '../../../Admin/ExercisesManagement/maps';
+import CoachExercisesController from '../../controllers/CoachExercisesController';
+import CoachExercisesStore from '../../store/CoachExercisesStore';
+import ExerciseItem from './ExerciseItem/ExerciseItem';
 import ExerciseModal from './ExerciseModal/ExerciseModal';
-import { muscleGroups } from '../../Admin/ExercisesManagement/maps';
-import { toJS } from 'mobx';
-
-export interface Exercise {
-    uuid: string;
-    instanceId?: string;
-    id: number;
-    name: string;
-    category: 'strength' | 'cardio' | 'flexibility' | 'balance';
-    difficulty: 'beginner' | 'intermediate' | 'advanced';
-    description: string;
-    duration: number;
-    muscle_groups: string[];
-    own?: boolean;
-    coach_owned?: boolean
-}
+import { Exercise } from '../../../User/Exercises/Exercises';
 
 export interface ExercisesInterface {
-    exercisesStore?: ExercisesStore;
-    exercisesController?: ExercisesController;
+    coachExercisesStore?: CoachExercisesStore;
+    coachExercisesController?: CoachExercisesController;
 }
 
 const ITEMS_PER_PAGE = 10;
 
-const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesController }) => {
+const Exercises: React.FC<ExercisesInterface> = ({ coachExercisesStore, coachExercisesController }) => {
     const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string | null>(null);
     const [sortBy] = useState<'name' | 'duration' | 'category' | null>(null);
-    const [activeTab, setActiveTab] = useState<'base' | 'own' | 'coach_owned'>('own');
+    const [activeTab, setActiveTab] = useState<'base' | 'own'>('own');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [exerciseToEdit, setExerciseToEdit] = useState(null);
 
     useEffect(() => {
-        if (exercisesController && exercisesStore && !exercisesStore.generalExercises?.length) {
-            exercisesController.getExercises();
+        if (coachExercisesController&& coachExercisesStore && !coachExercisesStore.generalExercises?.length) {
+            coachExercisesController.getExercises();
         }
-    }, [exercisesController,
-        exercisesStore,
-        exercisesStore.generalExercises]);
+    }, [coachExercisesController,
+        coachExercisesStore,
+        coachExercisesStore.generalExercises]);
 
     const filteredList = useMemo(() => {
-        let exercises = toJS(exercisesStore?.generalExercises);
+        let exercises = toJS(coachExercisesStore?.generalExercises);
 
         if (activeTab === 'own') {
             exercises = exercises.filter(exercise => exercise.own);
-        } else if (activeTab === 'coach_owned') {
-            exercises = exercises.filter(exercise => exercise.coach_owned);
         } else {
-            exercises = exercises.filter(exercise => !exercise.own && !exercise.coach_owned);
+            exercises = exercises.filter(exercise => !exercise.own);
         }
 
         if (searchQuery) {
@@ -83,7 +69,7 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
 
         return exercises;
     }, [
-        exercisesStore.generalExercises,
+        coachExercisesStore.generalExercises,
         searchQuery,
         selectedMuscleGroup,
         sortBy,
@@ -128,7 +114,7 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
         if (currentPage > 1) { setCurrentPage(prev => prev - 1); }
     }, [currentPage, totalPages]);
 
-    const handleSortChange = useCallback((tab: 'base' | 'own' | 'coach_owned') => {
+    const handleSortChange = useCallback((tab: 'base' | 'own') => {
         handleTabChange(tab);
     }, []);
 
@@ -140,13 +126,13 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
         handleSortChange('own');
     },[]);
 
-    const handleTabChange = (tab: 'base' | 'own' | 'coach_owned') => {
+    const handleTabChange = (tab: 'base' | 'own') => {
         setActiveTab(tab);
         setCurrentPage(1);
     };
 
     const handleDeleteExercise = useCallback((id: number) => {
-        exercisesController.deleteExercise(id);
+        coachExercisesController.deleteExercise(id);
     }, []);
 
     interface HandleEditExercise {
@@ -168,16 +154,12 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                 <button className={activeTab === 'base' ? 'active' : ''} onClick={handleBaseClick}>
                     {t('exercises.tabs.base')}
                 </button>
-
-                <button className={activeTab === 'coach_owned' ? 'active' : ''} onClick={() => handleTabChange('coach_owned')}>
-                    {t('exercises.tabs.coach')}
-                </button>
                 <div>
                     <button onClick={() => handleOpenModal()}>{t('createExercise')}</button>
 
                     {isModalVisible && (
                         <ExerciseModal onClose={handleModalClose} onSave={handleSaveSuccess}
-                            exercisesController={exercisesController}
+                            coachExercisesController={coachExercisesController}
                             exercise={exerciseToEdit}
                         />
                     )}
@@ -233,4 +215,4 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
     );
 };
 
-export default inject('exercisesStore', 'exercisesController')(observer(Exercises));
+export default inject('coachExercisesStore', 'coachExercisesController')(observer(Exercises));

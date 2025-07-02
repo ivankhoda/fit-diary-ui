@@ -1,5 +1,6 @@
+/* eslint-disable sort-keys */
 
-import { clientsStore, coachWorkoutsStore } from './global';
-const coachStores = { clientsStore, coachWorkoutsStore };
+import { clientsStore, coachExercisesStore, coachWorkoutsStore } from './global';
+const coachStores = { clientsStore, coachWorkoutsStore , coachExercisesStore};
 
 export default coachStores;

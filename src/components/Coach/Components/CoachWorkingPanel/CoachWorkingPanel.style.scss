@@ -1,4 +1,4 @@
-.admin-grid {
+.admin-grids {
   display: grid;
   grid-template-rows: auto 1fr; /* Header takes its content size, and the rest fills the space */
   grid-template-columns: 250px 1fr; /* Sidebar is 250px wide, main area takes remaining space */

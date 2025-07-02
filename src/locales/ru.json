@@ -41,6 +41,7 @@
   "description": "Описание",
   "category": "Категория",
   "selectCategory": "Выберите категорию",
+  "public": "Публичное",
   "difficulty": "Сложность",
   "selectDifficulty": "Выберите сложность",
   "selectTypeOfMeasurement": "Выберите тип измерения",
@@ -249,7 +250,8 @@
     },
     "tabs": {
       "base": "Общие",
-      "own": "Свои"
+      "own": "Свои",
+      "coach": "От тренера"
     },
     "add": "Добавить"
   },

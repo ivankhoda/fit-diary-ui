@@ -1,6 +1,7 @@
+/* eslint-disable sort-keys */
 
-import { clientsController, coachWorkoutsController } from './global';
+import { clientsController, coachExercisesController, coachWorkoutsController } from './global';
 
-const coachControllers = {clientsController, coachWorkoutsController};
+const coachControllers = {clientsController, coachWorkoutsController, coachExercisesController};
 
 export default coachControllers;
