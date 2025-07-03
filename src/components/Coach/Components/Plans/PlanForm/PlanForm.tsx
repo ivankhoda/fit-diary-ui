@@ -7,15 +7,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import './PlanForm.style.scss';
 
-import { plansController, trainingGoalsController, workoutsController } from '../../../../controllers/global';
-import { plansStore, trainingGoalsStore, workoutsStore } from '../../../../store/global';
-import { PlanInterface } from '../../../../store/plansStore';
-
 import WorkoutDaysSection from '../WorkoutDaysSection/WorkoutDaysSection';
 import TrainingGoalSelector from './TrainingGoalSelector';
 import PlanStatusSelector from './StatusSelector';
+import { PlanInterface } from '../../../store/CoachPlansStore';
 
-const PlanForm: React.FC = inject('plansStore')(observer(() => {
+import { coachPlansController, coachTrainingGoalsController, coachWorkoutsController } from '../../../controllers/global';
+import { coachPlansStore, coachTrainingGoalsStore, coachWorkoutsStore } from '../../../store/global';
+import BackButton from '../../../../Common/BackButton/BackButton';
+import AssignPlanInline from '../AssignPlanInline/AssignPlanInline';
+import AssignedUsersList from '../../Workouts/AssignedUsers/AssignedUsersList';
+
+const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
     const { id } = useParams<{ id?: string }>();
     const navigate = useNavigate();
     const isEditMode = Boolean(id) && !isNaN(Number(id));
@@ -26,13 +29,12 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
         start_date: '',
         end_date: '',
         training_goal_id: null,
-        status: 'draft'
+        status: 'draft',
+        assigned_users: []
     });
 
     const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
     const [generalError, setGeneralError] = useState('');
-    const {currentPlan} = plansStore;
-    const isCoachPlan = currentPlan?.coach_plan === true;
 
     const getCleanPlanData = (data: any): PlanInterface => ({
         name: data.name,
@@ -45,29 +47,29 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
 
     useEffect(() => {
         if (isEditMode && id) {
-            plansController.getPlanDetails(Number(id));
+            coachPlansController.getPlanDetails(Number(id));
         }
-        if(plansStore.activePlans.length === 0) {
-            plansController.getPlans();
+        if(coachPlansStore.activePlans.length === 0) {
+            coachPlansController.getPlans();
         }
     }, [id,
         isEditMode,
-        plansStore]);
+        coachPlansStore]);
 
     useEffect(() => {
-        if(workoutsStore.workouts.length === 0) {
-            workoutsController.getWorkouts();
+        if(coachWorkoutsStore.workouts.length === 0) {
+            coachWorkoutsController.getWorkouts();
         }
     }, []);
 
     useEffect(() => {
-        if(trainingGoalsStore.activeGoals.length === 0) {
-            trainingGoalsController.getGoals();
+        if(coachTrainingGoalsStore.activeGoals.length === 0) {
+            coachTrainingGoalsController.getGoals();
         }
     }, []);
 
     useEffect(() => {
-        const plan = plansStore.currentPlan;
+        const plan = coachPlansStore.currentPlan;
 
         const formatDate = (dateStr: string | Date | null): string => {
             if (!dateStr) {return '';}
@@ -83,34 +85,68 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                 start_date: formatDate(plan.start_date),
                 end_date: plan.end_date ? formatDate(plan.end_date) : '',
                 training_goal_id: plan.training_goal?.id,
-                status: plan?.status
+                status: plan?.status,
+                assigned_users: plan?.assigned_users
             });
         }
-    }, [plansStore.currentPlan]);
+    }, [coachPlansStore.currentPlan]);
 
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            if (isCoachPlan) {return;}
-
             const { name, value } = e.target;
             setFormData(prev => ({
                 ...prev,
                 [name]: value,
             }));
-        }, [isCoachPlan]
+        }, []
     );
 
+    const handleSubmit = useCallback((e: React.FormEvent) => {
+        e.preventDefault();
+        setGeneralError('');
+        setFieldErrors({});
+
+        const cleanData = getCleanPlanData(formData);
+
+        try {
+            if (isEditMode && id) {
+                coachPlansController.updatePlan(Number(id), cleanData);
+            } else {
+                coachPlansController.createPlan(cleanData);
+            }
+        } catch {
+            setGeneralError('Не удалось сохранить план. Попробуйте снова.');
+        }
+    }, [formData,
+        id,
+        isEditMode]);
+
+    const handleDelete = useCallback(() => {
+        if (!isEditMode || !id) {return;}
+
+        try {
+            coachPlansController.deletePlan(Number(id));
+            navigate('/plans');
+        } catch {
+            setGeneralError('Не удалось удалить план.');
+        }
+    }, [id,
+        isEditMode,
+        navigate]);
+
+    const handleCancel = useCallback(() => {
+        navigate('/plans');
+    }, [navigate]);
+
     const handleGoalChange = useCallback((selectedGoalId: number | null) => {
-        if (isCoachPlan) {return;}
         setFormData(prev => ({
             ...prev,
             training_goal_id: selectedGoalId
         }));
-    }, [isCoachPlan]);
+    }, []);
 
     const handleStatusChange = useCallback((status: string) => {
-        if (isCoachPlan) {return;}
-        if (plansStore.activePlans.some(plan => plan.status === 'active') && status ==='active') {
+        if (coachPlansStore.activePlans.some(plan => plan.status === 'active') && status ==='active') {
             setFieldErrors(prev => ({ ...prev, status: 'Уже есть активный план' }));
             return;
         }
@@ -120,58 +156,21 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
             ...prev,
             status,
         }));
-    }, [plansStore, isCoachPlan]);
+    }, [coachPlansStore]);
 
-    const handleSubmit = useCallback((e: React.FormEvent) => {
-        e.preventDefault();
-        if (isCoachPlan) {return;}
+    const handleAssignPlan = useCallback((
+        clientId: number, planId: number
+    )=> {coachPlansController.assignPlan(clientId, planId);}, [id]);
 
-        setGeneralError('');
-        setFieldErrors({});
-
-        const cleanData = getCleanPlanData(formData);
-
-        try {
-            if (isEditMode && id) {
-                plansController.updatePlan(Number(id), cleanData);
-            } else {
-                plansController.createPlan(cleanData);
-            }
-        } catch {
-            setGeneralError('Не удалось сохранить план. Попробуйте снова.');
-        }
-    }, [formData,
-        id,
-        isEditMode,
-        isCoachPlan]);
-
-    const handleDelete = useCallback(() => {
-        if (!isEditMode || !id || isCoachPlan) {return;}
-
-        try {
-            plansController.deletePlan(Number(id));
-            navigate('/plans');
-        } catch {
-            setGeneralError('Не удалось удалить план.');
-        }
-    }, [id,
-        isEditMode,
-        navigate,
-        isCoachPlan]);
-
-    const handleCancel = useCallback(() => {
-        navigate('/plans');
-    }, [navigate]);
+    const handleRemoveAssignment = useCallback((userId: number) => {
+        if (!id) {return;}
+        coachPlansController.unassignPlan(userId, Number(id));
+    }, [id]);
 
     return (
         <div className="plan-form">
+            <BackButton/>
             <h2>{isEditMode ? 'Редактирование плана' : 'Создание нового плана'}</h2>
-
-            {isCoachPlan && (
-                <div className="info-message">
-                    Этот план назначен тренером и не может быть изменен.
-                </div>
-            )}
 
             {generalError && <div className="error-message general-error">{generalError}</div>}
 
@@ -185,7 +184,6 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        disabled={isCoachPlan}
                     />
                 </div>
 
@@ -197,17 +195,16 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                         value={formData.description}
                         onChange={handleChange}
                         rows={4}
-                        disabled={isCoachPlan}
                     />
                 </div>
 
                 <div className='form-group'>
+
                     <TrainingGoalSelector
                         visible
-                        trainingGoals={trainingGoalsStore.activeGoals}
+                        trainingGoals={coachTrainingGoalsStore.activeGoals}
                         value={formData.training_goal_id}
                         onChange={handleGoalChange}
-                        disabled={isCoachPlan}
                     />
                 </div>
 
@@ -220,7 +217,6 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                             name="start_date"
                             value={formData.start_date}
                             onChange={handleChange}
-                            disabled={isCoachPlan}
                         />
                     </div>
 
@@ -232,31 +228,35 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                             name="end_date"
                             value={formData.end_date}
                             onChange={handleChange}
-                            disabled={isCoachPlan}
                         />
                     </div>
                 </div>
 
                 <div className='form-group'>
+
                     <PlanStatusSelector
-                        visible
+                        visible={true}
                         value={formData.status || 'draft'}
                         onChange={handleStatusChange}
-                        disabled={isCoachPlan}
+
                     />
                     {fieldErrors.status && <div className="error-message">{fieldErrors.status}</div>}
-                </div>
 
+                </div>
                 {id && <WorkoutDaysSection
                     planId={Number(id)}
-                    availableWorkouts={workoutsStore.workouts.map(w => ({ id: w.id, name: w.name }))}
-                    disabled={isCoachPlan}
+                    availableWorkouts={coachWorkoutsStore.workouts.map(w => ({ id: w.id, name: w.name }))}
                 />}
+
+                {id && formData.assigned_users && <AssignedUsersList assignedUsers={formData.assigned_users}
+                    onRemove={handleRemoveAssignment} open/>}
+
+                {id && <AssignPlanInline planId={Number(id)} onAssign={handleAssignPlan} />}
 
                 <div className="form-actions">
                     {isEditMode && (
                         <>
-                            <button type="button" className="secondary" onClick={handleDelete} disabled={isCoachPlan}>
+                            <button type="button" className="secondary" onClick={handleDelete}>
                                 Удалить
                             </button>
                             <button type="button" className="secondary" onClick={handleCancel}>
@@ -264,7 +264,7 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                             </button>
                         </>
                     )}
-                    <button type="submit" disabled={isCoachPlan}>
+                    <button type="submit">
                         {isEditMode ? 'Сохранить' : 'Создать'}
                     </button>
                 </div>

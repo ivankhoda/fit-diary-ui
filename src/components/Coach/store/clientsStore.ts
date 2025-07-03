@@ -17,6 +17,7 @@ export interface ClientInterface extends UserInterface {
     totalWorkouts?: number;
     lastWorkoutDate?: string;
     nextWorkoutDate?: string;
+    assigned_plans_by_coach?: PlanInterface[]
 
 }
 

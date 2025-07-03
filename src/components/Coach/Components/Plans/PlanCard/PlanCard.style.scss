@@ -1,0 +1,101 @@
+.plan-card {
+  $card-padding: 1.5rem;
+  $border-radius: 8px;
+  $border-color: #e0e0e0;
+  $primary-color: #3f51b5;
+  $text-color: #333;
+  $muted-color: #757575;
+
+  background: white;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $border-color;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.25rem;
+    color: $primary-color;
+    font-weight: 500;
+  }
+
+  &__description {
+    color: $text-color;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  &__details {
+    padding: 0 $card-padding;
+    margin-bottom: 1.5rem;
+  }
+
+  &__goal {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+
+    .label {
+      color: $muted-color;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__progress {
+    margin: 1rem 0;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: $text-color;
+    margin-top: 1rem;
+
+    .label {
+      color: $muted-color;
+      margin-right: 0.3rem;
+    }
+  }
+
+  &__link {
+    display: block;
+    padding: 0.8rem $card-padding;
+    background-color: rgba($primary-color, 0.05);
+    color: $primary-color;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    border-top: 1px solid $border-color;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    $card-padding: 1rem;
+
+    padding: $card-padding;
+
+    &__meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+}

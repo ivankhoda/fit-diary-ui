@@ -6,6 +6,8 @@ import NewWorkout from '../Components/Workouts/NewWorkout/NewWorkout';
 import CoachWorkoutsArchived from '../Components/Workouts/CoachWorkoutsArchived';
 import Exercises from '../Components/Exercises/Exercises';
 import Exercise from '../Components/Exercises/Exercise/Exercise';
+import Plans from '../Components/Plans/Plans';
+import PlanForm from '../Components/Plans/PlanForm/PlanForm';
 
 export const coachRoutes = [
     {Component:  <div/>, name: 'panel', path: '/'},
@@ -16,5 +18,8 @@ export const coachRoutes = [
     {Component:  <NewWorkout />, name: 'Workout', path: '/workouts/:workoutId/edit'},
     {Component:  <CoachWorkoutsArchived/>, name: 'Workouts', path: '/workouts/archive'},
     {Component: <Exercises/>, name: 'Exercises', path: '/exercises'},
-    {Component: <Exercise/>, name: 'Exercises', path: '/exercises/:id'}
+    {Component: <Exercise/>, name: 'Exercise', path: '/exercises/:id'},
+    {Component: <Plans/>, name: 'Plans', path: '/plans' },
+    {Component: <PlanForm/>, name: 'PlanForm', path: '/plans/create' },
+    {Component:  <PlanForm />, name: 'Plan', path: '/plans/:id'},
 ];

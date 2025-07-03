@@ -1,7 +1,9 @@
 /* eslint-disable no-magic-numbers */
 import { action, computed, makeObservable, observable } from 'mobx';
-import { WorkoutInterface } from './workoutStore';
-import { TrainingGoalInterface } from './trainingGoalsStore';
+
+import { TrainingGoalInterface } from './CoachTrainingGoalsStore';
+import { WorkoutInterface } from '../../../store/workoutStore';
+import { UserProfile } from '../../../store/userStore';
 
 export interface WorkoutDayInterface {
     id?: number;
@@ -39,14 +41,16 @@ export interface PlanInterface {
     workout_days?: WorkoutDayInterface[];
     training_goal?: TrainingGoalInterface
     current_workout_day?: WorkoutDayInterface;
-    coach_plan?: boolean
+    assigned_users?: UserProfile[];
 }
-export default class PlansStore {
+export default class CoachPlansStore {
     constructor() {
         makeObservable(this);
     }
 
     @observable plans: PlanInterface[] = [];
+
+    @observable plansForClient: PlanInterface[] = [];
 
     @observable currentPlan: PlanInterface | null = null;
 
@@ -71,8 +75,18 @@ export default class PlansStore {
     }
 
     @action
-    updatePlan(updatedPlan: PlanInterface): void {
-        this.plans = this.plans.map(plan => plan.id === updatedPlan.id ? updatedPlan : plan);
+    updatePlan(plan: PlanInterface):void  {
+        const idx = this.plans.findIndex(p => p.id === plan.id);
+
+        if (idx >= 0) {
+            this.plans[idx] = plan;
+        } else {
+            this.plans.push(plan);
+        }
+
+        if (this.currentPlan?.id === plan.id) {
+            this.currentPlan = plan;
+        }
     }
 
     @action
@@ -141,5 +155,17 @@ export default class PlansStore {
         if (this.currentPlan?.id === planId && this.currentPlan.workout_days) {
             this.currentPlan.workout_days = this.currentPlan.workout_days.filter(day => day.id !== dayId);
         }
+    }
+
+    @action
+    addPlanForClient(plan: PlanInterface): void {
+        if (!this.plansForClient.find(w => w.id === plan.id)) {
+            this.plansForClient.push(plan);
+        }
+    }
+
+      @action
+    removePlanForClient(planId: number): void {
+        this.plansForClient = this.plansForClient.filter(w => w.id !== planId);
     }
 }

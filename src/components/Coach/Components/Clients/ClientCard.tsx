@@ -42,7 +42,16 @@ const ClientCard = ({ client }: { client: ClientInterface }): JSX.Element => {
             </div>
 
             <p className="client-card__email">{client.email}</p>
-            <p><strong>План:</strong> {client.planTitle || '—'}</p>
+            <div>
+                <p><strong>Назначенные планы:</strong></p>
+                {client.assigned_plans_by_coach?.length > 0
+                    ? client.assigned_plans_by_coach.map(plan => (
+                        <p key={plan.id}>{plan.name}</p>
+                    ))
+                    : <p>—</p>
+                }
+            </div>
+
             <p><strong>Прогресс:</strong> {client.completedWorkouts || 0} / {client.totalWorkouts || 0}</p>
             <p><strong>Последняя:</strong> {formatDate(client.lastWorkoutDate)}</p>
             <p><strong>Следующая:</strong> {formatDate(client.nextWorkoutDate)}</p>

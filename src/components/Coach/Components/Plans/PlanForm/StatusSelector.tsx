@@ -10,10 +10,9 @@ interface Props {
   visible: boolean;
   value: string | null;
   onChange: (value: string | null) => void;
-  disabled?: boolean
 }
 
-const PlanStatusSelector: React.FC<Props> = ({ visible, value, onChange, disabled }) => {
+const PlanStatusSelector: React.FC<Props> = ({ visible, value, onChange }) => {
     const statusOptions: PlanStatus[] = [
         { label: 'Черновик', value: 'draft' },
         { label: 'Активный', value: 'active' },
@@ -39,7 +38,6 @@ const PlanStatusSelector: React.FC<Props> = ({ visible, value, onChange, disable
                 isClearable={false}
                 placeholder="Выберите статус..."
                 classNamePrefix="select"
-                isDisabled={disabled}
             />
         </div>
     );

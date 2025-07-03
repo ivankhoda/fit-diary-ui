@@ -3,10 +3,10 @@
 import React, { useState, useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
 
-import PlansStore, { WorkoutDayInterface } from '../../../../store/plansStore';
-import { plansController } from '../../../../controllers/global';
 import WorkoutDayForm from '../WorkoutDay/WorkoutDayForm';
 import './WorkoutDaysSection.style.scss';
+import { coachPlansController } from '../../../controllers/global';
+import CoachPlansStore, { WorkoutDayInterface } from '../../../store/CoachPlansStore';
 
 interface Workout {
   id: number;
@@ -16,16 +16,15 @@ interface Workout {
 interface Props {
   planId: number;
   availableWorkouts: Workout[];
-  plansStore?: PlansStore;
-  disabled?: boolean
+  coachPlansStore?: CoachPlansStore;
 }
 
-const WorkoutDaysSection: React.FC<Props> = inject('plansStore')(observer(({
+const WorkoutDaysSection: React.FC<Props> = inject('coachPlansStore')(observer(({
     planId,
     availableWorkouts,
-    plansStore, disabled
+    coachPlansStore,
 }) => {
-    const workoutDays = plansStore?.currentPlan?.workout_days || [];
+    const workoutDays = coachPlansStore?.currentPlan?.workout_days || [];
 
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingDayId, setEditingDayId] = useState<number | null>(null);
@@ -42,19 +41,19 @@ const WorkoutDaysSection: React.FC<Props> = inject('plansStore')(observer(({
 
     const handleDelete = useCallback(async(dayId: number) => {
         try {
-            await plansController.deleteWorkoutDay(planId, dayId);
+            await coachPlansController.deleteWorkoutDay(planId, dayId);
         } catch (error) {
             console.error('Ошибка при удалении тренировочного дня:', error);
         }
     }, [planId]);
 
     const handleUpdate = useCallback(async(dayData: any) => {
-        await plansController.updateWorkoutDay(planId, dayData);
+        await coachPlansController.updateWorkoutDay(planId, dayData);
         setEditingDayId(null);
     }, [planId]);
 
     const handleCreate = useCallback(async(dayData: WorkoutDayInterface) => {
-        await plansController.addWorkoutDayToPlan(planId, dayData);
+        await coachPlansController.addWorkoutDayToPlan(planId, dayData);
         setIsFormOpen(false);
     }, [planId]);
 
@@ -83,11 +82,11 @@ const WorkoutDaysSection: React.FC<Props> = inject('plansStore')(observer(({
                 <p>Нет тренировочных дней</p>
             )}
 
-            {!disabled && !isFormOpen && (
+            {!isFormOpen && (
                 <button onClick={handleAddClick}>Добавить тренировочный день</button>
             )}
 
-            {!disabled && isFormOpen && (
+            {isFormOpen && (
                 <div className="new-workout-day-form">
                     <WorkoutDayForm
                         onCreate={handleCreate}

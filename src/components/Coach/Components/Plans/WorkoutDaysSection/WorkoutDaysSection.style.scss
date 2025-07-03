@@ -1,0 +1,60 @@
+.workout-days-table {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+
+  .table-header {
+    font-weight: 700;
+    padding: 8px;
+    background-color: #eee;
+    border-bottom: 2px solid #ccc;
+  }
+
+  .table-cell {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .number {
+    text-align: center;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  /* Мобильный адаптив */
+  @media (max-width: 700px) {
+    display: block;
+
+    .table-header {
+      display: none;
+    }
+
+    .workout-day-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      background-color: #fafafa;
+    }
+
+    .table-cell {
+      justify-content: space-between;
+      padding: 10px 5px;
+      border-bottom: 1px solid #ccc;
+      font-size: 18px;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &::before {
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+    }
+  }
+}

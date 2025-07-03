@@ -1,16 +1,15 @@
 import React, { useCallback } from 'react';
 import Select from 'react-select';
-import { TrainingGoalInterface } from '../../../../store/trainingGoalsStore';
+import { TrainingGoalInterface } from '../../../store/CoachTrainingGoalsStore';
 
 interface Props {
     visible: boolean;
     trainingGoals: TrainingGoalInterface[];
     value: number | null;
     onChange: (value: number | null) => void;
-    disabled?: boolean
 }
 
-const TrainingGoalSelector: React.FC<Props> = ({ visible, trainingGoals, value, onChange, disabled }) => {
+const TrainingGoalSelector: React.FC<Props> = ({ visible, trainingGoals, value, onChange }) => {
     if (!visible) {return null;}
 
     const options = trainingGoals.map(e => ({ label: e.name, value: e.id }));
@@ -30,7 +29,6 @@ const TrainingGoalSelector: React.FC<Props> = ({ visible, trainingGoals, value, 
                 options={options}
                 isClearable
                 placeholder="Выберите цель."
-                isDisabled={disabled}
             />
         </div>
     );

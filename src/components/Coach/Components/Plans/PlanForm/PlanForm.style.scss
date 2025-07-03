@@ -1,0 +1,141 @@
+@use "../../../../../styles.scss" as styles;
+
+
+.plan-form {
+  max-width: 100%;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin-bottom: 24px;
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .error-message {
+    color: red;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .plan-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+
+    label {
+      font-weight: 600;
+    }
+
+    input[type='text'],
+    input[type='date'],
+    input,
+    textarea,
+    select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: styles.$base-font-size;
+      transition: border-color 0.2s ease-in-out;
+
+      &:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+    }
+  }
+
+  .plan_date {
+    display: flex;
+    min-width: 100%;
+    justify-content: space-between;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+
+    button {
+      padding: 10px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &.secondary {
+        background-color: #f0f0f0;
+        color: #333;
+
+        &:hover {
+          background-color: #e0e0e0;
+        }
+      }
+
+      &:not(.secondary) {
+        background-color: #007bff;
+        color: white;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  // 💻 Десктоп / планшетные стили
+  @media screen and (min-width: 768px) {
+    max-width: 720px;
+    padding: 32px;
+
+    h2 {
+      font-size: 26px;
+    }
+
+    .form-actions {
+      flex-direction: row;
+      justify-content: flex-end;
+
+      button {
+        min-width: 120px;
+      }
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    max-width: 100%;
+    padding: 40px;
+
+    .plan-form__form {
+      gap: 20px;
+    }
+
+    .form-group label {
+      font-size: 15px;
+    }
+
+    .form-actions button {
+      font-size: 15px;
+    }
+  }
+}

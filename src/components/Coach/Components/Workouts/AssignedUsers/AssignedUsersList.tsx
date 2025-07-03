@@ -5,10 +5,11 @@ import './AssignedUsersList.style.scss';
 interface Props {
   assignedUsers: UserProfile[];
   onRemove: (userId: number) => void;
+  open?: boolean
 }
 
-const AssignedUsersList: React.FC<Props> = ({ assignedUsers, onRemove }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const AssignedUsersList: React.FC<Props> = ({ assignedUsers, onRemove, open }) => {
+    const [isOpen, setIsOpen] = useState(open || false);
 
     const handleToggleOpen = useCallback(() => {
         setIsOpen(prev => !prev);
@@ -33,7 +34,7 @@ const AssignedUsersList: React.FC<Props> = ({ assignedUsers, onRemove }) => {
                 {assignedUsers.map(user => (
                     <li key={user.id} className="assigned-user-item">
                         <span>{user.name || user.email || `Пользователь #${user.id}`}</span>
-                        <button onClick={handleRemove(user.id)} title="Удалить назначение">
+                        <button type="button" onClick={handleRemove(user.id)} title="Удалить назначение">
               ×
                         </button>
                     </li>

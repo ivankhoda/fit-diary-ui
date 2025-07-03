@@ -1,0 +1,207 @@
+/* TrainingGoals.scss */
+@use "../../../../styles" as styles;
+
+.plans {
+
+  .button {
+    background-color: #0056b3 !important;
+    color: styles.$white-color;
+  }
+
+  .goals-list {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+
+    .goal-card {
+      background-color: #fff;
+      padding: 15px;
+      border: 1px solid styles.$color-light-gray;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+
+      &__header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      &__title {
+        font-size: 1.4rem;
+        color: #2c3e50;
+        margin:0px;
+      }
+
+      &__meta {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-self: start;
+      }
+
+      &__description{
+        font-size: 1rem;
+        color: #7f8c8d;
+        line-height: 1;
+        margin: 0px;
+      }
+
+      &__expand-button {
+        max-width: 16px;
+        max-height: 16px;
+      }
+
+      &__subgoals {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-left: 5px;
+        position: relative;
+
+        h3 {
+          font-size: 16px;
+          color: #34495e;
+          margin: 0px;
+        }
+      }
+      &__subgoals::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: calc(100% - 160px);
+        background-color: styles.$color-light-gray;
+      }
+
+      &__sub {
+        margin: 0px;
+        min-height: 146px;
+        position: relative;
+        margin-left: 10px;
+        padding-left: 10px;
+        background: #f9f9f9;
+        border-radius: 6px;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 15px;
+          left: -15px;
+          width: 15px;
+          height: 2px;
+          background-color: styles.$color-light-gray;
+        }
+
+      }
+
+      .progress-bar {
+        width: 100%;
+      }
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        font-size: 1.6rem;
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+
+      p{
+        margin: 0px;
+      }
+
+      .progress {
+        font-size: 1rem;
+        color: #3498db;
+        font-weight: bold;
+      }
+
+      .view-goal-details {
+        margin-top: 10px;
+        color: #2980b9;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: #1c6d91;
+        }
+      }
+    }
+  }
+
+  .add-new-goal {
+    margin-top: 30px;
+    text-align: center;
+
+    .add-goal-button {
+      background-color: #2ecc71;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      display: inline-block;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #27ae60;
+      }
+    }
+  }
+
+  &__tabs{
+     display: grid;
+  grid-template-columns: repeat(2, 1fr); // 2 колонки
+  grid-template-rows: repeat(2, 1fr);    // 2 строки
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+
+    &.active {
+      background-color: #0056b3;
+    }
+  }
+  }
+}
+
+/* Псевдоклассы и медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+  .training-goals {
+    padding: 15px;
+  }
+
+  .goals-list {
+    padding: 0 10px;
+  }
+
+  .goal-item {
+    padding: 12px;
+  }
+
+  .add-goal-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
