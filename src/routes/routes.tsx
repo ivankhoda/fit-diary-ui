@@ -23,8 +23,8 @@ import TrainingGoal from '../components/User/TrainingGoals/TrainingGoal/Training
 import Plans from '../components/User/Plans/Plans';
 import PlanForm from '../components/User/Plans/PlanForm/PlanForm';
 import UserProfile from '../components/User/Cabinet/UserProfile';
-import PrivacyPolicy from '../components/privacy/PrivacyPolicy';
-import TermsOfUse from '../components/terms/TermsOfUse';
+import TermsOfUse from '../terms/TermsOfUse';
+import PrivacyPolicy from '../privacy/PrivacyPolicy';
 
 // eslint-disable-next-line func-style
 function useQuery() {

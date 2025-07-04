@@ -84,59 +84,66 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
     }, []);
 
     return (
-        <div className="register-form">
-            <p className="form-title">{t('register')}</p>
-            <form id="register" onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="email" className="form-label">
-                        {t('email')}
-                        <input
-                            id="email"
-                            className="form-input"
-                            type="email"
-                            value={email}
-                            onChange={handleEmailChange}
-                        />
-                    </label>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password" className="form-label">
-                        {`${t('password')} (${t('characters_min', { count: MIN_PASSWORD_LENGTH })})`}
-                        <input
-                            id="password"
-                            className="form-input"
-                            type="password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                        />
-                    </label>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="confirm-password" className="form-label">
-                        {t('confirm_password')}
-                        <input
-                            id="confirm-password"
-                            className="form-input"
-                            type="password"
-                            value={confirmPassword}
-                            onChange={handleConfirmPasswordChange}
-                        />
-                    </label>
-                </div>
-
-                <div className="form-group">
-                    <button className="form-button" type="submit" disabled={!email || !password || !confirmPassword}>
-                        {t('button_register')}
-                    </button>
-                </div>
-                {errors.length > 0 && (
-                    <div className="form-error">
-                        {errors.map((error, index) => (
-                            <p key={index}>{error}</p>
-                        ))}
+        <>
+            <div className="register-form">
+                <p className="form-title">{t('register')}</p>
+                <form id="register" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="email" className="form-label">
+                            {t('email')}
+                            <input
+                                id="email"
+                                className="form-input"
+                                type="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                            />
+                        </label>
                     </div>
-                )}
-            </form>
-        </div>
+                    <div className="form-group">
+                        <label htmlFor="password" className="form-label">
+                            {`${t('password')} (${t('characters_min', { count: MIN_PASSWORD_LENGTH })})`}
+                            <input
+                                id="password"
+                                className="form-input"
+                                type="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                            />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="confirm-password" className="form-label">
+                            {t('confirm_password')}
+                            <input
+                                id="confirm-password"
+                                className="form-input"
+                                type="password"
+                                value={confirmPassword}
+                                onChange={handleConfirmPasswordChange}
+                            />
+                        </label>
+                    </div>
+
+                    <div className="form-group">
+                        <button className="form-button" type="submit" disabled={!email || !password || !confirmPassword}>
+                            {t('button_register')}
+                        </button>
+                    </div>
+                    {errors.length > 0 && (
+                        <div className="form-error">
+                            {errors.map((error, index) => (
+                                <p key={index}>{error}</p>
+                            ))}
+                        </div>
+                    )}
+                </form>
+            </div>
+            <p className="auth__legal">
+                Регистрируясь, вы принимаете{' '}
+                <a href="/terms-of-use" target="_blank">условия использования</a> и{' '}
+                <a href="/privacy-policy" target="_blank">политику конфиденциальности</a>.
+            </p>
+        </>
     );
 };

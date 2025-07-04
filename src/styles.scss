@@ -107,6 +107,11 @@ html, body, #root {
 
   height: 100%;
   align-items: center;
+  margin-top: env(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
 
   // display: grid;
   // grid-template-rows: auto auto 1fr; /* Header | Working Panel | Footer */
@@ -115,6 +120,14 @@ html, body, #root {
 
   @include mixins.apply-to(less-than, mobile.$mobile) {
     align-items: baseline;
+      margin-top: env(safe-area-inset-top);
+      margin-left:  env(safe-area-inset-left);
+      margin-right: env(safe-area-inset-right);
+      margin-bottom: env(safe-area-inset-bottom);
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
   }
 }
 

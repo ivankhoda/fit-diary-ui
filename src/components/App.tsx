@@ -21,7 +21,6 @@ import boosty from "../images/boosty.png";
 import { t } from "i18next";
 import Footer from "./User/Footer/Footer";
 import { CoachModeProvider, useCoachMode } from "./Coach/CoachContext";
-import { coachRoutes } from "./Coach/routes/routes";
 import { CoachPanel } from "./Coach/CoachPanel";
 import LandingPage from "../landing/LandingPage";
 import PrivacyPolicy from "./privacy/PrivacyPolicy";
