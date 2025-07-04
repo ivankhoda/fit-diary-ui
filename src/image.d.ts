@@ -8,3 +8,8 @@ declare module '*.svg' {
   export default value;
 }
 
+declare module '*.webp' {
+  const value = '';
+  export default value;
+}
+

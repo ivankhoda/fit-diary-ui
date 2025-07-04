@@ -40,13 +40,13 @@ module.exports = {
                     {
                         loader: 'css-loader',
                         options: {
-                            sourceMap: true,  // Enable source maps for CSS for better debugging
+                            sourceMap: true,
                         },
                     },
                     {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: true,  // Enable source maps for Sass
+                            sourceMap: true,
                         },
                     },
                 ],
@@ -56,7 +56,7 @@ module.exports = {
                 use: ['@svgr/webpack'],
             },
             {
-                test: /\.(png|jpg|gif)$/,
+                test: /\.(webp|png|jpg|gif)$/,
                 use: [
                     {
                         loader: 'file-loader',
@@ -90,7 +90,7 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
               { from: 'public/manifest.json', to: 'manifest.json' },
-              { from: 'public/icons', to: 'icons' } // если у тебя есть иконки
+              { from: 'public/icons', to: 'icons' }
             ]
           }),
         new ESLintPlugin({

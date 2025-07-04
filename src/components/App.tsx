@@ -23,6 +23,7 @@ import Footer from "./User/Footer/Footer";
 import { CoachModeProvider, useCoachMode } from "./Coach/CoachContext";
 import { coachRoutes } from "./Coach/routes/routes";
 import { CoachPanel } from "./Coach/CoachPanel";
+import LandingPage from "../landing/LandingPage";
 
 export const App = observer((): JSX.Element => {
   const { token, setToken, isAdmin } = useToken();
@@ -37,11 +38,17 @@ export const App = observer((): JSX.Element => {
     setIsDescriptionVisible(false);
   };
 
+  const handleClick =()=> {
+        proceedToAuth();
+        setIsLogin(false);
+  }
+
 
   return (
      <CoachModeProvider>
     <Router>
       <Routes>
+       <Route path="/landing" element={<LandingPage onRegisterClick={handleClick}/>}/>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
         <Route path="/password/recovery" element={<PasswordRecovery />} />
         <Route
