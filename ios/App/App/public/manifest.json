@@ -1,0 +1,27 @@
+{
+  "name": "Planka",
+  "short_name": "Planka",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f8fafd",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "plank.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "plank.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "description": "Приложение для тренировок.",
+  "categories": [
+    "entertainment",
+    "fitness",
+    "sports"
+  ]
+}

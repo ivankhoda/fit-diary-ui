@@ -24,6 +24,8 @@ import { CoachModeProvider, useCoachMode } from "./Coach/CoachContext";
 import { coachRoutes } from "./Coach/routes/routes";
 import { CoachPanel } from "./Coach/CoachPanel";
 import LandingPage from "../landing/LandingPage";
+import PrivacyPolicy from "./privacy/PrivacyPolicy";
+import TermsOfUse from "./terms/TermsOfUse";
 
 export const App = observer((): JSX.Element => {
   const { token, setToken, isAdmin } = useToken();
@@ -48,6 +50,8 @@ export const App = observer((): JSX.Element => {
      <CoachModeProvider>
     <Router>
       <Routes>
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-use" element={<TermsOfUse />} />
        <Route path="/landing" element={<LandingPage onRegisterClick={handleClick}/>}/>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
         <Route path="/password/recovery" element={<PasswordRecovery />} />

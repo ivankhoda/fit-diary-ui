@@ -1,0 +1,6 @@
+{
+	"appId": "com.planka.app",
+	"appName": "Planka",
+	"webDir": "dist",
+	"packageClassList": []
+}
