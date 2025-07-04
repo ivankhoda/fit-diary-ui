@@ -20,6 +20,10 @@ export interface UserProfile {
     id: number;
     username: string;
     name: string;
+    first_name: string;
+    last_name: string;
+    telegram_username: string;
+    phone_number: string;
     email: string;
     has_workouts: boolean;
     has_exercises: boolean;

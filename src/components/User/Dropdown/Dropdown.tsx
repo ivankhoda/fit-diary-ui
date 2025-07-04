@@ -41,6 +41,7 @@ const options: OptionInterface[] = [
             { linkTo: '/workouts/archive', text: 'Архив' },
         ],
     },
+    { linkTo: '/profile', text: 'Профиль' },
 
     {
         text: 'Тренерская',

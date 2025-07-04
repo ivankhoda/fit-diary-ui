@@ -26,12 +26,29 @@ export default class UserController extends BaseController {
     }
 
     @action
-    updateUser(userData: { username?: string; email?: string }): void {
-        new Patch({ params: { user: userData }, url: `${getApiBaseUrl()}/users/${this.userStore.userProfile.id}` }).execute()
-            .then(r => r.json())
-            .then(res => {
-                this.userStore.setUserProfile(res);
-            });
+    async updateUser(userData: {
+  first_name?: string;
+  last_name?: string;
+  phone_number?: string;
+  telegram_username?: string;
+}): Promise<void> {
+        try {
+            const response = await new Patch({
+                url: `${getApiBaseUrl()}/users/update`,
+                // eslint-disable-next-line sort-keys
+                params: { user: userData },
+            }).execute();
+
+            const result = await response.json();
+
+            if (result.ok && result?.user) {
+                this.userStore.setUserProfile(result.user);
+            } else {
+                console.error('Update failed:', result.errors || result);
+            }
+        } catch (error) {
+            console.error('Unexpected error during user update:', error);
+        }
     }
 
     @action

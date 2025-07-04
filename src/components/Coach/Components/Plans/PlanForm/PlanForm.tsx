@@ -74,8 +74,13 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
         const formatDate = (dateStr: string | Date | null): string => {
             if (!dateStr) {return '';}
 
-            const date = new Date(dateStr);
-            return date.toISOString().split('T')[0];
+            const isoStr =
+            typeof dateStr === 'string'
+                ? dateStr.replace(' ', 'T').replace(' UTC', 'Z')
+                : dateStr.toISOString();
+
+            const date = new Date(isoStr);
+            return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
         };
 
         if (plan) {
@@ -83,10 +88,10 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
                 name: plan.name,
                 description: plan.description || '',
                 start_date: formatDate(plan.start_date),
-                end_date: plan.end_date ? formatDate(plan.end_date) : '',
+                end_date: formatDate(plan.end_date),
                 training_goal_id: plan.training_goal?.id,
-                status: plan?.status,
-                assigned_users: plan?.assigned_users
+                status: plan.status,
+                assigned_users: plan.assigned_users,
             });
         }
     }, [coachPlansStore.currentPlan]);

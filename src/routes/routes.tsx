@@ -22,6 +22,7 @@ import TrainingGoals from '../components/User/TrainingGoals/TrainingGoals';
 import TrainingGoal from '../components/User/TrainingGoals/TrainingGoal/TrainingGoal';
 import Plans from '../components/User/Plans/Plans';
 import PlanForm from '../components/User/Plans/PlanForm/PlanForm';
+import UserProfile from '../components/User/Cabinet/UserProfile';
 
 // eslint-disable-next-line func-style
 function useQuery() {
@@ -65,4 +66,5 @@ export const routes = [
     {Component: <ExercisesStats/>, name: 'ExercisesStats', path: '/exercises-stats'},
     {Component:  <ResetPasswordWithToken />, name: 'ResetPassswordWithToken', path: '/password/reset?reset_password_token=:token'},
     {Component:  <ConfirmRegistrationWithToken />, name: 'ResetPassswordWithToken', path: 'users/confirmation?confirmation_token=:token'},
+    {Component:  <UserProfile />, name: 'profile', path: '/profile'},
 ];
