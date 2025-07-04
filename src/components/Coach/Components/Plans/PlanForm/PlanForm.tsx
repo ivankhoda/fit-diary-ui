@@ -202,8 +202,8 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
 
                     <TrainingGoalSelector
                         visible
-                        trainingGoals={coachTrainingGoalsStore.activeGoals}
-                        value={formData.training_goal_id}
+                        trainingGoals={coachTrainingGoalsStore?.activeGoals}
+                        value={formData?.training_goal_id}
                         onChange={handleGoalChange}
                     />
                 </div>
@@ -245,7 +245,7 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
                 </div>
                 {id && <WorkoutDaysSection
                     planId={Number(id)}
-                    availableWorkouts={coachWorkoutsStore.workouts.map(w => ({ id: w.id, name: w.name }))}
+                    availableWorkouts={coachWorkoutsStore?.workouts.map(w => ({ id: w.id, name: w.name }))}
                 />}
 
                 {id && formData.assigned_users && <AssignedUsersList assignedUsers={formData.assigned_users}
