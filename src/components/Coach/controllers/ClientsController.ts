@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 import { action } from 'mobx';
 
 import ClientsStore, { ClientInterface } from '../store/clientsStore';
@@ -51,9 +52,9 @@ export default class ClientsController extends BaseController {
   }
 
   @action
-  addClient(email: string): void {
+  addClient(email: string, code: string): void {
       new Post({
-          params: { email },
+          params: { email, code },
           url: `${getApiBaseUrl()}/coach/clients`
       }).execute()
           .then(r => r.json())

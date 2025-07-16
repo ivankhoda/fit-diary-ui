@@ -120,6 +120,11 @@ export default class WorkoutsStore {
     }
 
     @action
+    removeWorkout(id: number): void {
+        this.workouts = this.workouts.filter(workout => workout.id !== id);
+    }
+
+    @action
     updatArchivedWorkouts(updatedWorkout: WorkoutInterface): void {
         const index = this.userWorkoutsDone.findIndex(workout => workout.id === updatedWorkout.id && updatedWorkout.deleted);
         const notFound = -1;

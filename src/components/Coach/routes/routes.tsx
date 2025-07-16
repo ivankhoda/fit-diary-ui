@@ -8,6 +8,7 @@ import Exercises from '../Components/Exercises/Exercises';
 import Exercise from '../Components/Exercises/Exercise/Exercise';
 import Plans from '../Components/Plans/Plans';
 import PlanForm from '../Components/Plans/PlanForm/PlanForm';
+import AboutApp from '../AboutApp/AboutApp';
 
 export const coachRoutes = [
     {Component:  <div/>, name: 'panel', path: '/'},
@@ -22,4 +23,5 @@ export const coachRoutes = [
     {Component: <Plans/>, name: 'Plans', path: '/plans' },
     {Component: <PlanForm/>, name: 'PlanForm', path: '/plans/create' },
     {Component:  <PlanForm />, name: 'Plan', path: '/plans/:id'},
+    {Component:  <AboutApp/>, name: 'about', path: '/about'},
 ];

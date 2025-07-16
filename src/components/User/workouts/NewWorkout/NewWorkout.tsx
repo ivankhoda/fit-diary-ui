@@ -18,7 +18,6 @@ import { UserProfile } from '../../../../store/userStore';
 import SelectedExercise from './SelectedExercise';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-
 export interface NewWorkoutProps {
   workoutsStore?: WorkoutsStore;
   exercisesStore?: ExercisesStore;

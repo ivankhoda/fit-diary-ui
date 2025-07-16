@@ -94,9 +94,9 @@ const ProgressTable: React.FC<ProgressTableProps> = ({ progress, type_of_measure
                                             ? '-'
                                             : `${row[header]} ${
                                                 header === 'weight'
-                                                    ? 'kg'
+                                                    ? 'кг'
                                                     : header === 'distance'
-                                                        ? 'm'
+                                                        ? 'м'
                                                         : ''
                                             }`}
                                 </td>

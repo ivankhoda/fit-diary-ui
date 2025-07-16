@@ -50,7 +50,7 @@ const AssignWorkoutModal: React.FC<Props> = observer(({
     const clients = injectedClientsStore?.clients || [];
 
     const options = [
-        { label: 'Выбрать всех', value: 'ALL' }, ...clients.map(client => ({ label: client.name || client.email, value: client.id })),
+        ...clients.map(client => ({ label: client.name || client.email, value: client.id })),
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,7 +75,6 @@ const AssignWorkoutModal: React.FC<Props> = observer(({
             <div className="simple-modal" ref={modalRef}>
                 <h3>Назначить тренировку</h3>
                 <Select
-                    isMulti
                     options={options}
                     onChange={handleChange}
                     classNamePrefix="react-select"

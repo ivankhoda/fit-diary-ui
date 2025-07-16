@@ -80,7 +80,7 @@ const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
                             {measurements.map((measurement, index) => (
                                 <li key={index}>
                                     <span className="date">{formatDateForInput(measurement.recorded_at)}</span>:
-                                    <span className="weight">{measurement.weight} kg</span>
+                                    <span className="weight">{measurement.weight} кг</span>
                                     <span
                                         onClick={handleDeleteMeasurement}
                                         data-id={measurement.id}
@@ -101,7 +101,7 @@ const SelfStats: React.FC<SelfStatsProps> = ({ userStore, userController }) => {
             {isFormVisible && (
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="weight">Вес (kg):</label>
+                        <label htmlFor="weight">Вес (кг):</label>
                         <input
                             type="text"
                             id="weight"

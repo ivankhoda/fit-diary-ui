@@ -171,7 +171,7 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
                         </button>
                     </div>
                     <div className="form-recovery">
-                        <button type="button" className="form-recovery-link" onClick={handleSwitchToRecovery}>
+                        <button type="button" className="form-button" onClick={handleSwitchToRecovery}>
                             {t('forgot_password')}
                         </button>
                     </div>

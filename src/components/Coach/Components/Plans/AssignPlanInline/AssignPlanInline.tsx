@@ -28,7 +28,7 @@ const AssignPlanInline: React.FC<Props> = observer(({
     const clients = injectedClientsStore?.clients || [];
 
     const options = [
-        { label: 'Выбрать всех', value: 'ALL' }, ...clients.map(client => ({
+        ...clients.map(client => ({
             label: client.name || client.email,
             value: client.id
         })),

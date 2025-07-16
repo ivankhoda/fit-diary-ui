@@ -1,0 +1,57 @@
+.assigned-user-card {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background-color: #fafafa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+
+  &__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+  }
+
+  &:hover {
+    background-color: #f3f9ff;
+  }
+
+  > span {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .form-group {
+    margin-top: 8px;
+
+    span {
+      color: #888;
+      font-size: 14px;
+    }
+  }
+
+  button {
+    align-self: flex-end;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background-color: #ff5c5c;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #d94040;
+    }
+  }
+}

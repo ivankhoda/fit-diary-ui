@@ -22,16 +22,7 @@ const {userProfile} = userStore;
 
 const options: OptionInterface[] = [
     { linkTo: '/training_goals', text: 'Цели' },
-    { linkTo: '/plans', text: 'Планы' },
     { linkTo: '/exercises', text: 'Упражнения' },
-
-    {
-        text: 'Статистика',
-        subOptions: [
-            { linkTo: '/exercises-stats', text: 'Статистика упражнений' }, { linkTo: '/self-stats', text: 'Собственные показатели' },
-        ],
-    },
-
     {
         text: 'Тренировки',
         subOptions: [
@@ -41,11 +32,19 @@ const options: OptionInterface[] = [
             { linkTo: '/workouts/archive', text: 'Архив' },
         ],
     },
+    { linkTo: '/plans', text: 'Планы' },
+    {
+        text: 'Статистика',
+        subOptions: [
+            { linkTo: '/exercises-stats', text: 'Статистика упражнений' }, { linkTo: '/self-stats', text: 'Собственные показатели' },
+        ],
+    },
     { linkTo: '/profile', text: 'Профиль' },
 
     {
         text: 'Тренерская',
     },
+    {text: 'О приложении', linkTo: '/about'},
 ];
 
 const filterOptionsByVisibility = (

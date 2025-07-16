@@ -1,5 +1,4 @@
-/* eslint-disable max-lines-per-function */
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import i18n, { t } from 'i18next';
 import './ExerciseModal.style.scss';
 import ExercisesController from '../../../../controllers/ExercisesController';
@@ -26,27 +25,14 @@ type Props = {
 };
 
 const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesController, exercise }) => {
-    const modalRef = useRef<HTMLDivElement | null>(null);
-    useEffect(() => {
-        const handleOutsideClick = (event: MouseEvent) => {
-            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-                onClose();
-            }
-        };
-        document.addEventListener('mousedown', handleOutsideClick);
-        return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
-        };
-    }, [onClose]);
-
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<ExerciseFormData>({
         category: '',
         created_at: '',
         description: '',
         difficulty: '',
         duration: 0,
         id: '',
-        muscle_groups: [] as string[],
+        muscle_groups: [],
         name: '',
         type_of_measurement: '',
         updated_at: '',
@@ -54,37 +40,21 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
 
     useEffect(() => {
         if (exercise) {
-            setFormData({
-                category: exercise.category,
-                created_at: exercise.created_at,
-                description: exercise.description,
-                difficulty: exercise.difficulty,
-                duration: exercise.duration,
-                id: exercise.id,
-                muscle_groups: exercise.muscle_groups,
-                name: exercise.name,
-                type_of_measurement: exercise.type_of_measurement,
-                updated_at: exercise.updated_at,
-            });
+            setFormData({ ...exercise });
         }
     }, [exercise]);
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-
-        setFormData(prev => ({
-            ...prev,
-            [name]: value,
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     }, []);
 
     const handleGroupClickFactory = (groupId: string) => () => {
-        const newSelectedGroups = formData.muscle_groups.includes(groupId)
-            ? formData.muscle_groups.filter(id => id !== groupId)
-            : [...formData.muscle_groups, groupId];
         setFormData(prev => ({
             ...prev,
-            muscle_groups: newSelectedGroups,
+            muscle_groups: prev.muscle_groups.includes(groupId)
+                ? prev.muscle_groups.filter(id => id !== groupId)
+                : [...prev.muscle_groups, groupId],
         }));
     };
 
@@ -92,7 +62,7 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
 
     const handleSaveExercise = useCallback(() => {
         const { name, type_of_measurement } = formData;
-        setError(i18n.t('pleaseFillAllFields'));
+
         if (!name || !type_of_measurement) {
             setError(i18n.t('pleaseFillAllFields'));
             return;
@@ -103,19 +73,25 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
         } else {
             exercisesController.createExercise(formData);
         }
+
         onSave();
     }, [formData,
         exercisesController,
         onSave,
         exercise]);
 
+    const handleModalContentClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+    }, []);
+
     return (
-        <div className="exercise-create-modal">
-            <div className="modal-content" ref={modalRef}>
+        <div className="exercise-create-modal" onClick={onClose}>
+            <div className="modal-content" onClick={handleModalContentClick}>
                 {error && <div className="error-message">{error}</div>}
-                <div>
-                    <div>
-                        <strong>{i18n.t('name')}, {t('required')}</strong>
+
+                <div className="modal-section">
+                    <label>
+                        <strong>{i18n.t('name')} <span className="required">*</span></strong>
                         <input
                             type="text"
                             name="name"
@@ -124,51 +100,48 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
                             placeholder={i18n.t('name')}
                             required
                         />
-                    </div>
-                    <div>
+                    </label>
+                </div>
+
+                <div className="modal-section">
+                    <label>
                         <strong>{i18n.t('description')}</strong>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleInputChange}
                             placeholder={i18n.t('description')}
-                            required
                         />
-                    </div>
-                    <div>
+                    </label>
+                </div>
+
+                <div className="modal-section">
+                    <label>
                         <strong>{i18n.t('category')}</strong>
-                        <select
-                            name="category"
-                            value={formData.category}
-                            onChange={handleInputChange}
-                            required
-                        >
+                        <select name="category" value={formData.category} onChange={handleInputChange} required>
                             <option value="" disabled>{i18n.t('selectCategory')}</option>
                             {categoryMap.map(key => (
-                                <option key={key} value={key}>
-                                    {t(key)}
-                                </option>
+                                <option key={key} value={key}>{t(key)}</option>
                             ))}
                         </select>
-                    </div>
-                    <div>
+                    </label>
+                </div>
+
+                <div className="modal-section">
+                    <label>
                         <strong>{i18n.t('difficulty')}</strong>
-                        <select
-                            name="difficulty"
-                            value={formData.difficulty}
-                            onChange={handleInputChange}
-                            required
-                        >
+                        <select name="difficulty" value={formData.difficulty} onChange={handleInputChange}>
                             <option value="" disabled>{i18n.t('selectDifficulty')}</option>
                             {difficultyMap.map(key => (
-                                <option key={key} value={key}>
-                                    {t(key)}
-                                </option>
+                                <option key={key} value={key}>{t(key)}</option>
                             ))}
                         </select>
-                    </div>
-                    <div>
-                        <strong>{i18n.t('type_of_measurement')}, {t('required')}</strong>
+                    </label>
+                </div>
+
+                <div className="modal-section">
+                    <label>
+                        <strong>{i18n.t('type_of_measurement')} <span className="required">*</span></strong>
                         <select
                             name="type_of_measurement"
                             value={formData.type_of_measurement}
@@ -177,32 +150,32 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
                         >
                             <option value="" disabled>{i18n.t('selectTypeOfMeasurement')}</option>
                             {measurementKeys.map(key => (
-                                <option key={key} value={key}>
-                                    {t(key)}
-                                </option>
+                                <option key={key} value={key}>{t(key)}</option>
                             ))}
                         </select>
-                    </div>
-                    {formData.category === 'strength' && (
-                        <div>
-                            <strong>{i18n.t('muscleGroup')}</strong>
-                            <div className="muscle-groups">
-                                {muscleGroups.map(group => (
-                                    <div
-                                        key={group.name}
-                                        onClick={handleGroupClickFactory(group.name)}
-                                        className={formData.muscle_groups.includes(group.name) ? 'active' : ''}
-                                    >
-                                        { t(`exercise.muscleGroupsList.${group.name}`)}
-                                    </div>
-                                ))}
-                            </div>
+                    </label>
+                </div>
+
+                {formData.category === 'strength' && (
+                    <div className="modal-section">
+                        <strong>{i18n.t('muscleGroup')}</strong>
+                        <div className="muscle-groups">
+                            {muscleGroups.map(group => (
+                                <div
+                                    key={group.name}
+                                    onClick={handleGroupClickFactory(group.name)}
+                                    className={formData.muscle_groups.includes(group.name) ? 'active' : ''}
+                                >
+                                    {t(`exercise.muscleGroupsList.${group.name}`)}
+                                </div>
+                            ))}
                         </div>
-                    )}
-                    <div className="modal-actions">
-                        <button onClick={onClose}>{i18n.t('cancel')}</button>
-                        <button onClick={handleSaveExercise}>{exercise ? i18n.t('editExercise') : i18n.t('createExercise')}</button>
                     </div>
+                )}
+
+                <div className="modal-actions">
+                    <button onClick={onClose}>{i18n.t('cancel')}</button>
+                    <button onClick={handleSaveExercise}>{exercise ? i18n.t('editExercise') : i18n.t('createExercise')}</button>
                 </div>
             </div>
         </div>

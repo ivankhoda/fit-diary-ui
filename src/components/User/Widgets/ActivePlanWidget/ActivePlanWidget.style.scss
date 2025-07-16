@@ -1,49 +1,124 @@
 .active-plan-widget {
     background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    margin-bottom: 20px;
+    border-radius: 12px;
+    padding: 24px 18px 28px 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    margin-bottom: 24px;
     font-family: 'Inter', sans-serif;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
 
     .widget-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 15px;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 18px;
+        text-align: center;
+        letter-spacing: 0.01em;
+    }
+
+    .plan-swiper {
+        .swiper-wrapper {
+            align-items: stretch;
+        }
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            height: auto;
+        }
     }
 
     .plan-info {
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        padding: 18px 14px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 14px;
+        min-width: 260px;
+        max-width: 350px;
+        margin: 0 auto;
     }
 
     .plan-header {
         .plan-name {
-            font-size: 16px;
-            font-weight: 500;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
         .plan-description {
             font-size: 14px;
-            color: #666;
+            color: #888;
+            margin-bottom: 0;
         }
     }
 
-    .current-day-info {
-        background: #f9f9f9;
-        border-left: 4px solid #4caf50;
-        padding: 10px 15px;
-        border-radius: 6px;
+   .current-day-info {
+    border-left: 4px solid #5a5ccf;
+    padding: 12px 16px;
+    border-radius: 7px;
+    overflow: hidden; // предотвращает выход контента за границы
 
-        p {
-            margin: 4px 0;
-            font-size: 14px;
+    h4{
+         overflow: hidden;
+    }
+    p {
+        margin: 5px 0;
+        font-size: 14px;
+        white-space: nowrap;         // одна строка
+        overflow: hidden;            // скрыть лишнее
+        text-overflow: ellipsis;     // троеточие
+        max-width: 100%;             // не выходить за пределы блока
+    }
+
+    .day-name {
+        font-weight: 700;
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+}
+
+    // Swiper navigation arrows
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #42429d;
+        top: 50%;
+        width: 32px;
+        height: 32px;
+        margin-top: -16px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        &:after {
+            font-size: 18px;
         }
+    }
 
-        .day-name {
-            font-weight: 600;
-            font-size: 15px;
+    // Swiper pagination
+    .swiper-pagination-bullet {
+        background: #7a98e5;
+        opacity: 1;
+    }
+    .swiper-pagination-bullet-active {
+        background: #243767;
+    }
+}
+
+// Для мобильных
+@media (max-width: 600px) {
+    .active-plan-widget {
+        padding: 12px 4px 18px 4px;
+         max-height: 300px;
+        .plan-info {
+            min-width: 200px;
+            max-width: 100%;
+            max-height: 250px;
+            padding: 12px 6px;
         }
     }
 }

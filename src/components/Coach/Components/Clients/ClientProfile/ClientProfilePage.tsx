@@ -10,7 +10,7 @@ import AssignWorkoutSection from './AssignWorkoutSection/AssignWorkoutSection';
 import Tabs from './Tabs/Tabs';
 
 import './ClientProfilePage.scss';
-import BackButton from '../../../../Common/BackButton/BackButton';
+
 import ClientProgress from './ClientProgress/ClientProgress';
 
 const ClientProfilePage = (): JSX.Element => {
@@ -31,7 +31,6 @@ const ClientProfilePage = (): JSX.Element => {
 
     return (
         <div className="client-profile">
-            <BackButton/>
             <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
 
             {activeTab === 'info' && (

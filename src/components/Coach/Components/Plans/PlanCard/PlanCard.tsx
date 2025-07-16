@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import './PlanCard.style.scss';
 
 import { PlanInterface } from '../../../store/CoachPlansStore';
-import AssignedUsersList from '../../Workouts/AssignedUsers/AssignedUsersList';
+
 import { coachPlansController } from '../../../controllers/global';
 import AssignPlanModal from '../../modal/AssignPlanModal/AssignPlanModal';
+import AssignedUsersList from '../AssignedUsers/AssignedUsersList';
 
 interface PlanCardProps {
   plan: PlanInterface;

@@ -17,6 +17,11 @@
     background-color: styles.$primary-color;
   }
 
+  .selected-exercise-container{
+    -webkit-overflow-scrolling: touch;
+  scroll-padding-bottom: 300px;
+  }
+
   .workout-details {
     margin-bottom: 20px;
 

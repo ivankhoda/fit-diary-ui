@@ -52,13 +52,18 @@ export default class PlansStore {
 
     @computed
     get activePlans(): PlanInterface[] {
-        return this.plans.filter(plan => !plan.is_completed);
+        return this?.plans?.filter(plan => !plan.is_completed);
+    }
+
+     @computed
+    get activeStatusPlans(): PlanInterface[] {
+        return this?.plans?.filter(plan => plan.status ==='active');
     }
 
     @computed
-    get completedPlans(): PlanInterface[] {
-        return this.plans.filter(plan => plan.is_completed);
-    }
+     get completedPlans(): PlanInterface[] {
+         return this.plans.filter(plan => plan.is_completed);
+     }
 
     @action
     setPlans(plans: PlanInterface[]): void {

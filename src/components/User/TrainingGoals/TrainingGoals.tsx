@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { observer} from 'mobx-react-lite';
@@ -38,6 +39,12 @@ const TrainingGoals: React.FC = (() => {
         toggleGoalExpansion(goalId);
     };
 
+    const formatDuration = (totalSeconds: number): string => {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes} мин ${seconds} сек`;
+    };
+
     const renderGoalItem = (goal: TrainingGoalInterface, depth = 0) =>(
 
         <div
@@ -59,16 +66,26 @@ const TrainingGoals: React.FC = (() => {
             </div>
 
             <p className="goal-card__description">{goal.comment}</p>
+
             {goal.exercise_id && (<p>{goal.exercise_name}</p>)}
-            {goal.progress_percentage && <ProgressBar value={goal.progress_percentage} />}
+
+            {goal.progress_percentage !== null &&
+                                                !['competition',
+                                                    'technique',
+                                                    'rehabilitation'].includes(goal.goal_category) &&
+                                                goal.target_value > 0 &&
+                                                <ProgressBar value={goal.progress_percentage} />
+            }
 
             <div className="goal-card__meta">
                 {['strength',
                     'endurance',
-                    'speed'].includes(goal.goal_category) && <div className="goal-card__meta-item">
+                    'speed'].includes(goal.goal_category) && goal.target_value > 0 && <div className="goal-card__meta-item">
                     <span className="goal-card__meta-label">Цель: </span>
                     <span className="goal-card__meta-value">
-                        {goal.target_value}
+                        {['time_improvement'].includes(goal.goal_type)
+                            ? formatDuration(goal.target_value)
+                            : goal.target_value    }
                     </span>
                 </div>}
                 <div className="goal-card__meta-item">
@@ -112,6 +129,7 @@ const TrainingGoals: React.FC = (() => {
 
     return (
         <div className='container training-goals'>
+
             <div className="training-goals__header">
                 <h1 id="goals-heading">Мои цели</h1>
                 <div
@@ -134,16 +152,17 @@ const TrainingGoals: React.FC = (() => {
                             {trainingGoalsStore.activeGoals.map(renderGoalItem)}
                         </div>
 
-                        {trainingGoalsStore.completedGoals.length > 0 && (
-                            <div className="training-goals__completed">
-                                <h2>Выполненные цели</h2>
-                                <div className="training-goals__grid">
-                                    {trainingGoalsStore.completedGoals.map(renderGoalItem)}
-                                </div>
-                            </div>
-                        )}
                     </>
                 )}
+
+            {trainingGoalsStore.completedGoals.length > 0 && (
+                <div className="training-goals__completed">
+                    <h2>Достигнутые цели</h2>
+                    <div className="training-goals__grid">
+                        {trainingGoalsStore.completedGoals.map(renderGoalItem)}
+                    </div>
+                </div>
+            )}
         </div>
     );
 });

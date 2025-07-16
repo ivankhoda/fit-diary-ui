@@ -6,16 +6,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import './TrainingGoal.style.scss';
 
-import GoalTypeSelector from './GoalTypeSelector';
 import ExerciseSelector from './ExerciseSelector';
 
-import { CATEGORY_OPTIONS, GOAL_TYPE_FIELD_META } from './TrainingGoalConstants';
+import { CATEGORY_OPTIONS, CATEGORY_TO_TYPES, GOAL_TYPE_FIELD_META, GOAL_TYPE_OPTIONS } from './TrainingGoalConstants';
 import { trainingGoalsController, exercisesController } from '../../../../controllers/global';
 
 import { exercisesStore, trainingGoalsStore } from '../../../../store/global';
-import ParentGoalSelect from './ParentGoalSelect';
+// Import ParentGoalSelect from './ParentGoalSelect';
 import { TrainingGoalInterface } from '../../../../store/trainingGoalsStore';
 import { GoalValueInput } from './GoalValueInput';
+import SelectField from './SelectField';
+import DateField from './DateField';
 
 const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'exercisesController')(observer(() => {
     const { id } = useParams<{ id?: string }>();
@@ -35,6 +36,7 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
     });
 
     const [error, setError] = useState('');
+    const [formErrors, setFormErrors] = useState<{ name?: string; goal_category?: string }>({});
 
     useEffect(() => {
         if (isEditMode && id) {
@@ -76,11 +78,18 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+
         setFormData(prev => ({
             ...prev,
             [name]: ['target_value', 'current_value'].includes(name)
                 ? parseFloat(value.replace(',', '.')) || 0
                 : value
+        }));
+
+        setFormErrors(prevErrors => ({
+            ...prevErrors,
+            // eslint-disable-next-line no-undefined
+            [name]: undefined
         }));
     }, []);
 
@@ -95,17 +104,31 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
 
     const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
-
         setError('');
+        setFormErrors({});
+
+        const errors: { name?: string; goal_category?: string } = {};
+
+        if (!formData.name.trim()) {
+            errors.name = 'Введите название цели';
+        }
+
+        if (!formData.goal_category) {
+            errors.goal_category = 'Выберите категорию';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
 
         try {
             if (isEditMode && id) {
                 trainingGoalsController.updateGoal(Number(id), formData);
-                navigate('/training_goals');
             } else {
                 trainingGoalsController.createGoal(formData);
-                navigate('/training_goals');
             }
+            navigate('/training_goals');
         } catch {
             setError('Не удалось сохранить цель. Попробуйте снова.');
         }
@@ -134,13 +157,15 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
         }));
     }, [formData]);
 
-    const handleParentGoalChange = useCallback((value: number | null) => {
-        setFormData({current_value: 0, target_value: 0, ...formData});
-        setFormData(prev => ({
-            ...prev,
-            parent_goal_id: value,
-        }));
-    }, [formData]);
+    /*
+     * Const handleParentGoalChange = useCallback((value: number | null) => {
+     *     setFormData({current_value: 0, target_value: 0, ...formData});
+     *     setFormData(prev => ({
+     *         ...prev,
+     *         parent_goal_id: value,
+     *     }));
+     * }, [formData]);
+     */
 
     const handleExerciseChange = useCallback((value: number | null) => {
         setFormData({current_value: 0, target_value: 0, ...formData});
@@ -166,7 +191,15 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
 
                 <div className="form-group">
                     <label htmlFor="name">Название цели</label>
-                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className={formErrors.name ? 'input-error' : ''}
+                    />
+                    {formErrors.name && <div className="error-message">{formErrors.name}</div>}
                 </div>
 
                 <div className="form-group">
@@ -174,33 +207,55 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
                     <textarea id="comment" name="comment" value={formData.comment} onChange={handleChange} rows={3} />
                 </div>
 
-                <div className="form-group custom-select">
-                    <label htmlFor="goal_category">Категория</label>
-                    <select id="goal_category" name="goal_category" value={formData.goal_category} onChange={handleChange} required>
-                        {CATEGORY_OPTIONS.map(option => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
-                    </select>
+                <div className="form-group">
+                    <SelectField
+                        id="goal_category"
+                        name="goal_category"
+                        label="Категория"
+                        value={formData.goal_category}
+                        onChange={handleChange}
+                        options={CATEGORY_OPTIONS}
+                        required
+                    />
+                    {formErrors.goal_category && <div className="error-message">{formErrors.goal_category}</div>}
                 </div>
 
-                <GoalTypeSelector
-                    goalCategory={formData.goal_category}
-                    goalType={formData.goal_type}
-                    onChange={handleGoalTypeChange}
+                <SelectField
+                    id="goal_type"
+                    name="goal_type"
+                    label="Тип цели"
+                    value={formData.goal_type}
+                    onChange={e => handleGoalTypeChange(e.target.value as string)}
+                    options={CATEGORY_TO_TYPES[formData.goal_category]?.map(value => {
+                        const opt = GOAL_TYPE_OPTIONS.find(o => o.value === value);
+                        return opt ? { label: opt.label, value: opt.value } : null;
+                    }).filter(Boolean) as { label: string; value: string }[]}
+
                 />
-                <ParentGoalSelect
+
+                {/* <ParentGoalSelect
                     goals={trainingGoalsStore.goals}
                     value={formData.parent_goal_id}
                     onChange={handleParentGoalChange}
-                />
+                /> */}
                 <ExerciseSelector
                     visible={shouldShowExerciseSelect}
                     exercises={exercisesStore.generalExercises}
                     value={formData.exercise_id}
                     onChange={handleExerciseChange}
                 />
-                <label htmlFor="goal_category">Цель достигнута</label>
-                <input type="checkbox" id="is_completed" name="is_completed" onChange={handleChangeComplete} checked={formData.is_completed}/>
+                {isEditMode && (
+                    <div className="checkbox-wrapper">
+                        <input
+                            type="checkbox"
+                            id="is_completed"
+                            name="is_completed"
+                            onChange={handleChangeComplete}
+                            checked={formData.is_completed}
+                        />
+                        <label htmlFor="is_completed">Цель достигнута</label>
+                    </div>
+                )}
 
                 {meta&& shouldShowInputs && formData.goal_type && <div className="goal-type-row">
 
@@ -228,15 +283,19 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
                     </label>
                 </div>}
 
-                <div className="form-group">
-                    <label htmlFor="deadline">Дедлайн</label>
-                    <input type="date" id="deadline" name="deadline" value={formData.deadline} onChange={handleChange} required />
-                </div>
+                <DateField
+                    id="deadline"
+                    name="deadline"
+                    label="Дедлайн"
+                    value={formData.deadline}
+                    onChange={handleChange}
+
+                />
 
                 <div className="form-actions">
-                    <button type="button" className="secondary" onClick={handleDelete} disabled={!isEditMode}>
+                    {isEditMode && <button type="button" className="secondary" onClick={handleDelete} disabled={!isEditMode}>
                         Удалить
-                    </button>
+                    </button>}
 
                     <button type="button" className="secondary" onClick={() => navigate('/training_goals')}>
                         Отмена

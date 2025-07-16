@@ -37,8 +37,6 @@ const ActivityGraphAdvanced: React.FC<ActivityGraphAdvancedProps> = ({
         return (last - first) / (filteredData.length - 1);
     }, [filteredData]);
 
-    console.log('Filtered Data:', filteredData);
-
     return (
         <section className="activity-graph-advanced">
             <h3 className="activity-graph-advanced__title">График активности</h3>

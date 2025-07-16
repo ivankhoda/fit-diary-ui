@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import "./App.style.scss";
 import { Header } from "./User/Header/Header";
@@ -26,6 +26,8 @@ import LandingPage from "../landing/LandingPage";
 import PrivacyPolicy from "./privacy/PrivacyPolicy";
 import TermsOfUse from "./terms/TermsOfUse";
 
+
+
 export const App = observer((): JSX.Element => {
   const { token, setToken, isAdmin } = useToken();
   const [isLogin, setIsLogin] = useState(true);
@@ -43,6 +45,7 @@ export const App = observer((): JSX.Element => {
         proceedToAuth();
         setIsLogin(false);
   }
+
 
 
   return (
@@ -107,16 +110,6 @@ const DescriptionScreen = ({
       <button className="proceed-button" onClick={proceedToAuth}>
         {t("desc.login")}
       </button>
-
-      <div
-        className="support"
-        onClick={() =>
-          window.open("https://boosty.to/ivankho/donate", "_blank")
-        }
-      >
-        <p> {t("desc.support")}</p>
-        <BoostyIcon />
-      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 /* eslint-disable no-magic-numbers */
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import { Workout } from '../components/User/Stats/WorkoutsStats/WorkoutProgressGrid/WorkoutProgressGrid';
+import { TrainingGoalInterface } from './trainingGoalsStore';
 
 export interface UserMeasurement {
     id: number;
@@ -34,6 +35,7 @@ export interface UserProfile {
     }
     has_coach_assigned_workouts: boolean;
     roles: string[];
+    training_goal: TrainingGoalInterface
 }
 
 export interface PermissionProfile{

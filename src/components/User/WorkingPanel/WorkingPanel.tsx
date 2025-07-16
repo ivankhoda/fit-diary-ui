@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect } from "react";
+import React, { PropsWithChildren, useEffect, useRef } from "react";
 import "./WorkingPanel.style.scss";
 import { useLocation } from "react-router";
 import { inject, observer } from "mobx-react";
@@ -9,6 +9,11 @@ import FloatingWidget from "../Widgets/FloatingWidget";
 import { CurrentWorkoutWidget } from "../Widgets/CurrentWorkoutWidget/CurrentWorkoutWidget";
 import { LastWorkoutsWidget } from "../Widgets/LastWorkoutWidget/LastWorkoutWidget";
 import { ActivePlanWidget } from "../Widgets/ActivePlanWidget/ActivePlanWidget";
+
+import { useCapacitorKeyboardAvoiding } from "../../Common/useCapacitorKeyboardAvoiding";
+import BackButton from "../../Common/BackButton/BackButton";
+import { Small } from "../../../stories/Button.stories";
+import SmallControlPanel from "../../Common/SmallControlPanel/SmallControlPanel";
 
 interface WorkingPanelProps {
   children: any;
@@ -22,22 +27,33 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
 )(
   observer(({ children, userStore, userController }) => {
     const location = useLocation();
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       if (userController) {
         userController.getUser();
       }
     }, [userController]);
+    useEffect(() => {
+
+}, );
+
+ const isIOS = /iPad|iPhone|iPod/u.test(navigator.userAgent) && !('MSStream' in window);
+ if (isIOS) {
+    useCapacitorKeyboardAvoiding(containerRef);
+ }
+
 
 
     return (
-      <div className="working-panel">
-    <div className="widgets">
-      {location.pathname === "/" && userStore?.userProfile && (!userStore?.userProfile?.has_exercises && !userStore?.userProfile?.has_workouts) && (
+      <div className="working-panel" id="working-panel" ref={containerRef} >
+        {location.pathname !== "/" && <SmallControlPanel/>}
+    {location.pathname === "/"  && <div className="widgets">
+      {userStore?.userProfile && (!userStore?.userProfile?.has_exercises && !userStore?.userProfile?.has_workouts) && (
         <StartWidget />
       )}
 
-      {location.pathname === "/" && userStore?.userProfile?.active_plan?.has_active_plan && (
+      {userStore?.userProfile?.active_plan?.has_active_plan && (
         <FloatingWidget>
           <ActivePlanWidget />
         </FloatingWidget>
@@ -49,14 +65,14 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
         </FloatingWidget>
       )} */}
 
-      {location.pathname === "/" && userStore?.userProfile?.has_active_workout && (
+      {userStore?.userProfile?.has_active_workout && (
         <FloatingWidget>
           <div className="widget-content">
             <CurrentWorkoutWidget />
           </div>
         </FloatingWidget>
       )}
-    </div>
+    </div>}
 
     {children}
   </div>

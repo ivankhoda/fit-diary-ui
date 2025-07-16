@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 import { action } from 'mobx';
 import CoachTrainingGoalsStore, { TrainingGoalInterface, MilestoneInterface } from '../store/CoachTrainingGoalsStore';
 import { BaseController } from '../../../controllers/BaseController';
@@ -58,33 +59,74 @@ export default class CoachTrainingGoalsController extends BaseController {
             });
     }
 
-    @action
-    createGoal(goalData: TrainingGoalInterface): Promise<TrainingGoalInterface | null> {
-        return new Promise((resolve, reject) => {
-            try {
-                new Post({
-                    params: { training_goal: goalData },
-                    url: `${getApiBaseUrl()}/training_goals`
-                }).execute()
-                    .then(r => r.json())
-                    .then(res => {
-                        if (res.ok) {
-                            this.coachTrainingGoalsStore.addGoal(res.goal);
-                            resolve(res);
-                        } else {
-                            reject(res.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Failed to create goal:', error);
-                        reject(error);
-                    });
-            } catch (error) {
-                console.error('Error in createGoal:', error);
-                reject(error);
-            }
-        });
+     @action
+    fetchGoalsByUserId(userId: number): void {
+        new Get({
+            url: `${getApiBaseUrl()}/coach/clients/${userId}/training_goals/`
+        }).execute()
+            .then(r => r.json())
+            .then(res => {
+                if (res.ok){
+                    this.coachTrainingGoalsStore.setUserGoals(userId,res.goals);
+                }
+            })
+            .catch(error => {
+                console.error('Failed to fetch goal details:', error);
+            });
     }
+
+   @action
+     assignGoalToUser(userId: number, planId: number, goalId: number | null): void {
+         new Patch({
+             url: `${getApiBaseUrl()}/coach/plan_assignments/assign_training_goal`,
+             params: {
+                 training_goal_id: goalId,
+                 user_id: userId,
+                 plan_id: planId,
+             },
+         })
+             .execute()
+             .then(r => r.json())
+             .then(res => {
+                 if (res.ok) {
+                     // Обновляем стор, если нужно
+                     this.coachTrainingGoalsStore.setAssignedGoalForUser(userId, goalId);
+                 } else {
+                     console.error('Не удалось назначить цель пользователю:', res.error || res);
+                 }
+             })
+             .catch(error => {
+                 console.error('Ошибка при назначении цели пользователю:', error);
+             });
+     }
+
+    @action
+   createGoal(goalData: TrainingGoalInterface): Promise<TrainingGoalInterface | null> {
+       return new Promise((resolve, reject) => {
+           try {
+               new Post({
+                   params: { training_goal: goalData },
+                   url: `${getApiBaseUrl()}/training_goals`
+               }).execute()
+                   .then(r => r.json())
+                   .then(res => {
+                       if (res.ok) {
+                           this.coachTrainingGoalsStore.addGoal(res.goal);
+                           resolve(res);
+                       } else {
+                           reject(res.error);
+                       }
+                   })
+                   .catch(error => {
+                       console.error('Failed to create goal:', error);
+                       reject(error);
+                   });
+           } catch (error) {
+               console.error('Error in createGoal:', error);
+               reject(error);
+           }
+       });
+   }
 
     @action
     updateGoal(goalId: number, goalData: Partial<TrainingGoalFormData>): void {

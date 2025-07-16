@@ -7,7 +7,6 @@ import Patch from '../utils/PatchRequest';
 import Delete from '../utils/DeleteRequest';
 
 import PlansStore, { PlanInterface, WorkoutDayInterface } from '../store/plansStore';
-import { redirect } from 'react-router';
 
 export type PlanFormData = Omit<PlanInterface, 'id' | 'progress_percentage' | 'created_at' | 'updated_at'>;
 
@@ -50,7 +49,7 @@ export default class PlansController extends BaseController {
     }
 
     @action
-    createPlan(planData: PlanFormData): void {
+    createPlan(planData: PlanFormData,  navigate?: (path: string) => void): void {
         new Post({
             params: { plan: planData },
             url: `${getApiBaseUrl()}/plans`
@@ -58,10 +57,10 @@ export default class PlansController extends BaseController {
             .then(r => r.json())
             .then(res => {
                 if (res.ok) {
-                    this.plansStore.addPlan(res.plan);
+                    this.plansStore.addPlan(res.res);
                     // eslint-disable-next-line no-alert
                     alert('План сохранен');
-                    redirect('/plans');
+                    navigate(`/plans/${res.res.id}`);
                 }
             })
             .catch(error => {

@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PermissionProfile } from './../store/userStore';
 import { action } from 'mobx';
 import UserStore from '../store/userStore';
@@ -31,11 +33,10 @@ export default class UserController extends BaseController {
   last_name?: string;
   phone_number?: string;
   telegram_username?: string;
-}): Promise<void> {
+}): Promise<{ ok: boolean; user?: any; errors?: string[] }> {
         try {
             const response = await new Patch({
                 url: `${getApiBaseUrl()}/users/update`,
-                // eslint-disable-next-line sort-keys
                 params: { user: userData },
             }).execute();
 
@@ -43,11 +44,25 @@ export default class UserController extends BaseController {
 
             if (result.ok && result?.user) {
                 this.userStore.setUserProfile(result.user);
-            } else {
-                console.error('Update failed:', result.errors || result);
             }
+
+            return result;
         } catch (error) {
             console.error('Unexpected error during user update:', error);
+            return { ok: false, errors: [error?.message || 'Unexpected error'] };
+        }
+    }
+
+    async generateCoachLinkCode(): Promise<{ ok: boolean; code?: string; errors?: string[] }> {
+        try {
+            const response = await new Post({url: `${getApiBaseUrl()}/users/generate_link_code`}).execute();
+
+            const result = await response.json();
+
+            return result;
+        } catch (error) {
+            console.error('Ошибка генерации кода:', error);
+            return { ok: false, errors: ['Network error'] };
         }
     }
 

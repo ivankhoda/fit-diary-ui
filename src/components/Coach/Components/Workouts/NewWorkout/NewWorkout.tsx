@@ -55,8 +55,6 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             fetchWorkoutData();
         }
         exercisesController?.getExercises();
-        console.log('Fetching exercises for workout:',coachWorkoutsStore);
-        console.log('Fetching exercises for workout:',exercisesStore);
     }, [workoutId,
         coachWorkoutsController,
         exercisesController]);

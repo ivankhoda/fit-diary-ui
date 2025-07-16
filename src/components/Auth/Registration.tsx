@@ -46,12 +46,12 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
         setErrors([]);
 
         if (password.length < MIN_PASSWORD_LENGTH) {
-            setErrors([`Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`]);
+            setErrors([`Пароль должен быть минимум ${MIN_PASSWORD_LENGTH} символов.`]);
             return;
         }
 
         if (password !== confirmPassword) {
-            setErrors(['Passwords do not match.']);
+            setErrors(['Пароли не совпадают.']);
             return;
         }
 
@@ -141,8 +141,8 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
             </div>
             <p className="auth__legal">
                 Регистрируясь, вы принимаете{' '}
-                <a href="/terms-of-use" target="_blank">условия использования</a> и{' '}
-                <a href="/privacy-policy" target="_blank">политику конфиденциальности</a>.
+                <a href="https://planka.tech/terms-of-use" target="_blank" rel="noreferrer">условия использования</a> и{' '}
+                <a href="https://planka.tech/privacy-policy" target="_blank" rel="noreferrer">политику конфиденциальности</a>.
             </p>
         </>
     );
