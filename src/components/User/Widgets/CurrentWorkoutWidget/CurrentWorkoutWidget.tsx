@@ -5,7 +5,7 @@ import { exercisesStore, workoutsStore } from '../../../../store/global';
 import './CurrentWorkoutWidget.style.scss';
 import i18next, { t } from 'i18next';
 import { workoutsController } from '../../../../controllers/global';
-import { convertDurationToMMSS } from '../../../Admin/utils/convertDurationToMMSS';
+// Import { convertDurationToMMSS } from '../../../Admin/utils/convertDurationToMMSS';
 import { useNavigate } from 'react-router';
 
 export const CurrentWorkoutWidget = observer((): React.JSX.Element | null => {
@@ -49,12 +49,12 @@ export const CurrentWorkoutWidget = observer((): React.JSX.Element | null => {
             {currentExercise && (
                 <div className='current-exercise'>
                     <div className='exercise-name'>{currentExercise.name}</div>
-                    <div className='exercise-stats'>
+                    {/* <div className='exercise-stats'>
                         {currentExercise.weight && (<span>{currentExercise.weight}</span>)}
                         {currentExercise.repetitions && (<span>{currentExercise.repetitions}</span>)}
                         {currentExercise.duration && (<span>{convertDurationToMMSS(currentExercise.duration)}</span>)}
                         {currentExercise.distance && (<span>{currentExercise.distance}</span>)}
-                    </div>
+                    </div> */}
                 </div>
             )}
 

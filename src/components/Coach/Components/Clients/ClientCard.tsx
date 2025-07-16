@@ -33,7 +33,7 @@ const ClientCard = ({ client }: { client: ClientInterface }): JSX.Element => {
     }, [client.id]);
 
     const activity = getActivityStatus(client.lastActive || client.updatedAt || client.createdAt);
-
+    console.log(client);
     return (
         <div className="client-card" onClick={handleClick}>
             <div className="client-card__header">

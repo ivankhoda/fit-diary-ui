@@ -101,7 +101,6 @@ const ClientProgress: React.FC<ClientProgressProps> = ({ clientId }) => {
                 if (!isMounted) {return;}
 
                 if (res.ok) {
-                    console.log('Client data fetched:', res.progress);
                     setProgressData(res.progress);
                 } else {
                     console.error('Failed to fetch client data:', res.error);
@@ -187,8 +186,6 @@ const ClientProgress: React.FC<ClientProgressProps> = ({ clientId }) => {
     if (!progressData) {
         return <div className="client-progress">Загрузка данных клиента...</div>;
     }
-
-    console.log('Progress Data:', activityGraphData);
 
     return (
         <div className="client-progress">

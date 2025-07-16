@@ -248,7 +248,7 @@ const WorkoutDayForm: React.FC<WorkoutDayFormProps> = ({
 
             <div className="form-actions">
                 <button onClick={handleCancelEdit} className="secondary">Отмена</button>
-                <button onClick={handleSubmit}>Сохранить день</button>
+                {workoutId && <button onClick={handleSubmit}>Сохранить день</button>}
             </div>
         </div>
     );

@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import ExerciseModal from './ExerciseModal/ExerciseModal';
 import { muscleGroups } from '../../Admin/ExercisesManagement/maps';
 import { toJS } from 'mobx';
-
 export interface Exercise {
     uuid: string;
     instanceId?: string;

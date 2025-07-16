@@ -62,6 +62,7 @@ const UserWorkoutsArchived: React.FC<WorkoutsInterface> = ({
 
     return (
         <div className="workouts-section">
+
             <h1>Архивные тренировки</h1>
             <div className='workouts-list'>
                 {workoutsToDisplay &&

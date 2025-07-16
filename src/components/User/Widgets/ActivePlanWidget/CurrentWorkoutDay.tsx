@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const CurrentWorkoutDayInfo = ({ day, planId }: Props): JSX.Element | null => {
-    if (!day) {return null;}
+    if (!day) {return <>Нет тренировочных дней в плане</>;}
 
     return (
         <div className="current-day-info">

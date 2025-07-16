@@ -31,20 +31,24 @@ const options: OptionInterface[] = [
         ],
     },
     {
-        text: 'Тренировочные планы',
-        subOptions: [
-            { linkTo: '/plans', text: 'Тренировочные планы' }
-        ]
-    },
-    {
         text: 'Тренировки',
         subOptions: [
             { linkTo: '/workouts', text: 'Все тренировки' }, { linkTo: '/workouts/archive', text: 'Архив' },
         ],
     },
     {
+        text: 'Планы',
+        subOptions: [
+            { linkTo: '/plans', text: 'Планы' }
+        ]
+    },
+
+    {
         text: 'Режим спортсмена',
         isModeSwitch: true
+    },
+    {
+        text: 'O приложении', linkTo: '/about'
     },
 ];
 

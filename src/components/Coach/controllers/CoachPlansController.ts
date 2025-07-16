@@ -1,7 +1,6 @@
 import { action } from 'mobx';
 
 import CoachPlansStore, { PlanInterface, WorkoutDayInterface } from '../store/CoachPlansStore';
-import { redirect } from 'react-router';
 import { BaseController } from '../../../controllers/BaseController';
 import getApiBaseUrl from '../../../utils/apiUrl';
 import Delete from '../../../utils/DeleteRequest';
@@ -50,18 +49,18 @@ export default class CoachPlansController extends BaseController {
     }
 
     @action
-    createPlan(planData: PlanFormData): void {
+    createPlan(planData: PlanFormData,  navigate?: (path: string) => void): void {
         new Post({
             params: { plan: planData },
-            url: `${getApiBaseUrl()}/coach/plans`
+            url: `${getApiBaseUrl()}/plans`
         }).execute()
             .then(r => r.json())
             .then(res => {
                 if (res.ok) {
-                    this.coachPlansStore.addPlan(res.plan);
+                    this.coachPlansStore.addPlan(res.res);
                     // eslint-disable-next-line no-alert
                     alert('План сохранен');
-                    redirect('/plans');
+                    navigate(`/plans/${res.res.id}`);
                 }
             })
             .catch(error => {

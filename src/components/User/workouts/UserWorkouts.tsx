@@ -64,7 +64,7 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
         <div className="workouts-section">
             <h1>Завершенные тренировки</h1>
             <div className='workouts-list'>
-                {workoutsToDisplay &&
+                {workoutsToDisplay && workoutsToDisplay.length >0 ?
                     workoutsToDisplay.map((workout, index) => (
                         <div key={workout.id || `workout-${index}`} className="workout-item">
                             <div
@@ -103,28 +103,32 @@ const UserWorkouts: React.FC<WorkoutsInterface> = ({
                                 </div>
                             )}
                         </div>
-                    ))}
+                    ))
+                    : <p>Нет тренировок</p>}
             </div>
 
-            <div className="pagination-controls">
-                <button
-                    className="pagination-button"
-                    onClick={handlePreviousPage}
-                    disabled={currentPage === 1}
-                >
-                    {t('workouts.pagination.previous')}
-                </button>
-                <span className="page-info">
-                    {currentPage} / {totalPages}
-                </span>
-                <button
-                    className="pagination-button"
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                >
-                    {t('workouts.pagination.next')}
-                </button>
-            </div>
+            {userWorkoutsDone && userWorkoutsDone.length > ITEMS_PER_PAGE && (
+                <div className="pagination-controls">
+                    <button
+                        className="pagination-button"
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                    >
+                        {t('workouts.pagination.previous')}
+                    </button>
+                    <span className="page-info">
+                        {currentPage} / {totalPages}
+                    </span>
+                    <button
+                        className="pagination-button"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                    >
+                        {t('workouts.pagination.next')}
+                    </button>
+                </div>
+            )}
+
         </div>
     );
 };

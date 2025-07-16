@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -5,6 +6,29 @@ import './PlanCard.style.scss';
 import { PlanInterface } from '../../../../store/plansStore';
 import { FastAccessWorkout } from '../../workouts/FastAccessWorkout/FastAccessWorkout';
 import { t } from 'i18next';
+
+import {
+    faCheckCircle,
+    faPauseCircle,
+    faPenToSquare,
+    faCircleCheck,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const statusIconMap: Record<string, any> = {
+    active: faCheckCircle,
+    paused: faPauseCircle,
+    draft: faPenToSquare,
+    completed: faCircleCheck,
+};
+
+const statusLabelMap: Record<string, string> = {
+    active: 'Активный',
+    paused: 'Приостановлен',
+    draft: 'Черновик',
+    completed: 'Завершён',
+};
 
 interface PlanCardProps {
   plan: PlanInterface;
@@ -14,7 +38,14 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan }) => (
     <div className="plan-card">
         <div className="plan-card__header">
             <h3 className="plan-card__title">{plan.name}</h3>
-            <p>{plan.status}</p>
+
+            <div className="plan-card__status">
+                <FontAwesomeIcon
+                    icon={statusIconMap[plan.status]}
+                    className={`status-icon status-${plan.status}`}
+                />
+                <span>{statusLabelMap[plan.status]}</span>
+            </div>
         </div>
 
         {plan.description && (

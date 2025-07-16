@@ -1,13 +1,13 @@
 @use "../styles/mobile.scss" as mobile;
 @use "../styles/mixins.scss" as mixins;
 
-$primary-color: #0e7dde; // Pantone 286 C
-$secondary-color: #4F5B66; // Pantone 425 C
-$accent-color: #f8f9fa; // Pantone 186 C
-$background-color: #FFFFFF; // Белый цвет
-$button-dark: #242c34;
+$primary-color: #0e7dde;
+$secondary-color: #4F5B66;
+$accent-color: #f8f9fa;
+$background-color: #FFFFFF;
+$button-dark: #5c6d7e;
 
-$color-light-gray: #BDBDBA;//
+$color-light-gray: #BDBDBA;
 $color-dark-gray: #464748;
 $color-blue: #009EDB;
 $white-color: #FFFFFF;
@@ -81,40 +81,43 @@ body {
   color: $secondary-color;
   background-color: $background-color;
 
-
-
   textarea {
     font-family: $body-font-family;
     font-size: 16px;
     touch-action: manipulation;
+    overscroll-behavior: none;
   }
 
   input {
     font-size: 16px;
     touch-action: manipulation;
+    overscroll-behavior: none;
   }
 }
 
 html, body, #root {
   margin: 0;
-  height: 100%;
+  // height: 100%;
   font-size: 16px;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-bottom: 300px;
 }
 
 #root {
   display: flex;
   flex-direction: column;
-
+  overflow-y: auto;
   height: 100%;
   align-items: center;
+  width: 100%;
 
-  // display: grid;
-  // grid-template-rows: auto auto 1fr; /* Header | Working Panel | Footer */
 
 
 
   @include mixins.apply-to(less-than, mobile.$mobile) {
-    align-items: baseline;
+
   }
 }
 
@@ -198,11 +201,6 @@ tr {
   padding: $nav-link-padding;
   color: $background-color;
   text-decoration: none;
-}
-
-.footer {
-  background-color: $background-color;
-  color: $footer-color;
 }
 
 .container {

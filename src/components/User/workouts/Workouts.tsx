@@ -128,9 +128,11 @@ const Workouts: React.FC<WorkoutsInterface> = ({
 
             <div className="workouts-content">
                 <div className="workouts-list">
-                    {paginatedWorkouts.map((workout, index) => (
-                        <Workout key={workout.id || `workout-${index}`} workout={workout} />
-                    ))}
+                    {paginatedWorkouts && paginatedWorkouts?.length > 0
+                        ? paginatedWorkouts.map((workout, index) => (
+                            <Workout key={workout.id || `workout-${index}`} workout={workout} />
+                        ))
+                        : <p>Пока нет тренировок</p>}
                 </div>
 
                 {filteredWorkouts.length > 0 && (

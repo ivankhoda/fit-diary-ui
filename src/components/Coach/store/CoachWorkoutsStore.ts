@@ -40,10 +40,22 @@ export default class CoachWorkoutsStore {
       this.archivedWorkouts = workouts;
   }
 
-  @action
-  setWorkoutsForClient(workouts: CoachWorkoutInterface[]): void {
-      this.workoutsForClient = workouts;
+ @action
+  updatArchivedWorkouts(updatedWorkout: WorkoutInterface): void {
+      const index = this.archivedWorkouts.findIndex(workout => workout.id === updatedWorkout.id && updatedWorkout.deleted);
+      const notFound = -1;
+
+      if (index === notFound) {
+          return;
+      }
+
+      this.archivedWorkouts[index] = updatedWorkout;
   }
+
+  @action
+ setWorkoutsForClient(workouts: CoachWorkoutInterface[]): void {
+     this.workoutsForClient = workouts;
+ }
 
   @action
   addWorkoutForClient(workout: CoachWorkoutInterface): void {

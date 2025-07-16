@@ -9,7 +9,6 @@ import ClientFilters from './ClientFilters/ClientFilters';
 import { clientsStore } from '../../../store/global';
 
 import './ClientList.style.scss';
-import BackButton from '../../../../Common/BackButton/BackButton';
 
 const ITEMS_PER_PAGE = 12;
 const MAX_VISIBLE_PAGES = 5;
@@ -97,7 +96,6 @@ const ClientList: React.FC = () => {
 
     return (
         <div className="client-list">
-            <BackButton />
             <ClientFilters
                 search={search}
                 onSearchChange={setSearch}

@@ -1,0 +1,49 @@
+// components/InfoTabs/InfoTabs.style.scss
+
+.info-tabs {
+  display: flex;
+padding-bottom: 40px;
+
+  &__sidebar {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__content {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  }
+}
+
+.info-tab {
+  &__button {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-size: 1rem;
+    border-left: 4px solid transparent;
+
+    &.active {
+      font-weight: bold;
+      border-color: #007bff;
+      background-color: #eef5ff;
+    }
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  &__sub {
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+  }
+}

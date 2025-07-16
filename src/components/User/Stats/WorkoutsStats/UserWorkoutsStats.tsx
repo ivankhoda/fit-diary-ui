@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import UserController from '../../../../controllers/UserController';
 import UserStore from '../../../../store/userStore';
 import WorkoutProgressGrid from './WorkoutProgressGrid/WorkoutProgressGrid';
-
 interface UserWorkoutsStatsProps {
   userStore?: UserStore;
   userController?: UserController;

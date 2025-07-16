@@ -18,6 +18,8 @@ const TrainingGoalSelector: React.FC<Props> = ({ visible, trainingGoals, value, 
         onChange(opt?.value ?? null);
     }, [onChange]);
 
+    const handleNoOptionsMessage = useCallback(() => 'Нет доступных целей.', []);
+
     return (
         <div className="form-group custom-select">
             <label htmlFor="training_goal_id">Цель</label>
@@ -29,6 +31,13 @@ const TrainingGoalSelector: React.FC<Props> = ({ visible, trainingGoals, value, 
                 options={options}
                 isClearable
                 placeholder="Выберите цель."
+                noOptionsMessage={handleNoOptionsMessage}
+                menuPortalTarget={document.body}
+                styles={{
+                    menu: base => ({ ...base, zIndex: 9999 }),
+                    menuPortal: base => ({ ...base, zIndex: 9999 }),
+
+                }}
             />
         </div>
     );

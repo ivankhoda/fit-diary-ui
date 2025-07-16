@@ -9,6 +9,7 @@ import { workoutsStore, userStore } from '../../../../store/global';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
+import { triggerImpact } from '../../../../utils/haptics';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -46,10 +47,12 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
     }, [workout.id]);
 
     const handleResumeClick = useCallback(() => {
+        triggerImpact();
         window.location.pathname = `/workout/${workout.id}`;
     }, [workout.id]);
 
     const handleFinishClick = useCallback(() => {
+        triggerImpact();
         workoutsController.finishWorkout(workout.id);
     }, [workout.id]);
 

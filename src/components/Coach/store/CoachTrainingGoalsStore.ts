@@ -43,10 +43,14 @@ export default class CoachTrainingGoalsStore {
 
     @observable goalTypes: string[] = [];
 
+    @observable goalsByUserId: Record<number, TrainingGoalInterface[]> = {};
+
+     @observable assignedGoalsByUserId: Record<number, number | null> = {};
+
     @computed
-    get activeGoals(): TrainingGoalInterface[] {
-        return this.goals.filter(goal => !goal.is_completed);
-    }
+     get activeGoals(): TrainingGoalInterface[] {
+         return this.goals.filter(goal => !goal.is_completed);
+     }
 
     @computed
     get completedGoals(): TrainingGoalInterface[] {
@@ -70,10 +74,20 @@ export default class CoachTrainingGoalsStore {
     }
 
     @action
-    addGoal(goal: TrainingGoalInterface): void {
-        this.goals = [...this.goals, goal];
-        this.updateDerivedData();
+    setUserGoals(userId: number, goals: TrainingGoalInterface[]): void {
+        this.goalsByUserId[userId] = goals;
     }
+
+@action
+    setAssignedGoalForUser(userId: number, goalId: number | null): void {
+        this.assignedGoalsByUserId[userId] = goalId;
+    }
+
+    @action
+addGoal(goal: TrainingGoalInterface): void {
+    this.goals = [...this.goals, goal];
+    this.updateDerivedData();
+}
 
     @action
     updateGoal(updatedGoal: TrainingGoalInterface): void {

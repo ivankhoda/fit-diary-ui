@@ -4,11 +4,13 @@ export const CATEGORY_OPTIONS = [
     { label: '', value: '' },
     { label: '💪 Сила', value: 'strength' },
     { value: 'endurance', label: '🏃‍♂️ Выносливость' },
-    { value: 'speed', label: '⚡️ Скорость' },
+    // { value: 'speed', label: '⚡️ Скорость' },
     { value: 'weight', label: '⚖️ Вес' },
-    { value: 'technique', label: '🎯 Техника' },
-    { value: 'rehabilitation', label: '🛡️ Реабилитация' },
-    { value: 'competition', label: '🏆 Соревнования' }
+    /*
+     * { value: 'technique', label: '🎯 Техника' },
+     * { value: 'rehabilitation', label: '🛡️ Реабилитация' },
+     * { value: 'competition', label: '🏆 Соревнования' }
+     */
 ];
 
 export const GOAL_TYPE_OPTIONS = [
@@ -19,9 +21,11 @@ export const GOAL_TYPE_OPTIONS = [
     // 🏃‍♂️ Выносливость
     { value: 'time_improvement', label: '⏱ Улучшение времени' },
     { value: 'distance_increase', label: '📏 Увеличение дистанции' },
-    // ⚡️ Скорость
-    { value: 'sprint_improvement', label: '🏃‍♀️ Улучшение скорости' },
-    // ⚖️ Вес
+    /*
+     * ⚡️ Скорость
+     * { value: 'sprint_improvement', label: '🏃‍♀️ Улучшение скорости' },
+     * ⚖️ Вес
+     */
     { value: 'weight_loss', label: '🔽 Снижение веса' },
     { value: 'mass_gain', label: '🍚 Набор массы' },
     // 🎯 Техника

@@ -1,6 +1,8 @@
 @use "../../../../styles.scss" as styles;
 
 .workout-container {
+  margin-left: 10px;
+  margin-right: 10px;
   .exercises-container {
     margin-top: 20px;
     background-color: #f4f4f4;
@@ -64,5 +66,6 @@
   p {
     word-wrap: break-word;
     overflow-wrap: break-word;
+    padding-left: 10px;
   }
 }

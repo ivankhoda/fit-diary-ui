@@ -1,18 +1,31 @@
-/* Working Panel */
+
 .working-panel {
+
   background-color: #fff;
-  overflow: auto; /* Enables scrolling if content overflows */
+  overflow: auto;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  gap: 16px; /* Optional: Space between children */
+  gap: 16px;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-bottom: 300px;
   .widgets {
   display: flex;
-  flex-direction: column; // или row, если в ряд
-  gap: 16px; // отступ между виджетами
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 24px;
+  h2 {
+    text-align: center;
+  }
+  .start-widget__buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
 
 }
 

@@ -15,6 +15,8 @@ const ParentGoalSelect: React.FC<Props> = ({ goals, value, onChange }) => {
         onChange(opt?.value ?? null);
     }, [onChange]);
 
+    const noOptionsMessage = useCallback(() => 'Нет доступных целей', []);
+
     return (
         <div className="form-group custom-select">
             <label htmlFor="parent_goal_id">Родительская цель</label>
@@ -26,6 +28,7 @@ const ParentGoalSelect: React.FC<Props> = ({ goals, value, onChange }) => {
                 options={options}
                 isClearable
                 placeholder="Выберите цель..."
+                noOptionsMessage={noOptionsMessage}
             />
         </div>
     );

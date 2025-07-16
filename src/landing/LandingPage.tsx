@@ -106,6 +106,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onRegisterClick }) => {
     Спасибо, что заглянули! Если у вас есть идеи или фидбэк — я всегда открыт. TG @ivankhoda
                 </p>
             </section>
+            <footer className="landing__footer">
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Политика конфиденциальности</a>
+                {' · '}
+                <a href="/terms-of-use" target="_blank" rel="noopener noreferrer">Условия использования</a>
+            </footer>
         </div>
     );
 };

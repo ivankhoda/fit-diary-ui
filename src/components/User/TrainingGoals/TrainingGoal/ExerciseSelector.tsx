@@ -16,7 +16,7 @@ const ExerciseSelector: React.FC<Props> = ({ visible, exercises, value, onChange
     const handleChange = useCallback((opt: { value: number } | null) => {
         onChange(opt?.value ?? null);
     }, [onChange]);
-
+    const noOptionsMessage = useCallback(() => 'Нет доступных вариантов', []);
     return (
         <div className="form-group custom-select">
             <label htmlFor="exercise_id">Упражнение</label>
@@ -28,6 +28,7 @@ const ExerciseSelector: React.FC<Props> = ({ visible, exercises, value, onChange
                 options={options}
                 isClearable
                 placeholder="Выберите упражнение..."
+                noOptionsMessage={noOptionsMessage}
             />
         </div>
     );

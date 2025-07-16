@@ -137,13 +137,14 @@ export default class CoachWorkoutController {
   archiveWorkout(workoutId: number): void {
       new Post({
           params: { workout: { id: workoutId } },
-          url: `${getApiBaseUrl()}/coach/workouts/${workoutId}/archive`
+          url: `${getApiBaseUrl()}/coach/workouts/archive`
       })
           .execute()
           .then(r => r.json())
           .then(res => {
               if (res.status === 'ok') {
-                  this.coachWorkoutsStore.updateWorkout(res.workout);
+                  this.coachWorkoutsStore.updatArchivedWorkouts(res.workout);
+                  this.coachWorkoutsStore.deleteWorkout(res.workout.id);
               }
           });
   }

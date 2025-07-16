@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable max-statements */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -8,15 +9,14 @@ import { inject, observer } from 'mobx-react';
 import './PlanForm.style.scss';
 
 import WorkoutDaysSection from '../WorkoutDaysSection/WorkoutDaysSection';
-import TrainingGoalSelector from './TrainingGoalSelector';
 import PlanStatusSelector from './StatusSelector';
 import { PlanInterface } from '../../../store/CoachPlansStore';
 
 import { coachPlansController, coachTrainingGoalsController, coachWorkoutsController } from '../../../controllers/global';
 import { coachPlansStore, coachTrainingGoalsStore, coachWorkoutsStore } from '../../../store/global';
-import BackButton from '../../../../Common/BackButton/BackButton';
 import AssignPlanInline from '../AssignPlanInline/AssignPlanInline';
-import AssignedUsersList from '../../Workouts/AssignedUsers/AssignedUsersList';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import AssignedUsersList from '../AssignedUsers/AssignedUsersList';
 
 const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
     const { id } = useParams<{ id?: string }>();
@@ -59,12 +59,6 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
     useEffect(() => {
         if(coachWorkoutsStore.workouts.length === 0) {
             coachWorkoutsController.getWorkouts();
-        }
-    }, []);
-
-    useEffect(() => {
-        if(coachTrainingGoalsStore.activeGoals.length === 0) {
-            coachTrainingGoalsController.getGoals();
         }
     }, []);
 
@@ -117,7 +111,7 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
             if (isEditMode && id) {
                 coachPlansController.updatePlan(Number(id), cleanData);
             } else {
-                coachPlansController.createPlan(cleanData);
+                coachPlansController.createPlan(cleanData, navigate);
             }
         } catch {
             setGeneralError('Не удалось сохранить план. Попробуйте снова.');
@@ -143,19 +137,7 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
         navigate('/plans');
     }, [navigate]);
 
-    const handleGoalChange = useCallback((selectedGoalId: number | null) => {
-        setFormData(prev => ({
-            ...prev,
-            training_goal_id: selectedGoalId
-        }));
-    }, []);
-
     const handleStatusChange = useCallback((status: string) => {
-        if (coachPlansStore.activePlans.some(plan => plan.status === 'active') && status ==='active') {
-            setFieldErrors(prev => ({ ...prev, status: 'Уже есть активный план' }));
-            return;
-        }
-
         setFieldErrors(prev => ({ ...prev, status: '' }));
         setFormData(prev => ({
             ...prev,
@@ -174,7 +156,6 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
 
     return (
         <div className="plan-form">
-            <BackButton/>
             <h2>{isEditMode ? 'Редактирование плана' : 'Создание нового плана'}</h2>
 
             {generalError && <div className="error-message general-error">{generalError}</div>}
@@ -200,16 +181,6 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
                         value={formData.description}
                         onChange={handleChange}
                         rows={4}
-                    />
-                </div>
-
-                <div className='form-group'>
-
-                    <TrainingGoalSelector
-                        visible
-                        trainingGoals={coachTrainingGoalsStore?.activeGoals}
-                        value={formData?.training_goal_id}
-                        onChange={handleGoalChange}
                     />
                 </div>
 
@@ -254,7 +225,7 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
                 />}
 
                 {id && formData.assigned_users && <AssignedUsersList assignedUsers={formData.assigned_users}
-                    onRemove={handleRemoveAssignment} open/>}
+                    onRemove={handleRemoveAssignment} open planId={Number(id)}/>}
 
                 {id && <AssignPlanInline planId={Number(id)} onAssign={handleAssignPlan} />}
 

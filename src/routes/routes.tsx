@@ -14,8 +14,6 @@ import SelfStats from '../components/User/Stats/SelfStats/SelfStats';
 import ExercisesStats from '../components/User/Stats/WorkoutsStats/ExercisesStats/ExercisesStats';
 import Exercise from '../components/User/Exercises/Exercise/Exercise';
 import { ConfirmRegistration } from '../components/Auth/ConfirmationRegistration/ConfirmRegistration';
-import Permissions from '../components/User/Permissons/Permissions';
-import NewPermission from '../components/User/Permissons/NewPermission';
 import WorkoutSummary from '../components/User/workouts/WorkoutSummary/WorkoutSummary';
 import UserWorkoutsArchived from '../components/User/workouts/UserWorkoutsArchived';
 import TrainingGoals from '../components/User/TrainingGoals/TrainingGoals';
@@ -23,8 +21,9 @@ import TrainingGoal from '../components/User/TrainingGoals/TrainingGoal/Training
 import Plans from '../components/User/Plans/Plans';
 import PlanForm from '../components/User/Plans/PlanForm/PlanForm';
 import UserProfile from '../components/User/Cabinet/UserProfile';
-import PrivacyPolicy from '../components/privacy/PrivacyPolicy';
-import TermsOfUse from '../components/terms/TermsOfUse';
+import TermsOfUse from '../terms/TermsOfUse';
+import PrivacyPolicy from '../privacy/PrivacyPolicy';
+import AboutApp from '../components/User/About/AboutApp';
 
 // eslint-disable-next-line func-style
 function useQuery() {
@@ -63,13 +62,12 @@ export const routes = [
     {Component:  <WorkoutExerciseForm />, name: 'WorkoutExerciseForm', path: '/workout/exercise'},
     {Component:  <PasswordRecovery />, name: 'PasswordRecovery', path: '/password/recovery'},
     {Component:  <SelfStats />, name: 'SelfStats', path: '/self-stats'},
-    {Component: <Permissions/>, name: 'UserPermissions', path: '/permissions'},
-    {Component: <NewPermission/>, name: 'NewUserPermissions', path: '/permissions/new'},
     {Component: <ExercisesStats/>, name: 'ExercisesStats', path: '/exercises-stats'},
     {Component:  <ResetPasswordWithToken />, name: 'ResetPassswordWithToken', path: '/password/reset?reset_password_token=:token'},
     {Component:  <ConfirmRegistrationWithToken />, name: 'ResetPassswordWithToken', path: 'users/confirmation?confirmation_token=:token'},
     {Component:  <UserProfile />, name: 'profile', path: '/profile'},
     {Component:  <PrivacyPolicy/>, name: 'privacy-policy', path: '/privacy-policy'},
-    {Component:  <TermsOfUse/>, name: 'terms', path: '/terms-of-use'}
+    {Component:  <TermsOfUse/>, name: 'terms', path: '/terms-of-use'},
+    {Component:  <AboutApp/>, name: 'about', path: '/about'},
 
 ];

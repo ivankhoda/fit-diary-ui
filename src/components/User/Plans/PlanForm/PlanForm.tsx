@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable max-statements */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -47,9 +48,6 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
         if (isEditMode && id) {
             plansController.getPlanDetails(Number(id));
         }
-        if(plansStore.activePlans.length === 0) {
-            plansController.getPlans();
-        }
     }, [id,
         isEditMode,
         plansStore]);
@@ -72,8 +70,13 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
         const formatDate = (dateStr: string | Date | null): string => {
             if (!dateStr) {return '';}
 
-            const date = new Date(dateStr);
-            return date.toISOString().split('T')[0];
+            const isoStr =
+            typeof dateStr === 'string'
+                ? dateStr.replace(' ', 'T').replace(' UTC', 'Z')
+                : dateStr.toISOString();
+
+            const date = new Date(isoStr);
+            return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
         };
 
         if (plan) {
@@ -97,6 +100,12 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                 ...prev,
                 [name]: value,
             }));
+
+            setFieldErrors(prev => {
+                const rest = { ...prev };
+                delete rest[name];
+                return rest;
+            });
         }, [isCoachPlan]
     );
 
@@ -106,16 +115,28 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
             ...prev,
             training_goal_id: selectedGoalId
         }));
+
+        setFieldErrors(prev => {
+            const rest = { ...prev };
+            delete rest.training_goal_id;
+            return rest;
+        });
     }, [isCoachPlan]);
 
     const handleStatusChange = useCallback((status: string) => {
         if (isCoachPlan) {return;}
-        if (plansStore.activePlans.some(plan => plan.status === 'active') && status ==='active') {
-            setFieldErrors(prev => ({ ...prev, status: 'Уже есть активный план' }));
-            return;
-        }
+        /*
+         * If (plansStore.activePlans.some(plan => plan.status === 'active') && status ==='active') {
+         *     setFieldErrors(prev => ({ ...prev, status: 'Уже есть активный план' }));
+         *     return;
+         * }
+         */
 
-        setFieldErrors(prev => ({ ...prev, status: '' }));
+        setFieldErrors(prev => {
+            const rest = { ...prev };
+            delete rest.status;
+            return rest;
+        });
         setFormData(prev => ({
             ...prev,
             status,
@@ -124,10 +145,21 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
 
     const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
-        if (isCoachPlan) {return;}
+        if (isCoachPlan) { return; }
 
         setGeneralError('');
         setFieldErrors({});
+
+        const errors: { [key: string]: string } = {};
+
+        if (!formData.name.trim()) {
+            errors.name = 'Название обязательно';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            return;
+        }
 
         const cleanData = getCleanPlanData(formData);
 
@@ -135,7 +167,7 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
             if (isEditMode && id) {
                 plansController.updatePlan(Number(id), cleanData);
             } else {
-                plansController.createPlan(cleanData);
+                plansController.createPlan(cleanData, navigate);
             }
         } catch {
             setGeneralError('Не удалось сохранить план. Попробуйте снова.');
@@ -177,16 +209,21 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
 
             <form onSubmit={handleSubmit} className="plan-form__form">
                 <div className="form-group">
-                    <label htmlFor="name">Название</label>
+                    <label htmlFor="name">Название *</label>
                     <input
                         type="text"
                         id="name"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        required
+
                         disabled={isCoachPlan}
+                        maxLength={50}
+                        className={fieldErrors.name ? 'input-error' : ''}
                     />
+
+                    <small className="field-hint">Макс. 50 символов</small>
+                    {fieldErrors.name && <div className="error-message">{fieldErrors.name}</div>}
                 </div>
 
                 <div className="form-group">
@@ -198,7 +235,11 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                         onChange={handleChange}
                         rows={4}
                         disabled={isCoachPlan}
+                        maxLength={500}
+                        className={fieldErrors.description ? 'input-error' : ''}
                     />
+                    <small className="field-hint">Макс. 500 символов</small>
+                    {fieldErrors.description && <div className="error-message">{fieldErrors.description}</div>}
                 </div>
 
                 <div className='form-group'>
@@ -209,6 +250,7 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                         onChange={handleGoalChange}
                         disabled={isCoachPlan}
                     />
+                    {fieldErrors.training_goal_id && <div className="error-message">{fieldErrors.training_goal_id}</div>}
                 </div>
 
                 <div className='plan_date'>
@@ -221,7 +263,9 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                             value={formData.start_date}
                             onChange={handleChange}
                             disabled={isCoachPlan}
+                            className={fieldErrors.start_date ? 'input-error' : ''}
                         />
+                        {fieldErrors.start_date && <div className="error-message">{fieldErrors.start_date}</div>}
                     </div>
 
                     <div className="form-group">
@@ -233,7 +277,9 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                             value={formData.end_date}
                             onChange={handleChange}
                             disabled={isCoachPlan}
+                            className={fieldErrors.end_date ? 'input-error' : ''}
                         />
+                        {fieldErrors.end_date && <div className="error-message">{fieldErrors.end_date}</div>}
                     </div>
                 </div>
 
@@ -247,7 +293,7 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                     {fieldErrors.status && <div className="error-message">{fieldErrors.status}</div>}
                 </div>
 
-                {id && <WorkoutDaysSection
+                {isEditMode && id && <WorkoutDaysSection
                     planId={Number(id)}
                     availableWorkouts={workoutsStore.workouts.map(w => ({ id: w.id, name: w.name }))}
                     disabled={isCoachPlan}
@@ -264,7 +310,7 @@ const PlanForm: React.FC = inject('plansStore')(observer(() => {
                             </button>
                         </>
                     )}
-                    <button type="submit" disabled={isCoachPlan}>
+                    <button type="submit" disabled={isCoachPlan || Object.keys(fieldErrors).length > 0 || !formData.name} >
                         {isEditMode ? 'Сохранить' : 'Создать'}
                     </button>
                 </div>

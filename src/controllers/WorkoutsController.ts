@@ -294,7 +294,7 @@ export default class WorkoutController extends BaseController {
       new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/archive`}).execute()
           .then(r => r.json())
           .then(res => {
-              this.workoutsStore.updateWorkouts(res.workout.id);
+              this.workoutsStore.removeWorkout(res.workout.id);
               this.workoutsStore.updatArchivedWorkouts(res.workout);});
   }
 

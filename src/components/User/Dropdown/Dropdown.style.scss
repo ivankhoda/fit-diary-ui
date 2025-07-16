@@ -1,7 +1,8 @@
-// General styles for the dropdown container
 .dropdown {
   position: relative;
   display: inline-block;
+  font-size: 17px;
+  color: #1c1c1e;
 
   button {
     background: none;
@@ -9,12 +10,21 @@
     cursor: pointer;
     padding: 10px;
     outline: none;
+    user-select: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+
+    &:hover,
+    &:focus-visible {
+      background-color: #e5e5ea;
+    }
 
     svg {
-      fill: #333;
-      width: 20px;
+      fill: currentColor;
+      width: 24px;
       height: 20px;
       transition: transform 0.3s ease;
+
       &.rotate {
         transform: rotate(180deg);
       }
@@ -22,7 +32,6 @@
   }
 }
 
-// Main dropdown menu container
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -30,86 +39,108 @@
   min-width: 150px;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 100;
   padding: 0;
-}
+  user-select: none;
 
-// Dropdown menu item
-.dropdown-item {
-  padding: 10px;
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  font-family: 'Roboto';
-
-  &:hover {
-    background-color: #f7f7f7;
-  }
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .dropdown-link {
-    display: block;
-    color: #333;
-    text-decoration: none;
-    padding: 10px 15px;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: #007bff; // Change color on hover
-    }
-  }
-
-  .dropdown-submenu-trigger {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    text-align: left;
-    background: none;
-    border: none;
-    color: #333;
-    font-size: 14px;
+  .dropdown-item {
+    position: relative;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       background-color: #f7f7f7;
+      outline: none;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-link {
+      display: block;
+      color: #1c1c1e;
+      text-decoration: none;
+      padding: 10px 15px;
+      transition: color 0.2s ease;
+
+      &:hover,
+      &:focus-visible {
+        color: #007aff; /* Apple blue */
+        outline: none;
+      }
+    }
+
+    .dropdown-submenu-trigger {
+      display: block;
+      width: 100%;
+      padding: 12px 20px;
+      text-align: left;
+      background: none;
+      border: none;
+      color: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+
+      &:hover,
+      &:focus-visible {
+        background-color: #e5e5ea;
+        outline: none;
+      }
+
+      &:active {
+        background-color: #d1d1d6;
+      }
+    }
+
+    .dropdown-submenu {
+      position: absolute;
+      top: 0;
+      left: 100%;
+      min-width: 150px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 200;
+      padding: 0;
+      display: none;
+      user-select: none;
+
+      .dropdown-link {
+        padding: 10px 15px;
+        white-space: nowrap;
+        border-bottom: 1px dashed #bfb9a4;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+
+    &:hover > .dropdown-submenu {
+      display: block;
     }
   }
 }
-
-// Styles for the sub-menu
-.dropdown-submenu {
-  position: absolute;
-  top: 0;
-  left: 150px;
-  min-width: 150px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 200;
-  padding: 0;
-
-  .dropdown-link {
-    padding: 10px 15px;
-    white-space: nowrap;
-    border-bottom: 1px dashed #bfb9a4;
-  }
-}
-
 
 @media (max-width: 768px) {
-  .dropdown-menu, .dropdown-submenu {
+  .dropdown-menu,
+  .dropdown-submenu {
     min-width: 100%;
   }
 
-  .dropdown-submenu {
-    left: 0;
-    top: 100%;
+  .dropdown-item {
+    .dropdown-submenu {
+      top: 100%;
+      left: 0;
+    }
   }
 }

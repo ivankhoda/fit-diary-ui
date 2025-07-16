@@ -78,7 +78,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
                 value={inputValue}
                 onChange={handleInputChange}
                 maxLength={5}
-                placeholder='mm:ss'
+                placeholder='мм:сс'
                 ref={inputRef}
                 onBlur={onBlur ? handleBlur : null}
             />
