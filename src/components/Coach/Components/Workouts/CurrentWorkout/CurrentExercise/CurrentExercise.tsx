@@ -8,6 +8,7 @@ import DistanceInput from '../../../../../Common/DistanceInput';
 import RepetitionsInput from '../../../../../Common/RepetitionsInput';
 import TimeInput from '../../../../../Common/TimeInput';
 import WeightInput from '../../../../../Common/WeightInput';
+import { triggerImpact } from '../../../../../../utils/haptics';
 
 export interface CurrentExerciseProps {
   exercise: ExerciseInterface;
@@ -41,6 +42,7 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
     }, [setDone]);
 
     const handleFinishExerciseClick = useCallback(() => {
+        triggerImpact();
         finishExerciseClick(exercise);
     }, [finishExerciseClick, exercise]);
 

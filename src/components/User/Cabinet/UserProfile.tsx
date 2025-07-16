@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import UserStore from '../../../store/userStore';
 import UserController from '../../../controllers/UserController';
 import './UserProfile.style.scss';
+import { triggerImpact } from '../../../utils/haptics';
 
 interface UserProfileProps {
   userStore?: UserStore;
@@ -41,6 +42,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
     }, [user]);
 
     const handleSubmit = useCallback(async() => {
+        await triggerImpact();
+
         const payload: Record<string, string> = {};
 
         if (firstName.trim()) {payload.first_name = firstName.trim();}

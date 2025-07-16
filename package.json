@@ -80,6 +80,7 @@
   "dependencies": {
     "@capacitor/cli": "^7.4.1",
     "@capacitor/core": "^7.4.1",
+    "@capacitor/haptics": "^7.0.1",
     "@capacitor/ios": "^7.4.1",
     "@capacitor/keyboard": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",

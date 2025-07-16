@@ -4,11 +4,13 @@ import { FaHome } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import './HomeScreen.style.scss';
+import { triggerImpact } from '../../../utils/haptics';
 
 const HomeScreen: React.FC = () => {
     const navigate = useNavigate();
 
     const handleClick = useCallback(() => {
+        triggerImpact();
         navigate('/');
     }, [navigate]);
 
