@@ -1,4 +1,7 @@
+/* eslint-disable sort-keys */
+/* eslint-disable max-lines-per-function */
 import React, { useState, useCallback, useEffect } from 'react';
+import Modal from 'react-modal';
 import i18n, { t } from 'i18next';
 import './ExerciseModal.style.scss';
 import ExercisesController from '../../../../controllers/ExercisesController';
@@ -15,6 +18,7 @@ export interface ExerciseFormData {
   type_of_measurement: string;
   name: string;
   updated_at: string;
+  public: boolean
 }
 
 type Props = {
@@ -22,9 +26,10 @@ type Props = {
   onSave: () => void;
   exercisesController: ExercisesController;
   exercise?: ExerciseFormData | null;
+  isOpen?: boolean;
 };
 
-const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesController, exercise }) => {
+const ExerciseCreateModal: React.FC<Props> = ({ isOpen, onClose, onSave, exercisesController, exercise }) => {
     const [formData, setFormData] = useState<ExerciseFormData>({
         category: '',
         created_at: '',
@@ -36,6 +41,7 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
         name: '',
         type_of_measurement: '',
         updated_at: '',
+        public: false
     });
 
     useEffect(() => {
@@ -46,15 +52,19 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
     }, []);
 
     const handleGroupClickFactory = (groupId: string) => () => {
+        const newSelectedGroups = formData.muscle_groups.includes(groupId)
+            ? formData.muscle_groups.filter(id => id !== groupId)
+            : [...formData.muscle_groups, groupId];
         setFormData(prev => ({
             ...prev,
-            muscle_groups: prev.muscle_groups.includes(groupId)
-                ? prev.muscle_groups.filter(id => id !== groupId)
-                : [...prev.muscle_groups, groupId],
+            muscle_groups: newSelectedGroups,
         }));
     };
 
@@ -73,91 +83,97 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
         } else {
             exercisesController.createExercise(formData);
         }
-
         onSave();
+        onClose();
     }, [formData,
         exercisesController,
         onSave,
+        onClose,
         exercise]);
 
-    const handleModalContentClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation();
-    }, []);
-
     return (
-        <div className="exercise-create-modal" onClick={onClose}>
-            <div className="modal-content" onClick={handleModalContentClick}>
-                {error && <div className="error-message">{error}</div>}
-
-                <div className="modal-section">
-                    <label>
-                        <strong>{i18n.t('name')} <span className="required">*</span></strong>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            placeholder={i18n.t('name')}
-                            required
-                        />
-                    </label>
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={onClose}
+            contentLabel="Exercise Modal"
+            className="modal-content"
+            overlayClassName="modal-overlay"
+            shouldCloseOnOverlayClick={true}
+        >
+            {error && <div className="error-message">{error}</div>}
+            <div>
+                <div>
+                    <strong>{i18n.t('name')}, {t('required')}</strong>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder={i18n.t('name')}
+                        required
+                    />
                 </div>
-
-                <div className="modal-section">
-                    <label>
-                        <strong>{i18n.t('description')}</strong>
-                        <textarea
-                            name="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                            placeholder={i18n.t('description')}
-                        />
-                    </label>
+                <div>
+                    <strong>{i18n.t('description')}</strong>
+                    <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        placeholder={i18n.t('description')}
+                        required
+                    />
                 </div>
+                <div>
+                    <strong>{i18n.t('category')}</strong>
+                    <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        <option value="" disabled>{i18n.t('selectCategory')}</option>
+                        {categoryMap.map(key => (
+                            <option key={key} value={key}>
+                                {t(key)}
+                            </option>
+                        ))}
+                    </select>
 
-                <div className="modal-section">
-                    <label>
-                        <strong>{i18n.t('category')}</strong>
-                        <select name="category" value={formData.category} onChange={handleInputChange} required>
-                            <option value="" disabled>{i18n.t('selectCategory')}</option>
-                            {categoryMap.map(key => (
-                                <option key={key} value={key}>{t(key)}</option>
-                            ))}
-                        </select>
-                    </label>
                 </div>
-
-                <div className="modal-section">
-                    <label>
-                        <strong>{i18n.t('difficulty')}</strong>
-                        <select name="difficulty" value={formData.difficulty} onChange={handleInputChange}>
-                            <option value="" disabled>{i18n.t('selectDifficulty')}</option>
-                            {difficultyMap.map(key => (
-                                <option key={key} value={key}>{t(key)}</option>
-                            ))}
-                        </select>
-                    </label>
+                <div>
+                    <strong>{i18n.t('difficulty')}</strong>
+                    <select
+                        name="difficulty"
+                        value={formData.difficulty}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        <option value="" disabled>{i18n.t('selectDifficulty')}</option>
+                        {difficultyMap.map(key => (
+                            <option key={key} value={key}>
+                                {t(key)}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-
-                <div className="modal-section">
-                    <label>
-                        <strong>{i18n.t('type_of_measurement')} <span className="required">*</span></strong>
-                        <select
-                            name="type_of_measurement"
-                            value={formData.type_of_measurement}
-                            onChange={handleInputChange}
-                            required
-                        >
-                            <option value="" disabled>{i18n.t('selectTypeOfMeasurement')}</option>
-                            {measurementKeys.map(key => (
-                                <option key={key} value={key}>{t(key)}</option>
-                            ))}
-                        </select>
-                    </label>
+                <div>
+                    <strong>{i18n.t('type_of_measurement')}, {t('required')}</strong>
+                    <select
+                        name="type_of_measurement"
+                        value={formData.type_of_measurement}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        <option value="" disabled>{i18n.t('selectTypeOfMeasurement')}</option>
+                        {measurementKeys.map(key => (
+                            <option key={key} value={key}>
+                                {t(key)}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-
                 {formData.category === 'strength' && (
-                    <div className="modal-section">
+                    <div>
                         <strong>{i18n.t('muscleGroup')}</strong>
                         <div className="muscle-groups">
                             {muscleGroups.map(group => (
@@ -172,13 +188,12 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, exercisesContro
                         </div>
                     </div>
                 )}
-
                 <div className="modal-actions">
                     <button onClick={onClose}>{i18n.t('cancel')}</button>
                     <button onClick={handleSaveExercise}>{exercise ? i18n.t('editExercise') : i18n.t('createExercise')}</button>
                 </div>
             </div>
-        </div>
+        </Modal>
     );
 };
 

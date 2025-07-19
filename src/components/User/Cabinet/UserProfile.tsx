@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
+import { Clipboard } from '@capacitor/clipboard';
 
 import UserStore from '../../../store/userStore';
 import UserController from '../../../controllers/UserController';
@@ -25,12 +26,24 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
     const [linkCode, setLinkCode] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (!user) {
             userController?.getUser();
         }
     }, [user, userController]);
+
+    const handleCopyCode = useCallback(async() => {
+        if (!linkCode) {return;}
+
+        await Clipboard.write({ string: linkCode });
+        // Await Haptics.impact({ ImpactStyle.Light: 'light' });
+        setCopied(true);
+
+        // eslint-disable-next-line no-magic-numbers
+        setTimeout(() => setCopied(false), 1500);
+    }, [linkCode]);
 
     useEffect(() => {
         if (user) {
@@ -166,6 +179,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
                     {linkCode && (
                         <p className="code-display">
                             {t('Код')}: <strong>{linkCode}</strong>
+                            <button className="copy-button" type="button" onClick={handleCopyCode}>
+                                {t('Скопировать')}
+                            </button>
+                            {copied && <span className="copy-toast">{t('Скопировано!')}</span>}
                         </p>
                     )}
                 </div>

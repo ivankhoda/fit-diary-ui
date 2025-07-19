@@ -72,4 +72,27 @@
     margin-bottom: 1rem;
     text-align: center;
   }
+
+  .copy-button {
+  margin-left: 1rem;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  background-color: #eee;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #ddd;
+  }
+}
+
+.copy-toast {
+  display: inline-block;
+  margin-left: 1rem;
+  color: green;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
 }

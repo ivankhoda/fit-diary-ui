@@ -19,7 +19,7 @@ export interface ExerciseFormData {
   type_of_measurement: string;
   name: string;
   updated_at: string;
-  public: boolean
+  public: boolean;
 }
 
 type Props = {
@@ -29,8 +29,9 @@ type Props = {
   exercise?: ExerciseFormData | null;
 };
 
-const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesController, exercise }) => {
+const CoachExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesController, exercise }) => {
     const modalRef = useRef<HTMLDivElement | null>(null);
+
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -42,60 +43,50 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesC
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, [onClose]);
+
     const { isVerifiedCoach } = useToken();
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<ExerciseFormData>({
         category: '',
         created_at: '',
         description: '',
         difficulty: '',
         duration: 0,
         id: '',
-        muscle_groups: [] as string[],
+        muscle_groups: [],
         name: '',
         type_of_measurement: '',
         updated_at: '',
-        public: false
+        public: false,
     });
 
     useEffect(() => {
         if (exercise) {
-            setFormData({
-                category: exercise.category,
-                created_at: exercise.created_at,
-                description: exercise.description,
-                difficulty: exercise.difficulty,
-                duration: exercise.duration,
-                id: exercise.id,
-                muscle_groups: exercise.muscle_groups,
-                name: exercise.name,
-                type_of_measurement: exercise.type_of_measurement,
-                updated_at: exercise.updated_at,
-                public: exercise.public
-            });
+            setFormData({ ...exercise });
         }
     }, [exercise]);
 
-    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-
-        setFormData(prev => ({
-            ...prev,
-            [name]: value,
-        }));
-    }, []);
+    const handleInputChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: value,
+            }));
+        },
+        []
+    );
 
     const handleGroupClickFactory = (groupId: string) => () => {
         const newSelectedGroups = formData.muscle_groups.includes(groupId)
             ? formData.muscle_groups.filter(id => id !== groupId)
             : [...formData.muscle_groups, groupId];
+
         setFormData(prev => ({
             ...prev,
             muscle_groups: newSelectedGroups,
         }));
     };
-
-    const [error, setError] = useState<string | null>(null);
 
     const handlePublicChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({
@@ -104,9 +95,11 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesC
         }));
     }, []);
 
+    const [error, setError] = useState<string | null>(null);
+
     const handleSaveExercise = useCallback(() => {
         const { name, type_of_measurement } = formData;
-        setError(i18n.t('pleaseFillAllFields'));
+
         if (!name || !type_of_measurement) {
             setError(i18n.t('pleaseFillAllFields'));
             return;
@@ -117,6 +110,7 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesC
         } else {
             coachExercisesController.createExercise(formData);
         }
+
         onSave();
     }, [formData,
         coachExercisesController,
@@ -164,18 +158,21 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesC
                                 </option>
                             ))}
                         </select>
-                        { isVerifiedCoach() && !exercise?.public && <div>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="public"
-                                    checked={formData.public}
-                                    onChange={handlePublicChange}
-                                />
-                                {' '}
-                                {i18n.t('public')}
-                            </label>
-                        </div>}
+
+                        {isVerifiedCoach() && !exercise?.public && (
+                            <div>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="public"
+                                        checked={formData.public}
+                                        onChange={handlePublicChange}
+                                    />
+                                    {' '}
+                                    {i18n.t('public')}
+                                </label>
+                            </div>
+                        )}
                     </div>
                     <div>
                         <strong>{i18n.t('difficulty')}</strong>
@@ -219,7 +216,7 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesC
                                         onClick={handleGroupClickFactory(group.name)}
                                         className={formData.muscle_groups.includes(group.name) ? 'active' : ''}
                                     >
-                                        { t(`exercise.muscleGroupsList.${group.name}`)}
+                                        {t(`exercise.muscleGroupsList.${group.name}`)}
                                     </div>
                                 ))}
                             </div>
@@ -227,7 +224,9 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesC
                     )}
                     <div className="modal-actions">
                         <button onClick={onClose}>{i18n.t('cancel')}</button>
-                        <button onClick={handleSaveExercise}>{exercise ? i18n.t('editExercise') : i18n.t('createExercise')}</button>
+                        <button onClick={handleSaveExercise}>
+                            {exercise ? i18n.t('editExercise') : i18n.t('createExercise')}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -235,4 +234,4 @@ const ExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExercisesC
     );
 };
 
-export default ExerciseCreateModal;
+export default CoachExerciseCreateModal;

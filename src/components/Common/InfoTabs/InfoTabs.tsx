@@ -15,7 +15,7 @@ interface InfoTabsProps {
 
 const InfoTabs: React.FC<InfoTabsProps> = ({ options, descriptions }) => {
     const [selectedTab, setSelectedTab] = useState<string | null>(null);
-    console.log(options, descriptions);
+
     const handleTabClick = useCallback((text: string) => {
         setSelectedTab(text);
     },[]);

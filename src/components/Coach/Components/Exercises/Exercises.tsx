@@ -11,7 +11,7 @@ import { muscleGroups } from '../../../Admin/ExercisesManagement/maps';
 import CoachExercisesController from '../../controllers/CoachExercisesController';
 import CoachExercisesStore from '../../store/CoachExercisesStore';
 import ExerciseItem from './ExerciseItem/ExerciseItem';
-import ExerciseModal from './ExerciseModal/ExerciseModal';
+import CoachExerciseModal from './ExerciseModal/CoachExerciseModal';
 import { Exercise } from '../../../User/Exercises/Exercises';
 
 export interface ExercisesInterface {
@@ -158,7 +158,7 @@ const Exercises: React.FC<ExercisesInterface> = ({ coachExercisesStore, coachExe
                     <button onClick={() => handleOpenModal()}>{t('createExercise')}</button>
 
                     {isModalVisible && (
-                        <ExerciseModal onClose={handleModalClose} onSave={handleSaveSuccess}
+                        <CoachExerciseModal onClose={handleModalClose} onSave={handleSaveSuccess}
                             coachExercisesController={coachExercisesController}
                             exercise={exerciseToEdit}
                         />

@@ -10,6 +10,15 @@ const config: CapacitorConfig = {
         Keyboard: {
 
             resize: KeyboardResize.None
+        },
+        SplashScreen: {
+            launchShowDuration: 3000,
+            launchAutoHide: true,
+            backgroundColor: '#ffffff',
+            androidSplashResourceName: 'splash',
+            iosSpinnerStyle: 'small',
+            showSpinner: true,
+            spinnerColor: '#999999'
         }
     }
 };

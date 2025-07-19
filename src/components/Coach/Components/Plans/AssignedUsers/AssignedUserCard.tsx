@@ -32,7 +32,7 @@ const AssignedUserCard: React.FC<Props> = ({ user, planId, onRemove }) => {
     }, [onRemove, user.id]);
 
     const userGoals = coachTrainingGoalsStore.goalsByUserId[user.id] || [];
-    console.log(user.training_goal);
+
     return (
         <li className="assigned-user-card">
             <div className='assigned-user-card__header'>

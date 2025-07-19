@@ -25,7 +25,11 @@ import { CoachPanel } from "./Coach/CoachPanel";
 import LandingPage from "../landing/LandingPage";
 import PrivacyPolicy from "./privacy/PrivacyPolicy";
 import TermsOfUse from "./terms/TermsOfUse";
+import { ToastContainer } from "react-toastify";
 
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 
 export const App = observer((): JSX.Element => {
@@ -151,6 +155,7 @@ const MainAppRoutes = ({ token }: { token: string }) => {
       <Footer />
       </>
       }
+       <ToastContainer />
     </>
   );
 };

@@ -104,6 +104,11 @@ html, body, #root {
   -webkit-overflow-scrolling: touch;
   scroll-padding-bottom: 300px;
 }
+#app-root, #modal-root {
+  position: relative;
+  z-index: 0;
+  overflow: visible !important;
+}
 
 #root {
   display: flex;

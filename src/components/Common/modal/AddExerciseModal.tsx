@@ -5,6 +5,7 @@ import './SimpleModal.style.scss';
 import { inject, observer } from 'mobx-react';
 import { exercisesController, workoutsController } from '../../../controllers/global';
 import { exercisesStore } from '../../../store/global';
+import { createPortal } from 'react-dom';
 
 interface Props {
     visible: boolean;
@@ -15,28 +16,14 @@ interface Props {
 
 const AddExerciseModal: React.FC<Props> = observer(({ visible, onClose, onSelect, currentWorkoutId }) => {
     const [selectedExercise, setSelectedExercise] = useState<ExerciseInterface | null>(null);
+    const modalRef = useRef<HTMLDivElement | null>(null);
+    const modalRoot = document.getElementById('modal-root');
 
     useEffect(() => {
         if (visible && exercisesStore.generalExercises.length === 0) {
             exercisesController.getExercises();
         }
     }, [visible]);
-
-    const handleExerciseChange = useCallback((id: number) => {
-        const exercise = exercisesStore.generalExercises.find(e => e.id === id) as ExerciseInterface | undefined;
-        setSelectedExercise(exercise || null);
-    }, []);
-
-    if (!visible) {return null;}
-
-    const handleSave = useCallback(() => {
-        if (selectedExercise) {
-            workoutsController.startOrResumeExercise(selectedExercise.id, currentWorkoutId);
-            onClose();
-        }
-    }, [selectedExercise, onSelect]);
-
-    const modalRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -45,19 +32,44 @@ const AddExerciseModal: React.FC<Props> = observer(({ visible, onClose, onSelect
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        if (visible) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            setSelectedExercise(null);
+        }
+
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [onClose]);
+    }, [visible, onClose]);
 
-    return (
-        <div className="modal-backdrop">
-            <div className="modal-container" ref={modalRef}>
+    const handleExerciseChange = useCallback((id: number) => {
+        const exercise = exercisesStore.generalExercises.find(e => e.id === id) || null;
+        setSelectedExercise(exercise);
+    }, []);
+
+    const handleSave = useCallback(() => {
+        if (selectedExercise) {
+            workoutsController.startOrResumeExercise(selectedExercise.id, currentWorkoutId);
+            onSelect(selectedExercise);
+            onClose();
+        }
+    }, [selectedExercise,
+        currentWorkoutId,
+        onClose,
+        onSelect]);
+
+    if (!visible || !modalRoot) {
+        return null;
+    }
+
+    return createPortal(
+        <div className="simple-modal-overlay-plan">
+            <div className="simple-modal" ref={modalRef}>
                 <ExerciseSelector
                     visible={true}
                     exercises={exercisesStore.generalExercises}
-                    value={selectedExercise && typeof selectedExercise.id === 'number' ? selectedExercise.id : null}
+                    value={selectedExercise?.id || null}
                     onChange={handleExerciseChange}
                 />
                 <div className="modal-actions">
@@ -65,7 +77,8 @@ const AddExerciseModal: React.FC<Props> = observer(({ visible, onClose, onSelect
                     <button onClick={onClose}>Отмена</button>
                 </div>
             </div>
-        </div>
+        </div>,
+        modalRoot
     );
 });
 

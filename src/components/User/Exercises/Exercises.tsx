@@ -177,7 +177,7 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                     {isModalVisible && (
                         <ExerciseModal onClose={handleModalClose} onSave={handleSaveSuccess}
                             exercisesController={exercisesController}
-                            exercise={exerciseToEdit}
+                            exercise={exerciseToEdit} isOpen={isModalVisible}
                         />
                     )}
                 </div>
