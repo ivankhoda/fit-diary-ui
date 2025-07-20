@@ -160,17 +160,17 @@ const CoachExerciseCreateModal: React.FC<Props> = ({ onClose, onSave, coachExerc
                         </select>
 
                         {isVerifiedCoach() && !exercise?.public && (
-                            <div>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        name="public"
-                                        checked={formData.public}
-                                        onChange={handlePublicChange}
-                                    />
-                                    {' '}
+                            <div className="form-field checkbox-field">
+                                <label htmlFor="public-checkbox">
                                     {i18n.t('public')}
                                 </label>
+                                <input
+                                    type="checkbox"
+                                    name="public"
+                                    checked={formData.public}
+                                    onChange={handlePublicChange}
+                                    id="public-checkbox"
+                                />
                             </div>
                         )}
                     </div>

@@ -24,7 +24,7 @@ import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import ProgressBar from '../../../Common/ProgressBar';
 import AddExerciseModal from '../../../Common/modal/AddExerciseModal';
-
+import { KeepAwake } from '@capacitor-community/keep-awake';
 interface Props {
     workout?: WorkoutInterface;
 }
@@ -58,6 +58,16 @@ export const CurrentWorkout: React.FC<Props> =
 
             currentWorkout,
         ]);
+
+        // eslint-disable-next-line consistent-return
+        useEffect(() => {
+            if (currentWorkout) {
+                KeepAwake.keepAwake().catch(console.warn);
+                return () => {
+                    KeepAwake.allowSleep().catch(console.warn);
+                };
+            }
+        }, [currentWorkout]);
 
         useEffect(() => {
             if (currentExercise && currentExercise.id !== selectedExercise?.id) {

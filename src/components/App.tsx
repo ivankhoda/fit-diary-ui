@@ -17,7 +17,6 @@ import { adminRoutes } from "./Admin/routes/routes";
 import adminStores from "./Admin/store/stores";
 import adminControllers from "./Admin/controllers/controllers";
 import { useTranslation } from "react-i18next";
-import boosty from "../images/boosty.png";
 import { t } from "i18next";
 import Footer from "./User/Footer/Footer";
 import { CoachModeProvider, useCoachMode } from "./Coach/CoachContext";
@@ -26,11 +25,9 @@ import LandingPage from "../landing/LandingPage";
 import PrivacyPolicy from "./privacy/PrivacyPolicy";
 import TermsOfUse from "./terms/TermsOfUse";
 import { ToastContainer } from "react-toastify";
-
 import Modal from 'react-modal';
 
 Modal.setAppElement('#root');
-
 
 export const App = observer((): JSX.Element => {
   const { token, setToken, isAdmin } = useToken();
@@ -118,9 +115,7 @@ const DescriptionScreen = ({
   );
 };
 
-const BoostyIcon = () => (
-  <img src={boosty} alt="Boosty" width={80} height={20} />
-);
+
 
 const AdminRoutes = (): JSX.Element => {
   const store = Object.assign(adminStores, adminControllers);
