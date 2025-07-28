@@ -14,27 +14,28 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ExercisesController from '../../../../../controllers/ExercisesController';
 
-import ExercisesStore, { ExerciseInterface } from '../../../../../store/exercisesStore';
+import { ExerciseInterface } from '../../../../../store/exercisesStore';
 
 import { UserProfile } from '../../../../../store/userStore';
 
 import CoachWorkoutsController from '../../../controllers/CoachWorkoutsController';
 import CoachWorkoutsStore from '../../../store/CoachWorkoutsStore';
+import CoachExercisesController from '../../../controllers/CoachExercisesController';
+import CoachExercisesStore from '../../../store/CoachExercisesStore';
 
 export interface NewWorkoutProps {
   coachWorkoutsStore?: CoachWorkoutsStore;
-  exercisesStore?: ExercisesStore;
+  coachExercisesStore?: CoachExercisesStore;
   coachWorkoutsController?: CoachWorkoutsController;
-  exercisesController?: ExercisesController;
+  coachExercisesController?: CoachExercisesController;
 }
 
 const NewWorkout: React.FC<NewWorkoutProps> = ({
     coachWorkoutsStore,
-    exercisesStore,
+    coachExercisesStore,
     coachWorkoutsController,
-    exercisesController,
+    coachExercisesController,
 }) => {
     const [workoutName, setWorkoutName] = useState('');
     const [description, setDescription] = useState('');
@@ -54,10 +55,10 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             };
             fetchWorkoutData();
         }
-        exercisesController?.getExercises();
+        coachExercisesController?.getExercises();
     }, [workoutId,
         coachWorkoutsController,
-        exercisesController]);
+        coachExercisesController]);
 
     useEffect(() => {
         const fetchedWorkout = coachWorkoutsStore?.selectedWorkout;
@@ -66,24 +67,22 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             setWorkoutName(fetchedWorkout.name || '');
             setDescription(fetchedWorkout.description || '');
             setSelectedExercises(
-                (exercisesStore?.workoutExercises || []).sort((a, b) => {
+                (coachExercisesStore?.workoutExercises || []).sort((a, b) => {
                     if (a.order === b.order) {
                         return a.id - b.id;
                     }
                     return Number(a.order) - Number(b.order);
                 })
             );
-
             setSelectedUsers(fetchedWorkout.users || []);
         }
     }, [coachWorkoutsStore?.selectedWorkout]);
 
     const handleExerciseClick = async(exercise: ExerciseInterface) => {
         try {
-            await exercisesController?.addWorkoutExercise(workoutId, exercise.id);
-
+            await coachExercisesController?.addWorkoutExercise(workoutId, exercise.id);
             setSelectedExercises(
-                exercisesStore?.workoutExercises.sort((a, b) => {
+                coachExercisesStore?.workoutExercises.sort((a, b) => {
                     if (a.order === b.order) {
                         return a.id - b.id;
                     }
@@ -112,14 +111,14 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     };
 
     const handleEditWorkoutExercise = (editedExercise: ExerciseInterface) => {
-        exercisesController?.editWorkoutExercise(editedExercise);
+        coachExercisesController?.editWorkoutExercise(editedExercise);
         setSelectedExercises(prevExercises =>
             prevExercises.map(exercise =>
                 exercise.id === editedExercise.id ? editedExercise : exercise));
     };
 
     const handleExerciseDelete = (exerciseId: number) => {
-        exercisesController?.deleteWorkoutExercise(exerciseId);
+        coachExercisesController?.deleteWorkoutExercise(exerciseId);
         setSelectedExercises(prevSelected =>
             prevSelected.filter(exercise => exercise.id !== exerciseId));
     };
@@ -154,7 +153,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     };
 
     const filteredExercises =
-    exercisesStore?.generalExercises?.filter(exercise =>
+    coachExercisesStore?.generalExercises?.filter(exercise =>
         exercise?.name?.toLowerCase().includes(exerciseSearchTerm.toLowerCase())) || [];
 
     const moveExercise = useCallback((dragIndex: number, hoverIndex: number) => {
@@ -170,8 +169,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
         });
     }, [coachWorkoutsController,
         workoutId,
-        exercisesStore]);
-
+        coachExercisesStore]);
     return (
         <div className="new-workout-section">
             <h2>{isEditing ? i18n.t('workoutData.editWorkout') : i18n.t('workoutData.createNewWorkout')}</h2>
@@ -269,7 +267,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
 
 export default inject(
     'coachWorkoutsStore',
-    'exercisesStore',
+    'coachExercisesStore',
     'coachWorkoutsController',
-    'exercisesController'
+    'coachExercisesController'
 )(observer(NewWorkout));

@@ -6,7 +6,7 @@ import CoachTrainingGoalsController from './CoachTrainingGoalsController';
 import CoachWorkoutController from './CoachWorkoutsController';
 
 const clientsController = new ClientsController(clientsStore);
-const coachWorkoutsController = new CoachWorkoutController(coachWorkoutsStore);
+const coachWorkoutsController = new CoachWorkoutController(coachWorkoutsStore, coachExercisesStore);
 const coachExercisesController = new CoachExercisesController(coachExercisesStore, coachWorkoutsStore);
 const coachPlansController = new CoachPlansController(coachPlansStore);
 const coachTrainingGoalsController = new CoachTrainingGoalsController(coachTrainingGoalsStore);

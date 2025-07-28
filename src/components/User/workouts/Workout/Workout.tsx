@@ -61,6 +61,10 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
         setIsExpanded(prev => !prev);
     };
 
+    const handleCopyWorkout = useCallback(() => {
+        workoutsController.copyWorkout(workout.id, navigate);
+    }, [workout.id]);
+
     return (
         <div className={`workout-container ${workout.assigned_to_user ? 'assigned-workout' : ''}`}>
 
@@ -79,6 +83,9 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
                             </button>
                             <button className="save-btn" onClick={handleArchiveClick}>
                                 {t('workout.archive')}
+                            </button>
+                            <button className="save-btn" onClick={handleCopyWorkout}>
+                                {t('workout.copy')}
                             </button>
                         </>
                     )}

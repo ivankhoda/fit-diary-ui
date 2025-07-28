@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-statements */
 
 /* eslint-disable sort-keys */
@@ -13,6 +14,7 @@ import Delete from '../utils/DeleteRequest';
 import { UserProfile } from '../store/userStore';
 import getApiBaseUrl from '../utils/apiUrl';
 import i18n from 'i18next';
+import { toast } from 'react-toastify';
 
 export interface AddExerciseParamsInterface {
     id?: number,
@@ -71,18 +73,36 @@ export default class WorkoutController extends BaseController {
         }
     }
 
-  @action
-  getUserWorkout(id?: string): void {
-      new Get({url: `${getApiBaseUrl()}/user_workouts/${id}`}).execute()
+    @action
+  copyWorkout(id: number, navigate: (path: string) => void): void {
+      new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/workouts/duplicate`}).execute()
           .then(r => r.json())
           .then(res => {
-              if(res.status === 'ok') {
-                  this.workoutsStore.setCurrentUserWorkout(res.user_workout);
-                  this.exerciseStore.setCurrentUserExercise(res.user_workout.current_user_exercise);
-                  this.exerciseStore.setCurrentExercise(res.user_workout.current_workout_exercise);
-                  res.exercise && this.exerciseStore.setCurrentUserExerciseSets(res.exercise.number_of_sets);
-              }});
+              if(res.ok) {
+                  this.workoutsStore.addWorkout(res.workout);
+                  this.workoutsStore.setDraftWorkout(res.workout);
+                  this.exerciseStore.setWorkoutExercises(res.workout.workout_exercises);
+
+                  toast.success('Копия создана, вы можете её отредактировать');
+                  navigate(`/workouts/${res.workout.id}/edit`);
+              } else {
+                  toast.error('Ошибка при копировании тренировки');
+              }
+          });
   }
+
+  @action
+    getUserWorkout(id?: string): void {
+        new Get({url: `${getApiBaseUrl()}/user_workouts/${id}`}).execute()
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === 'ok') {
+                    this.workoutsStore.setCurrentUserWorkout(res.user_workout);
+                    this.exerciseStore.setCurrentUserExercise(res.user_workout.current_user_exercise);
+                    this.exerciseStore.setCurrentExercise(res.user_workout.current_workout_exercise);
+                    res.exercise && this.exerciseStore.setCurrentUserExerciseSets(res.exercise.number_of_sets);
+                }});
+    }
     @action
   getActiveUserWorkout(): void {
       new Get({url: `${getApiBaseUrl()}/user_workouts/active`}).execute()

@@ -1,2 +1,27 @@
-/node_modules
+# Node modules
+/node_modules/
+
+# Логи Storybook
 *storybook.log
+
+# iOS
+ios/
+!ios/App/
+!ios/App/App/
+!ios/App/App/Info.plist
+
+# Исключаем тяжелые splash-изображения в iOS
+resources/ios/splash/
+
+# Android
+android/
+!android/app/
+!android/app/src/
+!android/app/src/main/
+!android/app/src/main/AndroidManifest.xml
+
+# Исключаем папку с билдом
+dist/
+
+# IDE
+.idea/

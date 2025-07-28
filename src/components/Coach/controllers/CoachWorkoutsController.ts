@@ -10,12 +10,16 @@ import CoachWorkoutsStore, { CoachWorkoutInterface } from '../store/CoachWorkout
 import { ExerciseInterface } from '../../../store/exercisesStore';
 import { UserProfile } from '../../../store/userStore';
 import i18n from 'i18next';
+import { toast } from 'react-toastify';
+import CoachExercisesStore from '../store/CoachExercisesStore';
 
 export default class CoachWorkoutController {
   coachWorkoutsStore: CoachWorkoutsStore;
+  coachExercisesStore: CoachExercisesStore;
 
-  constructor(coachWorkoutsStore: CoachWorkoutsStore) {
+  constructor(coachWorkoutsStore: CoachWorkoutsStore, coachExercisesStore: CoachExercisesStore) {
       this.coachWorkoutsStore = coachWorkoutsStore;
+      this.coachExercisesStore = coachExercisesStore;
   }
 
   @action
@@ -74,6 +78,7 @@ export default class CoachWorkoutController {
           .then(res => {
               if (res.status === 'ok') {
                   this.coachWorkoutsStore.setSelectedWorkout(res.workout);
+                  this.coachExercisesStore.setWorkoutExercises(res.workout.workout_exercises);
               }
           });
   }
@@ -100,26 +105,42 @@ export default class CoachWorkoutController {
       }
   }
 
-  @action
-  updateWorkout(workoutId: string, workout: Partial<CoachWorkoutInterface>): void {
-      const { name, description } = workout;
-
-      const wo = {
-
-          description,
-          id: workoutId,
-          name,
-
-      };
-      new Patch({ params: { workout: wo }, url: `${getApiBaseUrl()}/coach/workouts/${workoutId}` })
-          .execute()
+      @action
+  copyWorkout(id: number, navigate: (path: string) => void): void {
+      new Post({params: {workout: {id}}, url: `${getApiBaseUrl()}/coach/workouts/duplicate`}).execute()
           .then(r => r.json())
           .then(res => {
-              if (res.ok) {
-                  this.coachWorkoutsStore.updateWorkout(res.workout);
+              if(res.ok) {
+                  this.coachWorkoutsStore.addWorkout(res.workout);
+
+                  toast.success('Копия создана, вы можете её отредактировать');
+                  navigate(`/workouts/${res.workout.id}/edit`);
+              } else {
+                  toast.error('Ошибка при копировании тренировки');
               }
           });
   }
+
+  @action
+      updateWorkout(workoutId: string, workout: Partial<CoachWorkoutInterface>): void {
+          const { name, description } = workout;
+
+          const wo = {
+
+              description,
+              id: workoutId,
+              name,
+
+          };
+          new Patch({ params: { workout: wo }, url: `${getApiBaseUrl()}/coach/workouts/${workoutId}` })
+              .execute()
+              .then(r => r.json())
+              .then(res => {
+                  if (res.ok) {
+                      this.coachWorkoutsStore.updateWorkout(res.workout);
+                  }
+              });
+      }
 
   @action
   deleteWorkout(workoutId: number): void {

@@ -74,6 +74,10 @@ const CoachWorkout: React.FC<Props> = ({ workout, state = '' }) => {
         coachWorkoutsController.unassignWorkout(userId, workout.id);
     };
 
+    const handleCopyWorkout = useCallback(() => {
+        coachWorkoutsController.copyWorkout(workout.id, navigate);
+    }, [workout.id]);
+
     return (
         <div className="workout-container">
             <p>{workout.name} {workout.created_at?.split(' ')[0] || workout.date}</p>
@@ -92,6 +96,9 @@ const CoachWorkout: React.FC<Props> = ({ workout, state = '' }) => {
                         </button>
                         <button className="save-btn" onClick={handleArchiveClick}>
                             {t('workout.archive')}
+                        </button>
+                        <button className="save-btn" onClick={handleCopyWorkout}>
+                            {t('workout.copy')}
                         </button>
                     </>
 

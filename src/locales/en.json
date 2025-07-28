@@ -319,7 +319,8 @@
     "startExercise": "Start Exercise",
     "duration": "Duration",
     "comment": "Comment",
-    "add_exercise": "Do extra exercise"
+    "add_exercise": "Do extra exercise",
+    "copy": "Copy"
   },
   "workout_day": {
     "by_date": "By Date",
