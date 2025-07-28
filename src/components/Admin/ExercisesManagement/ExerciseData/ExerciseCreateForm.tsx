@@ -1,6 +1,5 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable react/jsx-no-bind */
-/* eslint-disable no-alert */
 
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useState, useCallback } from 'react';
@@ -12,6 +11,7 @@ import i18n from 'i18next';
 import './ExerciseData.style.scss';
 import { AdminExerciseProfile } from '../../store/AdminExercisesStore';
 import { categoryMap, difficultyMap, measurementKeys, muscleGroups } from '../maps';
+import { toast } from 'react-toastify';
 
 const ExerciseData: React.FC = () => {
     const navigate = useNavigate();
@@ -94,7 +94,7 @@ const ExerciseData: React.FC = () => {
         const { name, category, difficulty, description} = formData;
 
         if (!name || !category || !difficulty || !description) {
-            alert(i18n.t('pleaseFillAllFields'));
+            toast.success(i18n.t('pleaseFillAllFields'));
             return;
         }
 

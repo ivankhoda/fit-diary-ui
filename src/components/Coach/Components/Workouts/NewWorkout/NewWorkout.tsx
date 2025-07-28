@@ -1,7 +1,6 @@
 /* eslint-disable sort-keys */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
-/* eslint-disable no-alert */
 /* eslint-disable max-lines-per-function */
 import React, { useState, useEffect, useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
@@ -23,6 +22,7 @@ import CoachWorkoutsController from '../../../controllers/CoachWorkoutsControlle
 import CoachWorkoutsStore from '../../../store/CoachWorkoutsStore';
 import CoachExercisesController from '../../../controllers/CoachExercisesController';
 import CoachExercisesStore from '../../../store/CoachExercisesStore';
+import { toast } from 'react-toastify';
 
 export interface NewWorkoutProps {
   coachWorkoutsStore?: CoachWorkoutsStore;
@@ -132,7 +132,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
         e.preventDefault();
 
         if (!workoutName || !description) {
-            alert(i18n.t('workoutData.fillAllFields'));
+            toast.error(i18n.t('workoutData.fillAllFields'));
             return;
         }
 
@@ -148,7 +148,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                 await coachWorkoutsController?.saveWorkout(newWorkout, navigate);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(error);
         }
     };
 

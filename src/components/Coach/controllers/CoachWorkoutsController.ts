@@ -94,8 +94,7 @@ export default class CoachWorkoutController {
 
           if (result.ok && result.workout.id) {
               this.coachWorkoutsStore.addWorkout(result.workout);
-              // eslint-disable-next-line no-alert
-              alert(i18n.t('workoutData.workoutCreated'));
+              toast.success(i18n.t('workoutData.workoutCreated'));
               navigate(`/workouts/${result.workout.id}/edit`);
           } else {
               console.error('No workout ID returned in response:', result);
@@ -263,8 +262,7 @@ export default class CoachWorkoutController {
           const result = await response.json();
 
           this.coachWorkoutsStore.addWorkout(result);
-          // eslint-disable-next-line no-alert
-          alert(i18n.t('workoutData.workoutCreated'));
+          toast.success(i18n.t('workoutData.workoutCreated'));
 
           navigate(`/workouts/${result.id}/edit`);
       } catch (error) {

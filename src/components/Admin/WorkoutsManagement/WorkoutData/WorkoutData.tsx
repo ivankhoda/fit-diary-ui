@@ -1,7 +1,6 @@
 /* eslint-disable max-statements */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-alert */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable sort-keys */
 import { inject, observer } from 'mobx-react';

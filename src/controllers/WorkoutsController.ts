@@ -2,7 +2,6 @@
 /* eslint-disable max-statements */
 
 /* eslint-disable sort-keys */
-/* eslint-disable no-alert */
 import { action } from 'mobx';
 import ExercisesStore, { ExerciseInterface } from '../store/exercisesStore';
 import WorkoutsStore, { WorkoutInterface } from '../store/workoutStore';
@@ -217,7 +216,7 @@ export default class WorkoutController extends BaseController {
 
           if (result.ok && result.workout.id) {
               this.workoutsStore.addWorkout(result.workout);
-              alert(i18n.t('workoutData.workoutCreated'));
+              toast.success(i18n.t('workoutData.workoutCreated'));
               navigate(`/workouts/${result.workout.id}/edit`);
           } else {
               console.error('No workout ID returned in response:', result);
@@ -252,7 +251,7 @@ export default class WorkoutController extends BaseController {
           const result = await response.json();
 
           this.workoutsStore.addWorkout(result);
-          alert(i18n.t('workoutData.workoutCreated'));
+          toast.success(i18n.t('workoutData.workoutCreated'));
 
           navigate(`/workouts/${result.id}/edit`);
       } catch (error) {

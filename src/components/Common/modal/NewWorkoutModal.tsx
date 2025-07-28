@@ -1,7 +1,6 @@
 /* eslint-disable sort-keys */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
-/* eslint-disable no-alert */
 /* eslint-disable max-lines-per-function */
 import React, { useEffect, useRef } from 'react';
 import { inject, observer } from 'mobx-react';

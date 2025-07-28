@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import { action } from 'mobx';
 import ExercisesStore, { ExerciseInterface } from '../store/exercisesStore';
 import WorkoutsStore from '../store/workoutStore';

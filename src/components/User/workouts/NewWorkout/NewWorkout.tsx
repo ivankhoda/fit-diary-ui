@@ -1,7 +1,6 @@
 /* eslint-disable sort-keys */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
-/* eslint-disable no-alert */
 /* eslint-disable max-lines-per-function */
 import React, { useState, useEffect, useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
@@ -18,6 +17,7 @@ import { UserProfile } from '../../../../store/userStore';
 import SelectedExercise from './SelectedExercise';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { toast } from 'react-toastify';
 export interface NewWorkoutProps {
   workoutsStore?: WorkoutsStore;
   exercisesStore?: ExercisesStore;
@@ -129,7 +129,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
         e.preventDefault();
 
         if (!workoutName || !description) {
-            alert(i18n.t('workoutData.fillAllFields'));
+            toast.error(i18n.t('workoutData.fillAllFields'));
             return;
         }
 

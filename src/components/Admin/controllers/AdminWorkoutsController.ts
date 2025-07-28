@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 /* eslint-disable sort-keys */
 import { action } from 'mobx';
 import { BaseController } from '../../../controllers/BaseController';
@@ -10,6 +9,7 @@ import Patch from '../../../utils/PatchRequest';
 import { AdminExerciseProfile } from '../store/AdminExercisesStore';
 import getApiBaseUrl from '../../../utils/apiUrl';
 import i18n from 'i18next';
+import { toast } from 'react-toastify';
 
 export default class AdminWorkoutsController extends BaseController {
     adminWorkoutsStore: AdminWorkoutsStore;
@@ -68,13 +68,13 @@ export default class AdminWorkoutsController extends BaseController {
 
             if (result.ok && result.workout.id) {
                 this.adminWorkoutsStore.setCurrentWorkout(result.workout);
-                alert(i18n.t('workoutData.workoutCreated'));
+                toast.success(i18n.t('workoutData.workoutCreated'));
                 navigate(`/admin/workouts/${result.workout.id}/edit`);
             } else {
-                console.error('No workout ID returned in response:', result);
+                toast.error('Тренировка не найдена:', result);
             }
         } catch (error) {
-            console.error('Failed to create workout:', error);
+            toast.error('Ошибка:', error);
         }
     }
 
@@ -98,10 +98,10 @@ export default class AdminWorkoutsController extends BaseController {
                     this.adminWorkoutsStore.updateOrAddDraftWorkoutExercise(res);
                 })
                 .catch(error => {
-                    console.error('Failed to edit workout exercise:', error);
+                    toast.error('Ошибка:', error);
                 });
         } catch (error) {
-            console.error('Error in editWorkoutExercise:', error);
+            toast.error('Ошибка:', error);
         }
     }
 
@@ -121,10 +121,10 @@ export default class AdminWorkoutsController extends BaseController {
                     this.adminWorkoutsStore.updateOrAddDraftWorkoutExercise(res);
                 })
                 .catch(error => {
-                    console.error('Failed to add workout exercise:', error);
+                    toast.error('Ошибка:', error);
                 });
         } catch (error) {
-            console.error('Error in addWorkoutExercise:', error);
+            toast.error('Ошибка:', error);
         }
     }
 }

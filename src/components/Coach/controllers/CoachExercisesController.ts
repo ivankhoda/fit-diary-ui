@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import { action } from 'mobx';
 import { BaseController } from '../../../controllers/BaseController';
 import  { ExerciseInterface } from '../../../store/exercisesStore';
@@ -10,6 +9,7 @@ import Post from '../../../utils/PostRequest';
 import { ExerciseFormData } from '../../Auth/LoginModal/LoginModal';
 import CoachExercisesStore from '../store/CoachExercisesStore';
 import CoachWorkoutsStore from '../store/CoachWorkoutsStore';
+import { toast } from 'react-toastify';
 
 export default class CoachExercisesController extends BaseController {
     // eslint-disable-next-line max-params
@@ -103,11 +103,11 @@ export default class CoachExercisesController extends BaseController {
                         resolve(res);
                     })
                     .catch(error => {
-                        console.error('Failed to add workout exercise:', error);
+                        toast.error('Не удалось добавить упражнение');
                         reject(error);
                     });
             } catch (error) {
-                console.error('Error in addWorkoutExercise:', error);
+                toast.error('Не удалось добавить упражнение');
                 reject(error);
             }
         });
@@ -128,11 +128,11 @@ export default class CoachExercisesController extends BaseController {
                 .then(res => {
                     this.coachExerciseStore.deleteWorkoutExercise(res.id);
                 })
-                .catch(error => {
-                    console.error('Failed to delete workout exercise:', error);
+                .catch(() => {
+                    toast.error('Не удалось удалить упражнение');
                 });
         } catch (error) {
-            console.error('Error in deleteWorkoutExercise:', error);
+            toast.error('Не удалось удалить упражнение');
         }
     }
 
@@ -148,11 +148,11 @@ export default class CoachExercisesController extends BaseController {
                     this.coachWorkoutsStore.updateOrAddDraftWorkoutExercise(res);
                     this.coachExerciseStore.updateWorkoutExercise(res);
                 })
-                .catch(error => {
-                    console.error('Failed to edit workout exercise:', error);
+                .catch(()=> {
+                    toast.error('Не удалось отредактировать упражнение');
                 });
         } catch (error) {
-            console.error('Error in editWorkoutExercise:', error);
+            toast.error('Не удалось отредактировать упражнение');
         }
     }
 }

@@ -1,7 +1,6 @@
 /* eslint-disable sort-keys */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
-/* eslint-disable no-alert */
 /* eslint-disable max-lines-per-function */
 import React, { useState, useEffect } from 'react';
 import { observer, inject } from 'mobx-react';
@@ -18,6 +17,7 @@ import AdminUsersStore, { AdminUserProfile } from '../../store/AdminUsersStore';
 import AdminWorkoutsStore from '../../store/AdminWorkoutsStore';
 import AdminUsersController from '../../controllers/AdminUsersController';
 import AdminSelectedExercise from './AdminSelectedExercise/AdminSelectedExercise';
+import { toast } from 'react-toastify';
 
 interface AdminCreateWorkoutProps {
   adminWorkoutsStore?: AdminWorkoutsStore;
@@ -85,7 +85,7 @@ const AdminCreateWorkout: React.FC<AdminCreateWorkoutProps> = ({
             }
             setExerciseSearchTerm('');
         } catch (error) {
-            console.error('Failed to add exercise to workout:', error);
+            toast.error('Failed to add exercise to workout:', error);
         }
     };
 
@@ -120,7 +120,7 @@ const AdminCreateWorkout: React.FC<AdminCreateWorkoutProps> = ({
         e.preventDefault();
 
         if (!workoutName) {
-            alert(i18n.t('workoutData.fillAllFields'));
+            toast.error(i18n.t('workoutData.fillAllFields'));
             return;
         }
 
@@ -134,7 +134,7 @@ const AdminCreateWorkout: React.FC<AdminCreateWorkoutProps> = ({
                 await adminWorkoutsController?.updateWorkout(workoutId, newWorkout);
             }
         } catch (error) {
-            console.error(error);
+            toast.error(error);
         }
     };
 

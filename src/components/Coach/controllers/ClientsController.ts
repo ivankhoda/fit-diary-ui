@@ -7,6 +7,7 @@ import getApiBaseUrl from '../../../utils/apiUrl';
 import Delete from '../../../utils/DeleteRequest';
 import Get from '../../../utils/GetRequest';
 import Post from '../../../utils/PostRequest';
+import { toast } from 'react-toastify';
 
 export default class ClientsController extends BaseController {
   clientsStore: ClientsStore;
@@ -27,8 +28,8 @@ export default class ClientsController extends BaseController {
                   this.clientsStore.setClients(res.clients);
               }
           })
-          .catch((error: unknown): void => {
-              console.error('Failed to fetch clients:', error);
+          .catch((): void => {
+              toast.error('Не удалось получить клиентов');
           });
   }
 
@@ -42,11 +43,11 @@ export default class ClientsController extends BaseController {
               if (res.ok && res.client) {
                   return res.client as ClientInterface;
               }
-              console.warn('Client not found');
+              toast.error(res.error || 'Не удалось найти клиента');
               return null;
           })
           .catch(error => {
-              console.error(`Failed to fetch client with id ${clientId}:`, error);
+              toast.error(error || 'Не удалось добавить клиента');
               return null;
           });
   }
@@ -62,12 +63,11 @@ export default class ClientsController extends BaseController {
               if (res.ok) {
                   this.clientsStore.addClient(res.client);
               } else {
-                  // eslint-disable-next-line no-alert
-                  alert(res.error || 'Не удалось добавить клиента');
+                  toast.error(res.error || 'Не удалось добавить клиента');
               }
           })
-          .catch((error: unknown): void => {
-              console.error('Failed to add client:', error);
+          .catch((): void => {
+              toast.error( 'Не удалось добавить клиента');
           });
   }
 
@@ -81,12 +81,11 @@ export default class ClientsController extends BaseController {
               if (res.ok) {
                   this.clientsStore.removeClient(clientId);
               } else {
-                  // eslint-disable-next-line no-alert
-                  alert(res.error || 'Не удалось удалить клиента');
+                  toast.error('Не удалось удалить клиента');
               }
           })
-          .catch(error => {
-              console.error('Failed to remove client:', error);
+          .catch(() => {
+              toast.error('Не удалось удалить клиента');
           });
   }
 }

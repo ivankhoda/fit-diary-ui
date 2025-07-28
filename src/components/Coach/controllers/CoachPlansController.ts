@@ -7,6 +7,7 @@ import Delete from '../../../utils/DeleteRequest';
 import Get from '../../../utils/GetRequest';
 import Patch from '../../../utils/PatchRequest';
 import Post from '../../../utils/PostRequest';
+import { toast } from 'react-toastify';
 
 export type PlanFormData = Omit<PlanInterface, 'id' | 'progress_percentage' | 'created_at' | 'updated_at'>;
 
@@ -58,8 +59,7 @@ export default class CoachPlansController extends BaseController {
             .then(res => {
                 if (res.ok) {
                     this.coachPlansStore.addPlan(res.res);
-                    // eslint-disable-next-line no-alert
-                    alert('План сохранен');
+                    toast.success('План сохранен');
                     navigate(`/plans/${res.res.id}`);
                 }
             })
@@ -78,8 +78,7 @@ export default class CoachPlansController extends BaseController {
             .then(res => {
                 if (res.ok) {
                     this.coachPlansStore.updatePlan(res.plan);
-                    // eslint-disable-next-line no-alert
-                    alert('План сохранен');
+                    toast.success('План сохранен');
                 }
             })
             .catch(error => {
