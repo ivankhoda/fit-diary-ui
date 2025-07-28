@@ -30,17 +30,31 @@ export const WeightInput: React.FC<WeightInputProps> = ({ onChange, exercise, on
             onChange(value, exercise);
         }
         setInputValue(value);
-        onBlur('weight',  value);
+        onBlur('weight', value);
     }, [onChange,
         exercise,
         onBlur]);
+
+    const handleAdd = useCallback((delta: number) => {
+        const numeric = parseFloat(String(inputValue || '0'));
+        const updated = Math.max(0, numeric + delta);
+        const updatedStr = updated.toFixed(2);
+
+        setInputValue(updatedStr);
+        onChange(updatedStr, exercise);
+    }, [inputValue,
+        onChange,
+        exercise]);
+
+    const handleMinus = useCallback(() => handleAdd(-1), [handleAdd]);
+    const handlePlus = useCallback(() => handleAdd(1), [handleAdd]);
 
     useEffect(() => {
         setInputValue(exercise.weight ? exercise.weight : '');
     }, [exercise.weight]);
 
     return (
-        <div>
+        <div className='weight-input'>
             <input
                 type='text'
                 value={inputValue}
@@ -50,6 +64,10 @@ export const WeightInput: React.FC<WeightInputProps> = ({ onChange, exercise, on
                 ref={inputRef}
                 onBlur={onBlur ? handleBlur : null}
             />
+            <div className='weight-input_controls'>
+                <button type="button" onClick={handlePlus}>+</button>
+                <button type="button" onClick={handleMinus}>-</button>
+            </div>
         </div>
     );
 };

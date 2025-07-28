@@ -1,3 +1,4 @@
+/* eslint-disable no-undefined */
 /* eslint-disable no-magic-numbers */
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { ExerciseInterface } from '../../store/exercisesStore';
@@ -11,7 +12,7 @@ interface TimeInputProps {
 }
 
 export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur }) => {
-    const [inputValue, setInputValue] = useState(exercise?.duration ? convertDurationToMMSS(exercise.duration): '');
+    const [inputValue, setInputValue] = useState(exercise?.duration ? convertDurationToMMSS(exercise.duration) : '');
     const inputRef = useRef<HTMLInputElement>(null);
 
     const calculateTotalSeconds = useCallback((digits: string) => {
@@ -49,6 +50,12 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
         return groups.join(':');
     };
 
+    const secondsToMMSS = (totalSeconds: number) => {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const digitsOnly = e.target.value.replace(/\D/gu, '');
         const formattedValue = formatTimeInput(digitsOnly);
@@ -67,12 +74,30 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
         onBlur?.('duration', calculateTotalSeconds(digitsOnly).toString());
     }, [calculateTotalSeconds, onBlur]);
 
+    const handleAddSeconds = useCallback((delta: number) => {
+        const digitsOnly = inputValue.replace(/\D/gu, '');
+        let currentSeconds = calculateTotalSeconds(digitsOnly);
+
+        currentSeconds = Math.max(0, currentSeconds + delta);
+
+        const formatted = secondsToMMSS(currentSeconds);
+        setInputValue(formatted);
+        onChange(currentSeconds.toString(), exercise);
+    }, [inputValue,
+        calculateTotalSeconds,
+        onChange,
+        exercise]);
+
+    const handleMinus5 = useCallback(() => handleAddSeconds(-5), [handleAddSeconds]);
+    const handlePlus5 = useCallback(() => handleAddSeconds(5), [handleAddSeconds]);
+
     useEffect(() => {
         setInputValue(exercise.duration ? convertDurationToMMSS(exercise.duration) : '');
-    }, []);
+    }, [exercise.duration]);
 
     return (
-        <div>
+        <div className='time-input'>
+
             <input
                 type='text'
                 value={inputValue}
@@ -80,8 +105,12 @@ export const TimeInput: React.FC<TimeInputProps> = ({ onChange, exercise, onBlur
                 maxLength={5}
                 placeholder='мм:сс'
                 ref={inputRef}
-                onBlur={onBlur ? handleBlur : null}
+                onBlur={onBlur ? handleBlur : undefined}
             />
+            <div className='time-input_controls'>
+                <button type="button" onClick={handlePlus5}>+</button>
+                <button type="button" onClick={handleMinus5}>-</button>
+            </div>
         </div>
     );
 };

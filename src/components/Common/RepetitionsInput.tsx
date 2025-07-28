@@ -31,12 +31,26 @@ export const RepetitionsInput: React.FC<RepetitionsInputProps> = ({ onChange, ex
         exercise,
         onBlur]);
 
+    const handleAdd = useCallback((delta: number) => {
+        const numeric = parseInt(String(inputValue || '0'), 10);
+        const updated = Math.max(0, numeric + delta);
+        const updatedStr = updated.toString();
+
+        setInputValue(updatedStr);
+        onChange(updatedStr, exercise);
+    }, [inputValue,
+        onChange,
+        exercise]);
+
+    const handleMinus = useCallback(() => handleAdd(-1), [handleAdd]);
+    const handlePlus = useCallback(() => handleAdd(1), [handleAdd]);
+
     useEffect(() => {
         setInputValue(exercise.repetitions?.toString() || '');
     }, [exercise.repetitions]);
 
     return (
-        <div>
+        <div className='repetitions-input'>
             <input
                 type='text'
                 value={inputValue}
@@ -47,6 +61,10 @@ export const RepetitionsInput: React.FC<RepetitionsInputProps> = ({ onChange, ex
                 ref={inputRef}
                 onBlur={onBlur ? handleBlur : null}
             />
+            <div className='repetitions-input_controls'>
+                <button type="button" onClick={handlePlus}>+</button>
+                <button type="button" onClick={handleMinus}>-</button>
+            </div>
         </div>
     );
 };

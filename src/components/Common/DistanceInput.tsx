@@ -31,12 +31,27 @@ export const TimeInput: React.FC<DistanceInputProps> = ({ onChange, exercise, on
         }
     }, [onChange, exercise]);
 
+    const handleAdd = useCallback((delta: number) => {
+        const numeric = parseFloat(inputValue || '0');
+        const updated = Math.max(0, numeric + delta);
+        const updatedStr = updated.toString();
+
+        setInputValue(updatedStr);
+        onChange(updatedStr, exercise);
+    }, [inputValue,
+        onChange,
+        exercise]);
+
+    const handleMinus = useCallback(() => handleAdd(-50), [handleAdd]);
+    const handlePlus = useCallback(() => handleAdd(+50), [handleAdd]);
+
     useEffect(() => {
         setInputValue(exercise.distance || '');
     }, [exercise.distance]);
 
     return (
-        <div>
+        <div className='distance-input'>
+
             <input
                 type='text'
                 value={inputValue}
@@ -46,6 +61,10 @@ export const TimeInput: React.FC<DistanceInputProps> = ({ onChange, exercise, on
                 ref={inputRef}
                 onBlur={onBlur ? handleBlur : null}
             />
+            <div className='distance-input_controls'>
+                <button type="button" onClick={handlePlus}>+</button>
+                <button type="button" onClick={handleMinus}>-</button>
+            </div>
         </div>
     );
 };

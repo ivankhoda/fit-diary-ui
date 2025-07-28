@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { t } from 'i18next';
 import { useNavigate, useParams } from 'react-router';
 import WorkoutController from '../../../../controllers/WorkoutsController';
+import { convertDurationToMMSS } from '../../../Admin/utils/convertDurationToMMSS';
 
 export interface WorkoutSummaryProps {
     workoutsStore?: {
@@ -90,7 +91,8 @@ const WorkoutSummary: React.FC<WorkoutSummaryProps> = ({ workoutsStore, workouts
                         <p className="exercise-name"><strong>{exercise.name}</strong></p>
                         {Object.entries(exercise.progress_data).map(([key, value]) => (
                             <p key={key} className="exercise-detail">
-                                {t(`workoutData.${key}`)}: {value}
+                                {t(`workoutData.${key}`)}:{' '}
+                                {key === 'duration' ? convertDurationToMMSS(Number(value)) : value}
                             </p>
                         ))}
                     </div>

@@ -22,6 +22,8 @@ export const ActivePlanWidget = observer((): React.JSX.Element | null => {
     useEffect(() => {
         if (userProfile?.active_plan?.plan_id && !plansStore.currentPlan) {
             plansController.getPlanDetails(userProfile.active_plan.plan_id);
+            // eslint-disable-next-line no-warning-comments
+            // TODO :тут возникает адовая перегрузка из-за этого, подумать, нужно ли мне правда все планы брать
             plansController.getPlans();
         }
     }, [userProfile?.active_plan?.plan_id, plansStore.currentPlan]);
