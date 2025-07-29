@@ -1,14 +1,19 @@
-// components/InfoTabs/InfoTabs.style.scss
-
 .info-tabs {
   display: flex;
-padding-bottom: 40px;
+  padding-bottom: 40px;
 
   &__sidebar {
     min-width: 200px;
+    width: 200px;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      min-width: auto;
+    }
   }
 
   &__content {

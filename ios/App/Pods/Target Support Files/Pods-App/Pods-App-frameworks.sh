@@ -176,6 +176,8 @@ code_sign_if_enabled() {
 }
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/BigInt/BigInt.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Capacitor/Capacitor.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorClipboard/CapacitorClipboard.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorCommunityKeepAwake/CapacitorCommunityKeepAwake.framework"
@@ -185,8 +187,13 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorLocalNotifications/CapacitorLocalNotifications.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorNetwork/CapacitorNetwork.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorSplashScreen/CapacitorSplashScreen.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/CapgoCapacitorUpdater/CapgoCapacitorUpdater.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/Version/Version.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/BigInt/BigInt.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Capacitor/Capacitor.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorClipboard/CapacitorClipboard.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorCommunityKeepAwake/CapacitorCommunityKeepAwake.framework"
@@ -196,6 +203,9 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorLocalNotifications/CapacitorLocalNotifications.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorNetwork/CapacitorNetwork.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CapacitorSplashScreen/CapacitorSplashScreen.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/CapgoCapacitorUpdater/CapgoCapacitorUpdater.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/Version/Version.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

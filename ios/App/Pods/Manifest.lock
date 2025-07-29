@@ -1,4 +1,6 @@
 PODS:
+  - Alamofire (5.10.2)
+  - BigInt (5.2.0)
   - Capacitor (7.4.1):
     - CapacitorCordova
   - CapacitorClipboard (7.0.1):
@@ -16,6 +18,14 @@ PODS:
     - Capacitor
   - CapacitorSplashScreen (7.0.1):
     - Capacitor
+  - CapgoCapacitorUpdater (7.8.7):
+    - Alamofire (= 5.10.2)
+    - BigInt (= 5.2.0)
+    - Capacitor
+    - SSZipArchive (= 2.4.3)
+    - Version (= 0.8.0)
+  - SSZipArchive (2.4.3)
+  - Version (0.8.0)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -27,6 +37,14 @@ DEPENDENCIES:
   - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
   - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
+  - "CapgoCapacitorUpdater (from `../../node_modules/@capgo/capacitor-updater`)"
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - BigInt
+    - SSZipArchive
+    - Version
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -47,8 +65,12 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/network"
   CapacitorSplashScreen:
     :path: "../../node_modules/@capacitor/splash-screen"
+  CapgoCapacitorUpdater:
+    :path: "../../node_modules/@capgo/capacitor-updater"
 
 SPEC CHECKSUMS:
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
+  BigInt: f668a80089607f521586bbe29513d708491ef2f7
   Capacitor: 4738747ece274c45e4d9bec9ae394a6269169e64
   CapacitorClipboard: b98aead5dc7ec595547fc2c5d75bacd2ae3338bc
   CapacitorCommunityKeepAwake: 36e0cfbc6ae293d93f828724e6d5388a5f02ed5a
@@ -58,7 +80,10 @@ SPEC CHECKSUMS:
   CapacitorLocalNotifications: 4ea60b9347eac60b37cb4daaf62d12060bb00972
   CapacitorNetwork: 07ec4c69c1bb696f41c23e00d31bda1bbb221bba
   CapacitorSplashScreen: 19cd3573e57507e02d6f34597a8c421e00931487
+  CapgoCapacitorUpdater: 155a5050e1ad315e96ed6bf1b003f266bda3b1e6
+  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
+  Version: de5907f2c5d0f3cf21708db7801d1d5401139486
 
-PODFILE CHECKSUM: 2c4a04727ebe13906a2f43420f32ec037743d14b
+PODFILE CHECKSUM: 1f16a86a11d9b248efbcdc81ccd15cfa81bfb5ad
 
 COCOAPODS: 1.16.2

@@ -23,6 +23,7 @@
 		"KeyboardPlugin",
 		"LocalNotificationsPlugin",
 		"CAPNetworkPlugin",
-		"SplashScreenPlugin"
+		"SplashScreenPlugin",
+		"CapacitorUpdaterPlugin"
 	]
 }
