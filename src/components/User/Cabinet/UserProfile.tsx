@@ -1,9 +1,14 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable no-magic-numbers */
+/* eslint-disable max-statements */
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect, useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 import { Clipboard } from '@capacitor/clipboard';
+import { useNavigate } from 'react-router-dom';
 
 import UserStore from '../../../store/userStore';
 import UserController from '../../../controllers/UserController';
@@ -17,6 +22,7 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const user = userStore?.userProfile;
 
     const [firstName, setFirstName] = useState(user?.first_name || '');
@@ -27,23 +33,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [copied, setCopied] = useState(false);
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
     useEffect(() => {
         if (!user) {
             userController?.getUser();
         }
     }, [user, userController]);
-
-    const handleCopyCode = useCallback(async() => {
-        if (!linkCode) {return;}
-
-        await Clipboard.write({ string: linkCode });
-        // Await Haptics.impact({ ImpactStyle.Light: 'light' });
-        setCopied(true);
-
-        // eslint-disable-next-line no-magic-numbers
-        setTimeout(() => setCopied(false), 1500);
-    }, [linkCode]);
 
     useEffect(() => {
         if (user) {
@@ -53,6 +49,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
             setPhoneNumber(user.phone_number || '');
         }
     }, [user]);
+
+    const handleCopyCode = useCallback(async() => {
+        if (!linkCode) {return;}
+
+        await Clipboard.write({ string: linkCode });
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    }, [linkCode]);
 
     const handleSubmit = useCallback(async() => {
         await triggerImpact();
@@ -84,14 +88,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
             setError(t('Ошибка при обновлении профиля'));
             setSuccess('');
         }
-    }, [
-        firstName,
+    }, [firstName,
         lastName,
         telegramUsername,
         phoneNumber,
         userController,
-        t,
-    ]);
+        t]);
 
     const handleGenerateCode = useCallback(async() => {
         try {
@@ -107,6 +109,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
             setError(t('Ошибка при генерации кода'));
         }
     }, [userController, t]);
+
+    const handleDeleteUser = useCallback(async() => {
+        await userController?.deleteUser();
+    }, [userController,
+        userStore,
+        navigate,
+        t]);
 
     return (
         <>
@@ -186,9 +195,34 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
                         </p>
                     )}
                 </div>
+
+                <div className="form-group">
+                    <button
+                        type="button"
+                        className="danger"
+                        onClick={() => setShowConfirmDelete(true)}
+                    >
+                        {t('Удалить профиль')}
+                    </button>
+                </div>
             </div>
+
+            {showConfirmDelete && (
+                <div className="confirm-modal">
+                    <div className="confirm-content">
+                        <p>{t('Вы уверены, что хотите удалить профиль?')}</p>
+                        <div className="modal-actions">
+                            <button onClick={handleDeleteUser}>{t('Да, удалить')}</button>
+                            <button onClick={() => setShowConfirmDelete(false)}>
+                                {t('Отмена')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
 
 export default inject('userStore', 'userController')(observer(UserProfile));
+

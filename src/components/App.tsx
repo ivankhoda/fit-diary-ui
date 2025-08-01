@@ -56,7 +56,7 @@ export const App = observer((): JSX.Element => {
       <Routes>
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />
-        <Route path="/deletion" element={<AccountDeletion />} />
+        <Route path="/about-deletion" element={<AccountDeletion />} />
         <Route path="/landing" element={<LandingPage onRegisterClick={handleClick}/>}/>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
         <Route path="/password/recovery" element={<PasswordRecovery />} />

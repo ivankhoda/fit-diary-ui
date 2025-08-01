@@ -69,7 +69,7 @@ export const routes = [
     {Component:  <UserProfile />, name: 'profile', path: '/profile'},
     {Component:  <PrivacyPolicy/>, name: 'privacy-policy', path: '/privacy-policy'},
     {Component:  <TermsOfUse/>, name: 'terms', path: '/terms-of-use'},
-    {Component:  <AccountDeletion/>, name: 'deletion', path: '/deletion'},
+    {Component:  <AccountDeletion/>, name: 'deletion', path: '/about-deletion'},
     {Component:  <AboutApp/>, name: 'about', path: '/about'},
 
 ];

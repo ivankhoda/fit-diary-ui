@@ -9,6 +9,7 @@ import Post from '../utils/PostRequest';
 import { BaseController } from './BaseController';
 import Delete from '../utils/DeleteRequest';
 import getApiBaseUrl from '../utils/apiUrl';
+import { toast } from 'react-toastify';
 
 export default class UserController extends BaseController {
     userStore: UserStore;
@@ -53,6 +54,27 @@ export default class UserController extends BaseController {
         }
     }
 
+    @action
+    async deleteUser(): Promise<void> {
+        try {
+            const response = await new Delete({
+                url: `${getApiBaseUrl()}/users/destroy`,
+            }).execute();
+
+            const result = await response.json();
+
+            if (result.ok) {
+                toast.success('Вы успешно деактивировали профиль');
+                this.userStore.setUserProfile(null);
+                localStorage.removeItem('token');
+
+                window.location.reload();
+            }
+        } catch (error) {
+            toast.error('Произошла ошибка, попробуйте позже, либо напишите нам.');
+        }
+    }
+
     async generateCoachLinkCode(): Promise<{ ok: boolean; code?: string; errors?: string[] }> {
         try {
             const response = await new Post({url: `${getApiBaseUrl()}/users/generate_link_code`}).execute();
@@ -61,7 +83,6 @@ export default class UserController extends BaseController {
 
             return result;
         } catch (error) {
-            console.error('Ошибка генерации кода:', error);
             return { ok: false, errors: ['Network error'] };
         }
     }
