@@ -2,13 +2,17 @@
 /* eslint-disable sort-keys */
 import React from 'react';
 import { t } from 'i18next';
+import { convertDurationToMMSS } from '../../../../../Admin/utils/convertDurationToMMSS';
 
 interface PersonalBestsProps {
   personalBests: Record<string, any>;
   typeOfMeasurement: string;
 }
 
-export const PersonalBests: React.FC<PersonalBestsProps> = ({ personalBests, typeOfMeasurement }) => {
+export const PersonalBests: React.FC<PersonalBestsProps> = ({
+    personalBests,
+    typeOfMeasurement,
+}) => {
     const getTranslationKeys = (): Record<string, string> => {
         switch (typeOfMeasurement) {
         case 'weight_and_reps':
@@ -51,30 +55,28 @@ export const PersonalBests: React.FC<PersonalBestsProps> = ({ personalBests, typ
 
     const translationKeys = getTranslationKeys();
 
-    const parseUTCStringToLocale = (dateStr:string) => {
+    const parseUTCStringToLocale = (dateStr: string) => {
         const isoString = dateStr.replace(' ', 'T').replace(' UTC', 'Z');
-
         const date = new Date(isoString);
-
-        if (isNaN(date.getTime())) {
-            return 'Invalid Date';
-        }
-
-        return date.toLocaleString('en-GB', { hour12: false });
+        return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString('en-GB', { hour12: false });
     };
 
-    const formatLocalDate = (utcDate: string) => {
-        const date = parseUTCStringToLocale(utcDate);
-        return date;
-    };
+    const formatLocalDate = (utcDate: string) => parseUTCStringToLocale(utcDate);
 
     return (
         <div className="personal-bests">
             {Object.entries(personalBests).map(([key, value]) => {
-                const displayValue = value.value;
+                const displayValue =
+          // eslint-disable-next-line no-nested-ternary
+          key === 'date'
+              ? formatLocalDate(value.value)
+              : key === 'duration'
+                  ? convertDurationToMMSS(Number(value.value))
+                  : value.value;
+
                 return (
                     <div key={key}>
-                        <span>{translationKeys[key]}</span>: {key === 'date' ? formatLocalDate(displayValue) : displayValue}
+                        <span>{translationKeys[key]}</span>: {displayValue}
                     </div>
                 );
             })}
