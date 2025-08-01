@@ -26,6 +26,7 @@ import PrivacyPolicy from "./privacy/PrivacyPolicy";
 import TermsOfUse from "./terms/TermsOfUse";
 import { ToastContainer } from "react-toastify";
 import Modal from 'react-modal';
+import AccountDeletion from "../deletion/AccountDeletion";
 
 Modal.setAppElement('#root');
 
@@ -55,7 +56,8 @@ export const App = observer((): JSX.Element => {
       <Routes>
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />
-       <Route path="/landing" element={<LandingPage onRegisterClick={handleClick}/>}/>
+        <Route path="/deletion" element={<AccountDeletion />} />
+        <Route path="/landing" element={<LandingPage onRegisterClick={handleClick}/>}/>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
         <Route path="/password/recovery" element={<PasswordRecovery />} />
         <Route

@@ -24,6 +24,7 @@ import UserProfile from '../components/User/Cabinet/UserProfile';
 import TermsOfUse from '../terms/TermsOfUse';
 import PrivacyPolicy from '../privacy/PrivacyPolicy';
 import AboutApp from '../components/User/About/AboutApp';
+import AccountDeletion from '../deletion/AccountDeletion';
 
 // eslint-disable-next-line func-style
 function useQuery() {
@@ -68,6 +69,7 @@ export const routes = [
     {Component:  <UserProfile />, name: 'profile', path: '/profile'},
     {Component:  <PrivacyPolicy/>, name: 'privacy-policy', path: '/privacy-policy'},
     {Component:  <TermsOfUse/>, name: 'terms', path: '/terms-of-use'},
+    {Component:  <AccountDeletion/>, name: 'terms', path: '/deletion'},
     {Component:  <AboutApp/>, name: 'about', path: '/about'},
 
 ];
