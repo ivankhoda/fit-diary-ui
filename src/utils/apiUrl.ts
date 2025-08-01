@@ -1,13 +1,9 @@
 import { Capacitor } from '@capacitor/core';
 
 const getApiBaseUrl = (): string => {
-    console.log('[API] location.protocol:', window.location.protocol);
-    console.log('[API] isNativePlatform:', Capacitor.isNativePlatform());
-
     const baseUrl = `${window.location.protocol}//${window.location.hostname}`;
 
     if (window.location.protocol === 'capacitor:' || Capacitor.isNativePlatform()) {
-        console.log('[API] Using production API base URL');
         return 'https://planka.tech/api';
     }
 
