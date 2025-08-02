@@ -50,7 +50,6 @@
   justify-content: space-between;
   gap: 16px;
   width: 100%;
-  min-width: 300px;
 
   &._mode {
     flex-direction: column; /* Switch to vertical layout in _mode */
@@ -72,9 +71,9 @@
 
 .comment-block {
   display: flex;
-  align-items: center;  /* выравниваем кнопку и поле по центру */
+  align-items: center;
   gap: 10px;
-  min-height: 50px;  /* резервируем место, чтобы верстка не прыгала */
+  min-height: 50px;
 }
 
 .comment-button {
