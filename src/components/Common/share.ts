@@ -4,12 +4,13 @@
 /* eslint-disable no-eq-null */
 /* eslint-disable complexity */
 /* eslint-disable max-statements */
-import { secondsToMMSS } from './../../utils/secondsToMMSS';
+
 /* eslint-disable no-case-declarations */
 /* eslint-disable sort-keys */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Share } from '@capacitor/share';
 import { toast } from 'react-toastify';
+import { secondsToMMSS } from './../../utils/secondsToMMSS';
 
 export type ShareType = 'workout' | 'plan' | 'result';
 
