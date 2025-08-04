@@ -320,7 +320,8 @@
     "duration": "Duration",
     "comment": "Comment",
     "add_exercise": "Do extra exercise",
-    "copy": "Copy"
+    "copy": "Copy",
+    "share": "Share"
   },
   "workout_day": {
     "by_date": "By Date",

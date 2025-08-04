@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+/* eslint-disable max-statements */
 /* eslint-disable complexity */
 /* eslint-disable react/jsx-no-bind */
 import { inject } from 'mobx-react';
@@ -10,6 +12,7 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
 import { triggerImpact } from '../../../../utils/haptics';
+import { ShareType, shareUniversal } from '../../../Common/share';
 
 interface Props {
     workout?: WorkoutInterface;
@@ -65,12 +68,48 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
         workoutsController.copyWorkout(workout.id, navigate);
     }, [workout.id]);
 
+    // eslint-disable-next-line consistent-return
+
+    const defineState = (): ShareType => {
+        if (state === 'completed') {return 'result';}
+        if (!state) {return 'workout';}
+        throw new Error(`Неизвестный state: ${state}`);
+    };
+
+    const handleShare = useCallback(() => {
+        const type = defineState();
+
+        const data =
+    type === 'result'
+        ? {
+            id: workout.id,
+            name: workout.name,
+            duration: workout.duration,
+            comment: workout.comment,
+            user_exercises: workout.user_exercises,
+        }
+        : {
+            id: workout.id,
+            name: workout.name,
+            description: workout.description,
+            workout_exercises: workout.workout_exercises,
+        };
+
+        shareUniversal({
+            type,
+            data,
+        });
+    }, [workout]);
+
     return (
         <div className={`workout-container ${workout.assigned_to_user ? 'assigned-workout' : ''}`}>
 
             <p>{workout.name}  {workout.created_at?.split(' ')[0] || workout.date}</p>
             {state === 'completed' && <p>{t('workout.duration')}: {workout.duration}</p>}
             {state === 'completed' && workout.comment && <p>{t('workout.comment')}: {workout.comment}</p>}
+            {state === 'completed' && <button className="save-btn" onClick={handleShare}>
+                {t('workout.share')}
+            </button>}
             {!state && !workout.deleted && (
                 <div className='workout-actions'>
                     <button className="save-btn" onClick={handleStartClick}>
@@ -86,6 +125,10 @@ const Workout: React.FC<Props> = ({ workout, state = '' }) => {
                             </button>
                             <button className="save-btn" onClick={handleCopyWorkout}>
                                 {t('workout.copy')}
+                            </button>
+
+                            <button className="save-btn" onClick={handleShare}>
+                                {t('workout.share')}
                             </button>
                         </>
                     )}
