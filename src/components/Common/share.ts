@@ -189,22 +189,28 @@ export const shareUniversal = async(share: ShareData): Promise<void> => {
         dialogTitle: title,
     };
 
-    try {
-        await Share.share(sharePayload);
-    } catch (err) {
-        if (navigator?.clipboard) {
-            const textToCopy = `${text}${url ? `\n${url}` : ''}`;
+    const fullText = `${text}${url ? `\n${url}` : ''}`;
 
-            try {
-                await navigator.clipboard.writeText(textToCopy);
-                toast.success('Текст успешно скопирован в буфер обмена!');
-            } catch (copyError) {
-                toast.error('Не удалось скопировать текст \uD83D\uDE1E');
-                console.error('Ошибка копирования в буфер:', copyError);
-            }
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+
+    try {
+        if (isPWA) {
+            // В PWA — часто ломается text, делаем fallback
+            await navigator.clipboard.writeText(fullText);
+            toast.success('Скопировано в буфер обмена!');
         } else {
-            toast.error('Не удалось поделиться и скопировать \uD83D\uDE1E');
-            console.error('Ошибка шаринга:', err);
+            // В браузере — пробуем обычный Share API
+            await Share.share(sharePayload);
+        }
+    } catch (err) {
+        console.warn('Ошибка Share API. Пробуем fallback.', err);
+
+        try {
+            await navigator.clipboard.writeText(fullText);
+            toast.success('Скопировано в буфер обмена!');
+        } catch (copyError) {
+            toast.error('Не удалось поделиться или скопировать 😞');
+            console.error('Ошибка копирования:', copyError);
         }
     }
 };
