@@ -102,9 +102,12 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             return;
         }
 
-        setSelectedExercises(prevExercises =>
-            prevExercises.map(exercise =>
-                exercise.id === id ? { ...exercise, [field]: value } : exercise));
+        if(field === 'duration') {
+            selectedExercises.find(exercise => exercise.id === id).formatted_duration = value;
+        } else {
+            setSelectedExercises(prevExercises =>
+                prevExercises.map(exercise => exercise.id === id ? { ...exercise, [field]: value } : exercise));
+        }
     };
 
     const handleEditWorkoutExercise = (editedExercise: ExerciseInterface) => {
