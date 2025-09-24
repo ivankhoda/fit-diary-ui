@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import './PublicExercises.style.scss';
 import { inject, observer } from 'mobx-react';
 import ExercisesController from '../../../controllers/ExercisesController';
@@ -41,13 +41,14 @@ const CommonExercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercis
     const [sortBy] = useState<'name' | 'duration' | 'category' | null>(null);
     const [activeTab, setActiveTab] = useState<'base' >('base');
 
+    const fetchedRef = useRef(false);
+
     useEffect(() => {
-        if (exercisesController && exercisesStore && !exercisesStore.generalExercises?.length) {
+        if (exercisesController && exercisesStore && !fetchedRef.current) {
+            fetchedRef.current = true;
             exercisesController.getExercises();
         }
-    }, [exercisesController,
-        exercisesStore,
-        exercisesStore.generalExercises]);
+    }, [exercisesController, exercisesStore]);
 
     const filteredList = useMemo(() => {
         let exercises = toJS(exercisesStore?.generalExercises);
@@ -118,10 +119,6 @@ const CommonExercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercis
         setCurrentPage(1);
     };
 
-    const handleDeleteExercise = useCallback((id: number) => {
-        exercisesController.deleteExercise(id);
-    }, []);
-
     return (
         <div className="common-exercises">
             <BackButton/>
@@ -162,7 +159,6 @@ const CommonExercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercis
                             <ExerciseItem
                                 key={exercise.id}
                                 exercise={exercise}
-                                deleteExercise={() => handleDeleteExercise(exercise.id)}
 
                             />
                         ))

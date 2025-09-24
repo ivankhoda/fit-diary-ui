@@ -8,7 +8,7 @@ const getApiBaseUrl = (): string => {
     }
 
     const url = process.env.NODE_ENV === 'production' ? `${baseUrl}/api` : `${baseUrl}:3000`;
-    console.log('[API] Using dev API base URL:', url);
+
     return url;
 };
 
