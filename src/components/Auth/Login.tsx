@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
 import { DecodedToken } from './useToken';
 import getApiBaseUrl from '../../utils/apiUrl';
+import BackButton from '../Common/BackButton/BackButton';
 
 type FormProps = {
     setToken: (token: string | null) => void;
@@ -103,11 +104,19 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
         setMessage(null);
     }, []);
 
+
+
+
+    const toggleForm = () => {
+        navigate('/registration')
+      };
+
     return (
         <div className="login-form">
             <p className="form-title">
                 {isRecoveryMode ? t('password_recovery') : t('login_first')}
             </p>
+            <BackButton/>
             {message && <div className="form-message success">{message}</div>}
             {error && <div className="form-message error">{error}</div>}
 
@@ -175,6 +184,9 @@ export const Login: React.FC<FormProps> = ({ setToken, isAdmin }) => {
                             {t('forgot_password')}
                         </button>
                     </div>
+                     <button className="toggle-button" onClick={toggleForm}>
+                                {t("auth.no_account")}
+                    </button>
                 </form>
             )}
         </div>

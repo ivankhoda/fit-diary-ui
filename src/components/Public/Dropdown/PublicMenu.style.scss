@@ -1,0 +1,151 @@
+/* PublicMenu.style.scss — MOBILE-FIRST, no-overflow, accessible */
+
+/* box-sizing чтобы padding/border не ломали ширины */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* контейнер — mobile first: 1 колонка, full width */
+.public-menu {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: single column */
+  gap: 12px;
+  align-items: stretch;
+  overflow-x: hidden; /* защита от горизонтального скролла */
+}
+
+/* элемент меню — button (touch-friendly) */
+.public-menu__item {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: #ffffff;
+  color: #111827;
+  padding: 12px 14px;
+  border-radius: 12px;
+  min-height: 56px; /* комфортная тап-зона */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start; /* читается лучше на мобильных */
+  width: 100%;
+  text-align: left;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* иконка слева — фиксированный размер, не ломает layout */
+.public-menu__icon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+/* заголовок — занимает оставшееся пространство */
+.public-menu__title {
+  flex: 1 1 auto;
+  display: block;
+}
+
+/* hover/focus: лёгкое поднятие и тень (не вызывает горизонтального скролла) */
+.public-menu__item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  background: #fafafa;
+}
+
+/* Фокус для клавиатуры — доступно и заметно */
+.public-menu__item:focus-visible {
+  outline: 3px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+/* SVG/img внутри кнопки — не выходят за пределы */
+.public-menu__item img,
+.public-menu__item svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ————— Tablet (2 колонки) ————— */
+@media (min-width: 600px) {
+  .public-menu {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .public-menu__item {
+    padding: 14px 16px;
+    min-height: 72px;
+    font-size: 17px;
+  }
+
+  .public-menu__icon {
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+}
+
+/* ————— Desktop (3 колонки) ————— */
+@media (min-width: 900px) {
+  .public-menu {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1100px; /* ограничение ширины, не превышающее viewport */
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .public-menu__item {
+    padding: 18px 20px;
+    min-height: 88px;
+    font-size: 18px;
+  }
+
+  .public-menu__icon {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+}
+
+/* ————— Большой экран: плавно увеличим карточки ————— */
+@media (min-width: 1200px) {
+  .public-menu {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .public-menu__item {
+    min-height: 100px;
+    padding: 22px;
+    font-size: 18px;
+  }
+
+  .public-menu__icon {
+    width: 64px;
+    height: 64px;
+    font-size: 26px;
+  }
+}

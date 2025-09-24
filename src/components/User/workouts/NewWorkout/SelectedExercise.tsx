@@ -61,7 +61,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleDurationChange = useCallback((d: string) => {
         handleExerciseDetailChange(id, 'duration', d);
-    }, []);
+    }, [exercise]);
 
     const handleDistanceChange = useCallback((d: string) => {
         handleExerciseDetailChange(id, 'distance', d);

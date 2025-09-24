@@ -2,12 +2,13 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, } from 'react-router-dom';
 
 import './Exercise.style.scss';
 import ExercisesController from '../../../../controllers/ExercisesController';
 import ExercisesStore from '../../../../store/exercisesStore';
 import { useTranslation } from 'react-i18next';
+import BackButton from '../../../Common/BackButton/BackButton';
 
 interface ExerciseDetailProps {
     exercisesStore?: ExercisesStore;
@@ -17,7 +18,6 @@ interface ExerciseDetailProps {
 const Exercise: React.FC<ExerciseDetailProps> = ({ exercisesStore, exercisesController }) => {
     const { t } = useTranslation();
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (exercisesController && exercisesStore) {
@@ -29,17 +29,12 @@ const Exercise: React.FC<ExerciseDetailProps> = ({ exercisesStore, exercisesCont
 
     const exercise = exercisesStore?.generalExercise;
 
-    const handleBack = () => {
-        // eslint-disable-next-line no-magic-numbers
-        navigate(-1);
-    };
-
     if (!exercise) {
         return <div>{t('exercise.loading')}</div>;
     }
     return (
         <div className="exercise-detail-container">
-            <button onClick={handleBack}>{t('exercise.back')}</button>
+            <BackButton/>
             <h2>{exercise.name}</h2>
             <div className="exercise-info">
                 {exercise.category && <p><strong>{t('exercise.category')}:</strong> {t(`exercise.categories.${exercise.category}`)}</p>}

@@ -2,6 +2,8 @@ import React, { ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Registration.style.scss';
 import getApiBaseUrl from '../../utils/apiUrl';
+import { useNavigate } from 'react-router';
+import BackButton from '../Common/BackButton/BackButton';
 
 type Form = {
     setToken: (token: string | null) => void;
@@ -13,6 +15,7 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState<string[]>([]);
+    const navigate = useNavigate();
 
     const MIN_PASSWORD_LENGTH = 8;
 
@@ -83,10 +86,15 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
         setConfirmPassword(event.target.value);
     }, []);
 
+    const toggleForm = useCallback(() => {
+        navigate('/login');
+    }, []);
+
     return (
         <>
             <div className="register-form">
                 <p className="form-title">{t('register')}</p>
+                <BackButton/>
                 <form id="register" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="email" className="form-label">
@@ -138,6 +146,9 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
                         </div>
                     )}
                 </form>
+                <button className="toggle-button" onClick={toggleForm}>
+                    {t('auth.have_account')}
+                </button>
             </div>
             <p className="auth__legal">
                 Регистрируясь, вы принимаете{' '}

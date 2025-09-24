@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import { Route, Routes, BrowserRouter as Router, useNavigate } from "react-router-dom";
 import "./App.style.scss";
 import { Header } from "./User/Header/Header";
 import { observer, Provider } from "mobx-react";
@@ -17,7 +17,7 @@ import { adminRoutes } from "./Admin/routes/routes";
 import adminStores from "./Admin/store/stores";
 import adminControllers from "./Admin/controllers/controllers";
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
+import { t, use } from "i18next";
 import Footer from "./User/Footer/Footer";
 import { CoachModeProvider, useCoachMode } from "./Coach/CoachContext";
 import { CoachPanel } from "./Coach/CoachPanel";
@@ -27,6 +27,10 @@ import TermsOfUse from "./terms/TermsOfUse";
 import { ToastContainer } from "react-toastify";
 import Modal from 'react-modal';
 import AccountDeletion from "../deletion/AccountDeletion";
+import { DescriptionScreen } from "./Public/DescriprtionScreen/DescriprionScreen";
+import Exercise from "./User/Exercises/Exercise/Exercise";
+import CommonExercises from "./Public/PublicExercises/PublicExercises";
+import AboutApp from "./Public/About/AboutApp";
 
 Modal.setAppElement('#root');
 
@@ -48,8 +52,6 @@ export const App = observer((): JSX.Element => {
         setIsLogin(false);
   }
 
-
-
   return (
      <CoachModeProvider>
     <Router>
@@ -60,6 +62,11 @@ export const App = observer((): JSX.Element => {
         <Route path="/landing" element={<LandingPage onRegisterClick={handleClick}/>}/>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
         <Route path="/password/recovery" element={<PasswordRecovery />} />
+        <Route path="/common-exercises" element={<CommonExercises />} />
+         <Route path="/about" element={<AboutApp />} />
+        <Route path='/exercises/:id' element={<Exercise />} />
+        <Route path='/login' element={<Login setToken={setToken} isAdmin={isAdmin} />}/>
+        <Route path='/registration' element={<Registration setToken={setToken} />}/>
         <Route
           path="/users/confirmation/*"
           element={<ConfirmRegistrationWithToken />}
@@ -74,11 +81,10 @@ export const App = observer((): JSX.Element => {
             path="/*"
             element={
               isDescriptionVisible ? (
-                <DescriptionScreen proceedToAuth={proceedToAuth} />
+                <DescriptionScreen />
               ) : (
                 <AuthRoutes
                   isLogin={isLogin}
-                  setIsLogin={toggleForm}
                   setToken={setToken}
                   isAdmin={isAdmin}
                 />
@@ -91,32 +97,6 @@ export const App = observer((): JSX.Element => {
     </CoachModeProvider>
   );
 });
-
-const DescriptionScreen = ({
-  proceedToAuth,
-}: {
-  proceedToAuth: () => void;
-}) => {
-  const { t } = useTranslation();
-  const textWithLineBreaks = t("desc.text")
-    .split("\n")
-    .map((item, index) => (
-      <React.Fragment key={index}>
-        {item}
-        <br />
-      </React.Fragment>
-    ));
-  return (
-    <div className="description-container">
-      <h1>{t("desc.title")}</h1>
-      <div>{textWithLineBreaks}</div>
-      <button className="proceed-button" onClick={proceedToAuth}>
-        {t("desc.login")}
-      </button>
-    </div>
-  );
-};
-
 
 
 const AdminRoutes = (): JSX.Element => {
@@ -159,30 +139,42 @@ const MainAppRoutes = ({ token }: { token: string }) => {
 
 const AuthRoutes = ({
   isLogin,
-  setIsLogin,
   setToken,
   isAdmin,
 }: {
   isLogin: boolean;
-  setIsLogin: () => void;
   setToken: (token: string) => void;
   isAdmin: () => boolean;
-}) => (
+}) => {
+  const [loginPath, setLoginPath] = useState('login')
+     const navigate = useNavigate()
+
+
+      const toggleForm = () => {
+    setLoginPath(loginPath === 'registration' ? 'login': 'registration')
+    navigate(loginPath)
+    console.log(loginPath)
+  };
+  return (
   <div className="auth-container">
-    {isLogin ? (
-      <>
-        <Login setToken={setToken} isAdmin={isAdmin} />
-        <button className="toggle-button" onClick={setIsLogin}>
-          {t("auth.no_account")}
-        </button>
-      </>
-    ) : (
-      <>
-        <Registration setToken={setToken} />
-        <button className="toggle-button" onClick={setIsLogin}>
-          {t("auth.have_account")}
-        </button>
-      </>
-    )}
-  </div>
-);
+    <>
+      {isLogin ? (
+        <>
+
+          <Login setToken={setToken} isAdmin={isAdmin} />
+          <button className="toggle-button" onClick={toggleForm}>
+            {t("auth.no_account")}
+          </button>
+        </>
+      ) : (
+        <>
+
+          <Registration setToken={setToken} />
+          <button className="toggle-button" onClick={toggleForm}>
+            {t("auth.have_account")}
+          </button>
+        </>
+      )}
+    </>
+  </div>)}
+;

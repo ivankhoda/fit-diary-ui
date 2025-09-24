@@ -10,6 +10,7 @@ import {
 import './ExerciseItem.style.scss';
 import { useTranslation } from 'react-i18next';
 import { Exercise } from '../Exercises';
+import { useToken } from '../../../Auth/useToken';
 
 interface ExerciseItemProps {
   exercise: Exercise;
@@ -23,6 +24,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
     edit,
 }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
 
     const navigate = useNavigate();
 
@@ -48,16 +50,18 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         {t('exerciseItem.viewDetails')}{' '}
                         <FontAwesomeIcon icon={faArrowRight} />
                     </button>
-                    {exercise.own && (
-                        <button className="show-exercise-btn" onClick={handleEdit}>
-                            {t('edit')} <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                    )}
-                    {exercise.own && (
-                        <button className="show-exercise-btn" onClick={onDelete}>
-                            {t('delete')} <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                    )}
+                    {token && <>
+                        {exercise.own && (
+                            <button className="show-exercise-btn" onClick={handleEdit}>
+                                {t('edit')} <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                        )}
+                        {exercise.own && (
+                            <button className="show-exercise-btn" onClick={onDelete}>
+                                {t('delete')} <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                        )}
+                    </>}
                 </div>
             }
         </div>

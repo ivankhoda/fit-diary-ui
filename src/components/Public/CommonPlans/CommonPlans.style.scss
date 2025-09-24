@@ -1,0 +1,63 @@
+/* Mobile-first стили для публичных планов */
+
+.common-plans {
+  width: 100%;
+  padding: 16px;
+  margin: 0 auto;
+  max-width: 1100px;
+
+  &__title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #222;
+  }
+
+  &__loading,
+  &__empty {
+    text-align: center;
+    color: #666;
+    font-size: 15px;
+    padding: 30px 0;
+  }
+
+  /* список карточек */
+  &__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Tablet (>=600px) */
+@media (min-width: 600px) {
+  .common-plans {
+    padding: 20px;
+
+    &__list {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    &__title {
+      font-size: 22px;
+    }
+  }
+}
+
+/* Desktop (>=900px) */
+@media (min-width: 900px) {
+  .common-plans {
+    padding: 24px;
+
+    &__list {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    &__title {
+      font-size: 24px;
+    }
+  }
+}

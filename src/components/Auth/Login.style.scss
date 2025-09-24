@@ -48,10 +48,16 @@
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
 
+
+
+  }
+
+  .form-recovery {
+    width: 100%;
     .form-recovery-link{
       color: styles.$button-dark;
+      width: 100%;
     }
-
   }
 
   .form-button {

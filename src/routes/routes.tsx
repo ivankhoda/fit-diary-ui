@@ -25,6 +25,8 @@ import TermsOfUse from '../terms/TermsOfUse';
 import PrivacyPolicy from '../privacy/PrivacyPolicy';
 import AboutApp from '../components/User/About/AboutApp';
 import AccountDeletion from '../deletion/AccountDeletion';
+import CommonExercises from '../components/Public/PublicExercises/PublicExercises';
+import CommonPlans from '../components/Public/CommonPlans/CommonPlans';
 
 // eslint-disable-next-line func-style
 function useQuery() {
@@ -71,5 +73,7 @@ export const routes = [
     {Component:  <TermsOfUse/>, name: 'terms', path: '/terms-of-use'},
     {Component:  <AccountDeletion/>, name: 'deletion', path: '/about-deletion'},
     {Component:  <AboutApp/>, name: 'about', path: '/about'},
+    {Component:  <CommonExercises/>, name: 'common-exercises', path: '/common-exercises'},
+    {Component:  <CommonPlans/>, name: 'common-plans', path: '/common-plans'},
 
 ];

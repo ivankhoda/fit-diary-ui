@@ -1,0 +1,109 @@
+.about-app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Inter', sans-serif;
+  color: #222;
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #111;
+  }
+
+  &__text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: #333;
+
+    p {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__link {
+    color: #0077ff;
+    text-decoration: underline;
+
+    &:hover {
+      color: #0055bb;
+    }
+  }
+
+  &__tabs {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+
+    /* скрываем скроллбар на WebKit */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* скрываем скроллбар в Firefox */
+    scrollbar-width: none;
+
+    > * {
+      max-width: 100%;
+    }
+  }
+}
+
+/* ====== Адаптивность ====== */
+@media (max-width: 768px) {
+  .about-app {
+    padding: 1.5rem 1rem;
+
+    &__title {
+      font-size: 1.6rem;
+    }
+
+    &__text {
+      font-size: 0.95rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .about-app {
+    padding: 1rem 0.5rem;
+
+    &__title {
+      font-size: 1.4rem;
+    }
+
+    &__text {
+      font-size: 0.9rem;
+    }
+
+    &__tabs {
+      padding: 0.25rem 0;
+    }
+  }
+}
+
+.about-app__tabs-wrapper {
+  max-width: 800px;
+  min-width: 800px;
+  margin: 0 auto;
+
+  /* Адаптив для планшетов */
+  @media (max-width: 768px) {
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 1rem;
+  }
+
+  /* Адаптив для мобильных телефонов */
+  @media (max-width: 480px) {
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 0.5rem;
+  }
+}
+
+
+
