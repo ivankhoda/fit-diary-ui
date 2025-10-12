@@ -46,7 +46,7 @@ const CommonExercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercis
     useEffect(() => {
         if (exercisesController && exercisesStore && !fetchedRef.current) {
             fetchedRef.current = true;
-            exercisesController.getExercises();
+            exercisesController.getPublicExercises();
         }
     }, [exercisesController, exercisesStore]);
 

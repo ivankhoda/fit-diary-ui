@@ -28,12 +28,20 @@ export default class ExercisesController extends BaseController {
                 this.exerciseStore.setGeneralExercises(res.res);});
     }
 
-    @action
-    getExercise(id: string): void {
-        new Get({url: `${getApiBaseUrl()}/exercises/${id}`}).execute()
+      @action
+    getPublicExercises(): void {
+        new Get({url: `${getApiBaseUrl()}/exercises/public`}).execute()
             .then(r => r.json())
-            .then(res => this.exerciseStore.setGeneralExercise(res.res));
+            .then(res =>{
+                this.exerciseStore.setGeneralExercises(res.res);});
     }
+
+    @action
+      getExercise(id: string): void {
+          new Get({url: `${getApiBaseUrl()}/exercises/${id}`}).execute()
+              .then(r => r.json())
+              .then(res => this.exerciseStore.setGeneralExercise(res.res));
+      }
 
     @action
     getWorkoutExercises(workout_id: number): void {
