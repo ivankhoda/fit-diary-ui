@@ -53,7 +53,7 @@ const CommonExercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercis
     const filteredList = useMemo(() => {
         let exercises = toJS(exercisesStore?.generalExercises);
 
-        exercises = exercises.filter(exercise => !exercise.own && !exercise.coach_owned);
+        // Exercises = exercises.filter(exercise => !exercise.own && !exercise.coach_owned);
 
         if (searchQuery) {
             exercises = exercises.filter(exercise =>
