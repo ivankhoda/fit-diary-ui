@@ -44,7 +44,10 @@ const CommonExercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercis
     const fetchedRef = useRef(false);
 
     useEffect(() => {
-        if (exercisesController && exercisesStore && !fetchedRef.current) {
+        if (exercisesController && exercisesStore &&
+        !fetchedRef.current &&
+        exercisesStore.generalExercises.length === 0
+        ) {
             fetchedRef.current = true;
             exercisesController.getPublicExercises();
         }
@@ -52,8 +55,6 @@ const CommonExercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercis
 
     const filteredList = useMemo(() => {
         let exercises = toJS(exercisesStore?.generalExercises);
-
-        // Exercises = exercises.filter(exercise => !exercise.own && !exercise.coach_owned);
 
         if (searchQuery) {
             exercises = exercises.filter(exercise =>
