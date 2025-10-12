@@ -33,6 +33,7 @@ export default class ExercisesController extends BaseController {
         new Get({url: `${getApiBaseUrl()}/exercises/public`}).execute()
             .then(r => r.json())
             .then(res =>{
+                console.log('Public exercises fetched:', res);
                 this.exerciseStore.setGeneralExercises(res.res);});
     }
 
