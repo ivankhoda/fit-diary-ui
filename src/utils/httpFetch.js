@@ -1,82 +1,30 @@
-/* eslint-disable max-params */
-/* eslint-disable func-style */
-// @ts-ignore
+/* eslint-disable no-undefined */
 import getToken from './getToken';
 
-function objectToURIComponent(data) { return Object.keys(data)
-    .filter(analyticsKey =>data[analyticsKey])
-    .map(analyticsKey => `${analyticsKey  }=${  encodeURIComponent(data[analyticsKey])}`).join('&');
-}
+const objectToURIComponent = data => Object.keys(data)
+    .filter(key => data[key] !== undefined && data[key] !== null)
+    .map(key => `${key}=${encodeURIComponent(data[key])}`)
+    .join('&');
 
 class HttpFetch {
-    constructor(options) {
+    constructor(options = {}) {
         this.options = {
             credentials: 'same-origin',
-            headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${getToken()}`,
-                'Content-Type': 'application/json',
-
-            },
             ...options
         };
     }
 
-    errorStatusCallback;
-
-    get cache() {
-        return this.options.cache;
-    }
-
-    set cache(value) {
-        this.options.cache = value;
-    }
-
-    get credentials() {
-        return this.options.credentials;
-    }
-
-    set credentials(value) {
-        this.options.credentials = value;
-    }
-
-    get mode() {
-        return this.options.mode;
-    }
-
-    set mode(value) {
-        this.options.mode = value;
-    }
-
-    get redirect() {
-        return this.options.redirect;
-    }
-
-    set redirect(value) {
-        this.options.redirect = value;
-    }
-
-    get referrerPolicy() {
-        return this.options.referrerPolicy;
-    }
-
-    set referrerPolicy(value) {
-        this.options.referrerPolicy = value;
-    }
-
-    get headers() {
-        return this.options.headers;
-    }
-
-    set headers(value) {
-        this.options.headers = {
-            ...this.options.headers,
-            ...value
+    /** Динамические заголовки — всегда свежий токен */
+    get defaultHeaders() {
+        return {
+            Accept: 'application/json',
+            Authorization: `Bearer ${getToken()}`,
+            'Content-Type': 'application/json'
         };
     }
 
     convertParamsByContentType(data) {
-        switch (this.options.headers['Content-Type']) {
+        switch (this.defaultHeaders['Content-Type']) {
         case 'application/json':
             return JSON.stringify(data);
         case 'application/x-www-form-urlencoded':
@@ -86,13 +34,16 @@ class HttpFetch {
         }
     }
 
-    request(url, method, params, headers) {
+    // eslint-disable-next-line max-params
+    request(url, method, params = null, customHeaders = {}) {
+        const headers = {
+            ...this.defaultHeaders,
+            ...customHeaders
+        };
+
         const fetchParams = {
             ...this.options,
-            headers: {
-                ...this.options.headers,
-                ...headers
-            },
+            headers,
             method
         };
 
@@ -100,35 +51,31 @@ class HttpFetch {
             fetchParams.body = this.convertParamsByContentType(params);
         }
 
-        return fetch(url, fetchParams)
-            .then(response => {
-                if (!response.ok) {
-                    this.errorStatusCallback && this.errorStatusCallback(response);
-                }
-
-                return response;
-            });
+        return fetch(url, fetchParams).then(response => {
+            if (!response.ok && this.errorStatusCallback) {
+                this.errorStatusCallback(response);
+            }
+            return response;
+        });
     }
 
-    get({url, params = null, headers = {}}) {
+    get({ url, params = null, headers = {} }) {
         return this.request(url, 'GET', params, headers);
     }
 
-    post({url, params = null, headers = {}}) {
+    post({ url, params = null, headers = {} }) {
         return this.request(url, 'POST', params, headers);
     }
 
-    put({url, params = null, headers = {}}) {
+    put({ url, params = null, headers = {} }) {
         return this.request(url, 'PUT', params, headers);
     }
 
-    delete({url, params = null, headers = {}}) {
+    delete({ url, params = null, headers = {} }) {
         return this.request(url, 'DELETE', params, headers);
     }
 }
 
 const httpFetch = new HttpFetch();
-
 export { HttpFetch };
-
 export default httpFetch;
