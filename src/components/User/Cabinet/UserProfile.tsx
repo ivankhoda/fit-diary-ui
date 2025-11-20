@@ -36,12 +36,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
     useEffect(() => {
-        if (!user) {
-            userController?.getUser();
-        }
-    }, [user, userController]);
-
-    useEffect(() => {
         if (user) {
             setFirstName(user.first_name || '');
             setLastName(user.last_name || '');

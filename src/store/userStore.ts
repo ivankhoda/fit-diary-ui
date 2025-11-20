@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-magic-numbers */
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import { Workout } from '../components/User/Stats/WorkoutsStats/WorkoutProgressGrid/WorkoutProgressGrid';
@@ -20,22 +21,48 @@ export interface ExerciseStatistic {
 export interface UserProfile {
     id: number;
     username: string;
-    name: string;
     first_name: string;
     last_name: string;
-    telegram_username: string;
-    phone_number: string;
+    telegram_username?: string;
+    phone_number?: string;
     email: string;
     has_workouts: boolean;
     has_exercises: boolean;
     has_active_workout: boolean;
     active_plan: {
-        has_active_plan: number;
-        plan_id: number
-    }
+        has_active_plan: boolean;
+        plan_id?: number;
+    };
     has_coach_assigned_workouts: boolean;
     roles: string[];
-    training_goal: TrainingGoalInterface
+    exercises?: any[];
+    assigned_workouts?: any[];
+    plans?: any[];
+    [key: string]: any;
+    training_goal?: TrainingGoalInterface
+}
+
+export interface CachedUserProfile {
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  telegram_username?: string;
+  phone_number?: string;
+  email: string;
+  has_workouts: boolean;
+  has_exercises: boolean;
+  has_active_workout: boolean;
+  active_plan: {
+    has_active_plan: boolean;
+    plan_id?: number;
+  };
+  has_coach_assigned_workouts: boolean;
+  roles: string[];
+  exercises?: any[];
+  assigned_workouts?: any[];
+  plans?: any[];
+  [key: string]: any;
 }
 
 export interface PermissionProfile{
@@ -87,6 +114,8 @@ export default class UserStore {
 
     @observable userProfile: UserProfile | null = null;
 
+    @observable currentUser: UserProfile | null = null;
+
     @observable measurements: UserMeasurement[] = [];
 
     @observable exerciseStatistics: ExerciseStatistic[] = [];
@@ -104,6 +133,12 @@ export default class UserStore {
     @observable usersWithPermissions: UserProfile[] = [];
 
     @observable userConsistencyStats: ConsistencyMetrics | null = null;
+
+    @action
+    setCurrentUser(profile: UserProfile): void {
+        this.currentUser = profile;
+    }
+
     @action
     setUserProfile(profile: UserProfile): void {
         this.userProfile = profile;

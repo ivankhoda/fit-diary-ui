@@ -28,7 +28,7 @@ const store = Object.assign(stores, controllers);
 root.render(
     <Provider {...store}>
         <I18nextProvider i18n={i18n}>
-            <App />
+            <App userStore={store.userStore} />
         </I18nextProvider>
     </Provider>
 );

@@ -8,7 +8,6 @@ import { useCoachMode } from '../../Coach/CoachContext';
 import { useToken } from '../../Auth/useToken';
 import { useNavigate } from 'react-router';
 import { userStore } from '../../../store/global';
-import { userController } from '../../../controllers/global';
 import { observer } from 'mobx-react-lite';
 import { inject } from 'mobx-react';
 
@@ -93,12 +92,6 @@ const Dropdown = (): React.ReactElement => {
         document.addEventListener('click', handleOutsideClick);
         return () => document.removeEventListener('click', handleOutsideClick);
     }, []);
-
-    useEffect(()=> {
-        if(!userProfile){
-            userController.getUser();
-        }
-    }, [userStore]);
 
     const handleButtonClick = useCallback(() => {
         setIsOpen(prev => !prev);

@@ -1,7 +1,5 @@
-/* eslint-disable no-magic-numbers */
-import { observer } from 'mobx-react-lite';
+import { inject, observer } from 'mobx-react';
 import React, { useEffect } from 'react';
-import { plansStore, userStore } from '../../../../store/global';
 import { plansController } from '../../../../controllers/global';
 
 import './ActivePlanWidget.style.scss';
@@ -13,28 +11,30 @@ import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import UserStore from '../../../../store/userStore';
+import PlansStore from '../../../../store/plansStore';
 
-export const ActivePlanWidget = observer((): React.JSX.Element | null => {
-    // Для теста: если у вас пока только один план, делаем массив из одного
-    const activePlans = plansStore.activeStatusPlans ? plansStore.activeStatusPlans : [];
-    const { userProfile } = userStore;
+type Props = {
+    userStore?: UserStore;
+    plansStore?: PlansStore;
+};
+
+const ActivePlanWidgetComponent: React.FC<Props> = ({ userStore, plansStore }) => {
+    const activePlans = plansStore?.activeStatusPlans ?? [];
+    const currentUser = userStore?.currentUser;
 
     useEffect(() => {
-        if (userProfile?.active_plan?.plan_id && !plansStore.currentPlan) {
-            plansController.getPlanDetails(userProfile.active_plan.plan_id);
-            // eslint-disable-next-line no-warning-comments
-            // TODO :тут возникает адовая перегрузка из-за этого, подумать, нужно ли мне правда все планы брать
+        if (currentUser?.active_plan?.plan_id && !plansStore?.currentPlan) {
             plansController.getPlans();
         }
-    }, [userProfile?.active_plan?.plan_id, plansStore.currentPlan]);
+    }, [currentUser?.active_plan?.plan_id, plansStore?.currentPlan]);
 
-    if (!activePlans.length) {
-        return null;
-    }
+    if (!activePlans.length) {return null;}
 
     return (
         <div className="active-plan-widget">
             <h3 className="widget-title">Активные планы</h3>
+
             <Swiper
                 modules={[Navigation, Pagination]}
                 spaceBetween={15}
@@ -47,11 +47,16 @@ export const ActivePlanWidget = observer((): React.JSX.Element | null => {
                     <SwiperSlide key={plan.id}>
                         <div className="plan-info">
                             <PlanHeader name={plan.name} description={plan.description} />
-                            <CurrentWorkoutDayInfo day={plan.current_workout_day} planId={plan.id} />
+                            <CurrentWorkoutDayInfo
+                                day={plan.current_workout_day}
+                                planId={plan.id}
+                            />
                         </div>
                     </SwiperSlide>
                 ))}
             </Swiper>
         </div>
     );
-});
+};
+
+export const ActivePlanWidget = inject('userStore', 'plansStore')(observer(ActivePlanWidgetComponent));

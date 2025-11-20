@@ -10,7 +10,6 @@ import WorkoutsStore from '../../../store/workoutStore';
 import { useNavigate } from 'react-router-dom';
 import Workout from './Workout/Workout';
 import UserController from '../../../controllers/UserController';
-import { userController } from '../../../controllers/global';
 import { useTranslation } from 'react-i18next';
 
 interface WorkoutsInterface {
@@ -36,7 +35,6 @@ const Workouts: React.FC<WorkoutsInterface> = ({
     useEffect(() => {
         if (exercisesController) {exercisesController.getExercises();}
         if (workoutsController) {workoutsController.getWorkouts();}
-        userController.getUser();
     }, [exercisesController, workoutsController]);
 
     const handleGoToCreateWorkout = useCallback(() => {

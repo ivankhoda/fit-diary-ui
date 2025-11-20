@@ -19,7 +19,7 @@ export const useToken = () => {
     const tokenString = localStorage.getItem("token");
 
     try {
-      return tokenString ? JSON.parse(tokenString) : null;
+      return tokenString ? tokenString : null;
     } catch (error) {
       console.error("Error parsing token from localStorage:", error);
       return null;

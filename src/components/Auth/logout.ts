@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import Delete from '../../utils/DeleteRequest';
 import { useNavigate } from 'react-router';
 import getApiBaseUrl from '../../utils/apiUrl';
+import { cacheService } from '../../services/cacheService';
 
 export const useLogout = (): (() => void) => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const useLogout = (): (() => void) => {
                 if (r.ok) {
                     localStorage.removeItem('token');
                     navigate('/');
+                    cacheService.clear('current_user');
                     window.location.reload();
                 }
             })

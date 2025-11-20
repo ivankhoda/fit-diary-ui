@@ -1,6 +1,9 @@
+import { NOT_CHANGE_RESPONSE_CODE, UNAUTHORIZED_RESPONSE_CODE } from './../components/Common/constants';
+
+/* eslint-disable max-statements */
 /* eslint-disable sort-keys */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PermissionProfile } from './../store/userStore';
+import { CachedUserProfile, PermissionProfile } from './../store/userStore';
 import { action } from 'mobx';
 import UserStore from '../store/userStore';
 import Get from '../utils/GetRequest';
@@ -11,6 +14,8 @@ import Delete from '../utils/DeleteRequest';
 import getApiBaseUrl from '../utils/apiUrl';
 import { toast } from 'react-toastify';
 
+import { cacheService } from '../services/cacheService';
+
 export default class UserController extends BaseController {
     userStore: UserStore;
 
@@ -20,12 +25,122 @@ export default class UserController extends BaseController {
     }
 
     @action
+    async login(credentials: { email: string; password: string }): Promise<boolean> {
+        try {
+            const cachedEtag = await cacheService.getVersion('current_user');
+            const response = await fetch(`${getApiBaseUrl()}/users/sign_in`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(cachedEtag ? { 'If-None-Match': cachedEtag } : {}),
+                },
+                body: JSON.stringify({ user: credentials }),
+            });
+
+            if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+                const cached = await cacheService.get<CachedUserProfile>('current_user');
+
+                if (cached) {
+                    this.userStore.setUserProfile(cached);
+                    return true;
+                }
+                throw new Error('No cached user found');
+            }
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                return false;
+            }
+
+            if (data.user && data.jwt) {
+                const userToCache = { ...data.user, jwt: data.jwt };
+                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                this.userStore.setUserProfile(data.user);
+                this.userStore.setCurrentUser(data.user);
+                localStorage.setItem('token', data.jwt);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Login error:', error);
+            return false;
+        }
+    }
+
+    @action
+    logout(): void {
+        this.userStore.clearUserData();
+        cacheService.clear('current_user');
+        localStorage.removeItem('token');
+    }
+
+    @action
     getUser(): void {
         new Get({ url: `${getApiBaseUrl()}/users/current` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setUserProfile(res);
             });
+    }
+
+    @action
+    getUserFromCache(): CachedUserProfile | null {
+        const cached = localStorage.getItem('current_user');
+
+        if (cached) {
+            return JSON.parse(cached) as CachedUserProfile;
+        }
+        return null;
+    }
+
+    @action
+    async restoreCurrentUser(): Promise<void> {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            this.userStore.setUserProfile(null);
+            return;
+        }
+
+        const cached = await cacheService.get<CachedUserProfile>('current_user');
+
+        if (cached) {
+            this.userStore.setUserProfile(cached);
+            this.userStore.setCurrentUser(cached);
+        }
+
+        try {
+            const etag = await cacheService.getVersion('current_user');
+
+            const response = await fetch(`${getApiBaseUrl()}/users/current`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    ...(etag ? { 'If-None-Match': etag } : {})
+                }
+            });
+
+            if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+                return;
+            }
+
+            if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
+                localStorage.removeItem('token');
+                await cacheService.clear('current_user');
+                this.userStore.setUserProfile(null);
+                return;
+            }
+
+            if (response.ok) {
+                const user = await response.json();
+                await cacheService.set('current_user', user, response.headers.get('etag'));
+                this.userStore.setUserProfile(user);
+            }
+        } catch (err) {
+            console.error('restoreCurrentUser error', err);
+        }
     }
 
     @action
@@ -50,7 +165,7 @@ export default class UserController extends BaseController {
             return result;
         } catch (error) {
             console.error('Unexpected error during user update:', error);
-            return { ok: false, errors: [error?.message || 'Unexpected error'] };
+            return { ok: false, errors: [error?.message] };
         }
     }
 

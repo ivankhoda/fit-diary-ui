@@ -8,6 +8,9 @@ import Post from '../utils/PostRequest';
 import { BaseController } from './BaseController';
 import getApiBaseUrl from '../utils/apiUrl';
 import { ExerciseFormData } from '../components/User/Exercises/ExerciseModal/ExerciseModal';
+import { cacheService } from '../services/cacheService';
+import { Exercise } from '../components/User/Exercises/Exercises';
+import { NOT_CHANGE_RESPONSE_CODE } from '../components/Common/constants';
 
 export default class ExercisesController extends BaseController {
     // eslint-disable-next-line max-params
@@ -21,19 +24,57 @@ export default class ExercisesController extends BaseController {
     }
 
     @action
-    getExercises(): void {
-        new Get({url: `${getApiBaseUrl()}/exercises`}).execute()
-            .then(r => r.json())
-            .then(res =>{
-                this.exerciseStore.setGeneralExercises(res.res);});
+    async getExercises(): Promise<Exercise[]> {
+        const cachedEtag = await cacheService.getVersion('exercises');
+        const response = await new Get({
+            configurator: {
+                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+            },
+            url: `${getApiBaseUrl()}/exercises`,
+
+        }).execute();
+
+        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+            const cached = await cacheService.get<Exercise[]>('exercises');
+
+            if (cached) {
+                this.exerciseStore.setGeneralExercises(cached);
+                return cached;
+            }
+            throw new Error('No cached data available');
+        }
+
+        const json = await response.json();
+        await cacheService.set('exercises', json.res, response.headers.get('etag') || null);
+        this.exerciseStore.setGeneralExercises(json.res);
+        return json.res;
     }
 
       @action
-    getPublicExercises(): void {
-        new Get({url: `${getApiBaseUrl()}/exercises/public`}).execute()
-            .then(r => r.json())
-            .then(res =>{
-                this.exerciseStore.setGeneralExercises(res.res);});
+    async getPublicExercises(): Promise<Exercise[]> {
+        const cachedEtag = await cacheService.getVersion('public_exercises');
+        const response = await new Get({
+            configurator: {
+                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+            },
+            url: `${getApiBaseUrl()}/exercises/public`,
+
+        }).execute();
+
+        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+            const cached = await cacheService.get<Exercise[]>('public_exercises');
+
+            if (cached) {
+                this.exerciseStore.setGeneralExercises(cached);
+                return cached;
+            }
+            throw new Error('No cached data available');
+        }
+
+        const json = await response.json();
+        await cacheService.set('public_exercises', json.res, response.headers.get('etag') || null);
+        this.exerciseStore.setGeneralExercises(json.res);
+        return json.res;
     }
 
     @action

@@ -9,7 +9,7 @@ export interface MenuOption {
   icon?: string; }
 
 const publicOptions: MenuOption[] = [
-    { linkTo: '/common-exercises', text: 'Упражнения', icon: '🏋️' }, { linkTo: '/about', text: 'О приложении', icon: 'ℹ️' },
+    { linkTo: '/common-exercises', text: 'Упражнения' }, { linkTo: '/about', text: 'О приложении'},
 ];
 
 const PublicMenu: React.FC = () => {
@@ -25,7 +25,6 @@ const PublicMenu: React.FC = () => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={() => navigate(opt.linkTo)}
                 >
-                    <span className="public-menu__icon" aria-hidden>{opt.icon}</span>
                     <span className="public-menu__title">{opt.text}</span>
                 </button>
             ))}

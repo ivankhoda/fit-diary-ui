@@ -4,8 +4,6 @@ webpack.production.js
 jest.config.js
 store.ts
 useToken.ts
-WorkingPanel.tsx
-Login.tsx
 index.html
 App.tsx
 ./utils

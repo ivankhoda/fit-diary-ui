@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes, BrowserRouter as Router, useNavigate } from "react-router-dom";
 import "./App.style.scss";
 import { Header } from "./User/Header/Header";
-import { observer, Provider } from "mobx-react";
+import { inject, observer, Provider } from "mobx-react";
 import {
   ConfirmRegistrationWithToken,
   ResetPasswordWithToken,
@@ -31,17 +31,20 @@ import { DescriptionScreen } from "./Public/DescriprtionScreen/DescriprionScreen
 import Exercise from "./User/Exercises/Exercise/Exercise";
 import CommonExercises from "./Public/PublicExercises/PublicExercises";
 import AboutApp from "./Public/About/AboutApp";
+import UserStore from "../store/userStore";
+import UserController from "../controllers/UserController";
 
 Modal.setAppElement('#root');
 
-export const App = observer((): JSX.Element => {
+type AppProps = {
+  userStore?: UserStore;
+  userController?: UserController;
+};
+
+const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
   const { token, setToken, isAdmin } = useToken();
   const [isLogin, setIsLogin] = useState(true);
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(true);
-
-  const toggleForm = () => {
-    setIsLogin((prevIsLogin) => !prevIsLogin);
-  };
 
   const proceedToAuth = () => {
     setIsDescriptionVisible(false);
@@ -51,6 +54,9 @@ export const App = observer((): JSX.Element => {
         proceedToAuth();
         setIsLogin(false);
   }
+  useEffect(() => {
+      userController.restoreCurrentUser();
+    }, []);
 
   return (
      <CoachModeProvider>
@@ -71,7 +77,7 @@ export const App = observer((): JSX.Element => {
           path="/users/confirmation/*"
           element={<ConfirmRegistrationWithToken />}
         />
-        {token ? (
+        {userStore.currentUser ? (
           <>
             {isAdmin() && <Route path="/admin/*" element={<AdminRoutes />} />}
             <Route path="/*" element={<MainAppRoutes token={token} />} />
@@ -96,7 +102,8 @@ export const App = observer((): JSX.Element => {
     </Router>
     </CoachModeProvider>
   );
-});
+};
+export const App = inject('userStore', 'userController')(observer(AppComponent));
 
 
 const AdminRoutes = (): JSX.Element => {

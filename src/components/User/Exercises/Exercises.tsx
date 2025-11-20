@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-statements */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
@@ -13,6 +14,7 @@ import { muscleGroups } from '../../Admin/ExercisesManagement/maps';
 import { toJS } from 'mobx';
 import { useToken } from '../../Auth/useToken';
 import BackButton from '../../Common/BackButton/BackButton';
+import Pagination from '../../Common/Pagination/Pagination';
 export interface Exercise {
     uuid: string;
     instanceId?: string;
@@ -220,17 +222,12 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                     )}
             </div>
 
-            {filteredExercises && filteredExercises.length> 0 &&<div className="pagination">
-                <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                    {t('paginationPrevious') }
-                </button>
-                <span>
-                    { currentPage} / {totalPages }
-                </span>
-                <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                    { t('paginationNext')}
-                </button>
-            </div>}
+            {filteredExercises && filteredExercises.length > 0 && <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onNext={handleNextPage}
+                onPrevious={handlePreviousPage}
+            />}
         </div>
     );
 };

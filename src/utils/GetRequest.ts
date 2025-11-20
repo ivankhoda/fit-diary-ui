@@ -60,7 +60,6 @@ export default class Get {
             if (!response.ok) {
                 errorStatusCallback && errorStatusCallback(response);
             }
-
             return response;
         });
     }

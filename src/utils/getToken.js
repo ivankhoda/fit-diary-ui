@@ -1,9 +1,10 @@
 
 const getToken = () => {
     const tokenString = localStorage.getItem('token');
+    console.log('Retrieved token string:', tokenString);
 
     if (tokenString) {
-        const token = JSON.parse(tokenString);
+        const token = tokenString;
 
         return token;
     }
