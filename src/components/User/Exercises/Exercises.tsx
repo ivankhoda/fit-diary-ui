@@ -51,9 +51,7 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
         if (exercisesController && exercisesStore && !exercisesStore.generalExercises?.length) {
             exercisesController.getExercises();
         }
-    }, [exercisesController,
-        exercisesStore,
-        exercisesStore.generalExercises]);
+    }, [exercisesController, exercisesStore]);
 
     const filteredList = useMemo(() => {
         let exercises = toJS(exercisesStore?.generalExercises);
@@ -99,7 +97,9 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
     const filteredExercises = useMemo(() => {
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
         return filteredList.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-    }, [filteredList, currentPage]);
+    }, [filteredList,
+        currentPage,
+        activeTab]);
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
@@ -166,11 +166,13 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
             <h1>{t('exercises.title')}</h1>
             <BackButton/>
             {token && <div className="tabs">
-                <button className={activeTab === 'own' ? 'active' : ''} onClick={handleOwnClick}>
+
+                <button className={activeTab === 'base' ? 'active' : ''} onClick={handleBaseClick}>
                     {t('exercises.tabs.base')}
                 </button>
-                <button className={activeTab === 'base' ? 'active' : ''} onClick={handleBaseClick}>
+                <button className={activeTab === 'own' ? 'active' : ''} onClick={handleOwnClick}>
                     {t('exercises.tabs.own')}
+
                 </button>
 
                 <button className={activeTab === 'coach_owned' ? 'active' : ''} onClick={() => handleTabChange('coach_owned')}>
