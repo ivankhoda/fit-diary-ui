@@ -167,10 +167,11 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
             <BackButton/>
             {token && <div className="tabs">
                 <button className={activeTab === 'own' ? 'active' : ''} onClick={handleOwnClick}>
-                    {t('exercises.tabs.own')}
+                    {t('exercises.tabs.base')}
                 </button>
                 <button className={activeTab === 'base' ? 'active' : ''} onClick={handleBaseClick}>
-                    {t('exercises.tabs.base')}
+
+                    {t('exercises.tabs.own')}
                 </button>
 
                 <button className={activeTab === 'coach_owned' ? 'active' : ''} onClick={() => handleTabChange('coach_owned')}>

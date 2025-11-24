@@ -6,6 +6,8 @@ import Patch from '../utils/PatchRequest';
 import Post from '../utils/PostRequest';
 import { BaseController } from './BaseController';
 import getApiBaseUrl from '../utils/apiUrl';
+import { NOT_CHANGE_RESPONSE_CODE } from '../components/Common/constants';
+import { cacheService } from '../services/cacheService';
 
 export interface TrainingGoalFormData extends TrainingGoalInterface {
     user_id: number;
@@ -28,63 +30,92 @@ export default class TrainingGoalsController extends BaseController {
     }
 
     @action
-    getGoals(): void {
-        new Get({
-            params: {  },
-            url: `${getApiBaseUrl()}/training_goals`
-        }).execute()
-            .then(r => r.json())
-            .then(res => {
-                this.trainingGoalsStore.setGoals(res);
-            })
-            .catch(error => {
-                console.error('Failed to fetch goals:', error);
-            });
-    }
+    async getGoals(): Promise<void> {
+        const cacheKey = 'training_goals';
+        const cachedEtag = await cacheService.getVersion(cacheKey);
 
-    @action
-    getGoalDetails(goalId: number): void {
-        new Get({
-            url: `${getApiBaseUrl()}/training_goals/${goalId}`
-        }).execute()
-            .then(r => r.json())
-            .then(res => {
-                if (res.ok){
-                    this.trainingGoalsStore.setCurrentGoal(res.goal);
-                }
-            })
-            .catch(error => {
-                console.error('Failed to fetch goal details:', error);
-            });
-    }
+        const response = await new Get({
+            configurator: {
+                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+            },
+            url: `${getApiBaseUrl()}/training_goals`,
 
-    @action
-    createGoal(goalData: TrainingGoalInterface): Promise<TrainingGoalInterface | null> {
-        return new Promise((resolve, reject) => {
-            try {
-                new Post({
-                    params: { training_goal: goalData },
-                    url: `${getApiBaseUrl()}/training_goals`
-                }).execute()
-                    .then(r => r.json())
-                    .then(res => {
-                        if (res.ok) {
-                            this.trainingGoalsStore.addGoal(res.goal);
-                            resolve(res);
-                        } else {
-                            reject(res.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Failed to create goal:', error);
-                        reject(error);
-                    });
-            } catch (error) {
-                console.error('Error in createGoal:', error);
-                reject(error);
+        }).execute();
+
+        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+            const cached = await cacheService.get<TrainingGoalInterface[]>(cacheKey);
+
+            if (cached) {
+                this.trainingGoalsStore.setGoals(cached);
+                return;
             }
-        });
+        }
+
+        const json = await response.json();
+        const etag = response.headers.get('etag');
+
+        await cacheService.set(cacheKey, json.goals, etag);
+
+        this.trainingGoalsStore.setGoals(json.goals);
     }
+
+@action
+    async getGoalDetails(goalId: number): Promise<void> {
+        const cacheKey = `training_goal_${goalId}`;
+        const cachedEtag = await cacheService.getVersion(cacheKey);
+
+        const response = await new Get({
+            configurator: {
+                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+            },
+            url: `${getApiBaseUrl()}/training_goals/${goalId}`,
+
+        }).execute();
+
+        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+            const cached = await cacheService.get<TrainingGoalInterface>(cacheKey);
+
+            if (cached) {
+                this.trainingGoalsStore.setCurrentGoal(cached);
+                return;
+            }
+        }
+
+        const json = await response.json();
+        const etag = response.headers.get('etag');
+
+        await cacheService.set(cacheKey, json.goal, etag);
+
+        this.trainingGoalsStore.setCurrentGoal(json.goal);
+    }
+
+    @action
+createGoal(goalData: TrainingGoalInterface): Promise<TrainingGoalInterface | null> {
+    return new Promise((resolve, reject) => {
+        try {
+            new Post({
+                params: { training_goal: goalData },
+                url: `${getApiBaseUrl()}/training_goals`
+            }).execute()
+                .then(r => r.json())
+                .then(res => {
+                    if (res.ok) {
+                        this.trainingGoalsStore.addGoal(res.goal);
+                        resolve(res);
+                    } else {
+                        reject(res.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to create goal:', error);
+                    reject(error);
+                });
+        } catch (error) {
+            console.error('Error in createGoal:', error);
+            reject(error);
+        }
+    });
+}
 
     @action
     updateGoal(goalId: number, goalData: Partial<TrainingGoalFormData>): void {

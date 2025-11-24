@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import { action } from 'mobx';
 import { BaseController } from './BaseController';
 import getApiBaseUrl from '../utils/apiUrl';
@@ -8,6 +9,8 @@ import Delete from '../utils/DeleteRequest';
 
 import PlansStore, { PlanInterface, WorkoutDayInterface } from '../store/plansStore';
 import { toast } from 'react-toastify';
+import { NOT_CHANGE_RESPONSE_CODE } from '../components/Common/constants';
+import { cacheService } from '../services/cacheService';
 
 export type PlanFormData = Omit<PlanInterface, 'id' | 'progress_percentage' | 'created_at' | 'updated_at'>;
 
@@ -20,33 +23,65 @@ export default class PlansController extends BaseController {
     }
 
     @action
-    getPlans(): void {
-        new Get({
+    async getPlans(): Promise<void> {
+        const cachedEtag = await cacheService.getVersion('plans');
+        console.log('Cached ETag for plans:', cachedEtag);
+        const response = await new Get({
+            configurator: {
+                headers: cachedEtag ? { 'If-None-Match': `${cachedEtag}` } : {}
+            },
             url: `${getApiBaseUrl()}/plans`
-        }).execute()
-            .then(r => r.json())
-            .then(res => {
-                this.plansStore.setPlans(res.plans);
-            })
-            .catch(error => {
-                console.error('Failed to fetch plans:', error);
-            });
+        }).execute();
+        console.log('Plans response status:', response.status);
+        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+            const cached = await cacheService.get<PlanInterface[]>('plans');
+            console.log('Plans not changed, using cached data.', cached);
+            if (cached) {
+                this.plansStore.setPlans(cached);
+                return;
+            }
+            throw new Error('No cached plans available');
+        }
+
+        const json = await response.json();
+
+        const etag = response.headers.get('etag') || null;
+
+        await cacheService.set('plans', json.plans, etag);
+        this.plansStore.setPlans(json.plans);
     }
 
     @action
-    getPlanDetails(planId: number): void {
-        new Get({
+    async getPlanDetails(planId: number): Promise<void> {
+        const cacheKey = `plan_${planId}`;
+        const localPlan = await cacheService.get<PlanInterface>(cacheKey);
+        console.log('Local plan from cache:', localPlan);
+        if (localPlan) {
+            this.plansStore.setCurrentPlan(localPlan);
+        }
+
+        const cachedEtag = await cacheService.getVersion(cacheKey);
+
+        const response = await new Get({
+            configurator: {
+                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+            },
             url: `${getApiBaseUrl()}/plans/${planId}`
-        }).execute()
-            .then(r => r.json())
-            .then(res => {
-                if (res.ok) {
-                    this.plansStore.setCurrentPlan(res.plan);
-                }
-            })
-            .catch(error => {
-                console.error('Failed to fetch plan details:', error);
-            });
+        }).execute();
+
+        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+            if (localPlan) {return;}
+            throw new Error('No cached plan available');
+        }
+
+        const json = await response.json();
+
+        if (!json.ok) {return;}
+
+        const etag = response.headers.get('etag') || null;
+
+        await cacheService.set(cacheKey, json.plan, etag);
+        this.plansStore.setCurrentPlan(json.plan);
     }
 
     @action

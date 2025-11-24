@@ -7,6 +7,7 @@ import './Header.style.scss';
 import { useLogout } from '../../Auth/logout';
 import { isOnline, onNetworkChange } from '../../../utils/network';
 import { toast } from 'react-toastify';
+import { exercisesController } from '../../../controllers/global';
 
 export const Header = (): JSX.Element => {
     const logout = useLogout();
@@ -42,6 +43,21 @@ export const Header = (): JSX.Element => {
             toast.error('❌ Соединение потеряно');
         }
     }, [connected]);
+
+    useEffect(() => {
+        const handleOnline = async() => {
+            if (connected) {
+                console.log('Network restored! Syncing offline actions...');
+                try {
+                    await exercisesController.syncOfflineQueue();
+                } catch (err) {
+                    console.error('Ошибка при синхронизации офлайн действий:', err);
+                }
+            }
+        };
+
+        handleOnline();
+    }, [connected, wasDisconnected]);
 
     return (
         <header className="header">

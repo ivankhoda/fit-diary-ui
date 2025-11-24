@@ -14,6 +14,8 @@ import { UserProfile } from '../store/userStore';
 import getApiBaseUrl from '../utils/apiUrl';
 import i18n from 'i18next';
 import { toast } from 'react-toastify';
+import { NOT_CHANGE_RESPONSE_CODE } from '../components/Common/constants';
+import { cacheService } from '../services/cacheService';
 
 export interface AddExerciseParamsInterface {
     id?: number,
@@ -36,41 +38,159 @@ export default class WorkoutController extends BaseController {
     }
 
   @action
-    getWorkouts(): void {
-        new Get({url: `${getApiBaseUrl()}/workouts`}).execute()
-            .then(r => r.json())
-            .then(res => this.workoutsStore.setWorkouts(res));
-    }
-
-    @action
-  getWorkoutsByCoach(): void {
-      new Get({url: `${getApiBaseUrl()}/workouts/by_coach`}).execute()
-          .then(r => r.json())
-          .then(res => this.workoutsStore.setWorkouts(res));
-  }
-
-    @action
-    getWorkout(id: string): void {
-        new Get({url: `${getApiBaseUrl()}/workouts/${id}`}).execute()
-            .then(r => r.json())
-            .then(res => {
-                this.workoutsStore.setDraftWorkout(res.workout);
-                this.exerciseStore.setWorkoutExercises(res.workout.workout_exercises);});
-    }
-
-  @action
-    getLastUserWorkouts(limit: number): void {
+    async getWorkouts(): Promise<void> {
         try {
-            new Get({url: `${getApiBaseUrl()}/workouts/last?limit=${limit}`}).execute()
-                .then(r => r.json())
-                .then(res => {
-                    if(res.ok) {
-                        this.workoutsStore.setLastWorkouts(res.data);
-                    }});
-        } catch (error) {
-            console.error('Failed to fetch last workouts', error);
+            const cachedEtag = await cacheService.getVersion('workouts');
+
+            const response = await new Get({
+                url: `${getApiBaseUrl()}/workouts`,
+                configurator: {
+                    headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+                }
+            }).execute();
+
+            if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+                const cached = await cacheService.get<WorkoutInterface[]>('workouts');
+
+                if (cached) {
+                    this.workoutsStore.setWorkouts(cached);
+                    return;
+                }
+            }
+
+            if (response.ok) {
+                const json = await response.json();
+                const etag = response.headers.get('etag');
+                await cacheService.set('workouts', json, etag);
+                this.workoutsStore.setWorkouts(json);
+                return;
+            }
+
+            const cached = await cacheService.get<WorkoutInterface[]>('workouts');
+
+            if (cached) {
+                this.workoutsStore.setWorkouts(cached);
+            }
+        } catch (err) {
+            console.warn('Failed to fetch workouts, using cache if available:', err);
+            const cached = await cacheService.get<WorkoutInterface[]>('workouts');
+
+            if (cached) {
+                this.workoutsStore.setWorkouts(cached);
+            } else {
+                this.workoutsStore.setWorkouts([]);
+            }
         }
     }
+
+@action
+  async getWorkoutsByCoach(): Promise<void> {
+      try {
+          const cachedEtag = await cacheService.getVersion('workouts_by_coach');
+
+          const response = await new Get({
+              url: `${getApiBaseUrl()}/workouts/by_coach`,
+              configurator: {
+                  headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+              }
+          }).execute();
+
+          if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+              const cached = await cacheService.get<WorkoutInterface[]>('workouts_by_coach');
+
+              if (cached) {
+                  this.workoutsStore.setWorkouts(cached);
+                  return;
+              }
+          }
+
+          if (response.ok) {
+              const json = await response.json();
+              await cacheService.set('workouts_by_coach', json, response.headers.get('etag') || null);
+              this.workoutsStore.setWorkouts(json);
+              return;
+          }
+
+          const cached = await cacheService.get<WorkoutInterface[]>('workouts_by_coach');
+
+          if (cached) {
+              this.workoutsStore.setWorkouts(cached);
+          } else {
+              this.workoutsStore.setWorkouts([]);
+          }
+      } catch (err) {
+          console.warn('Failed to fetch coach workouts, using cache if available:', err);
+          const cached = await cacheService.get<WorkoutInterface[]>('workouts_by_coach');
+
+          if (cached) {
+              this.workoutsStore.setWorkouts(cached);
+          } else {
+              this.workoutsStore.setWorkouts([]);
+          }
+      }
+  }
+
+@action
+async getWorkout(id: string): Promise<void> {
+    const cacheKey = `workout_${id}`;
+
+    try {
+        const cachedEtag = await cacheService.getVersion(cacheKey);
+        const response = await new Get({
+            url: `${getApiBaseUrl()}/workouts/${id}`,
+            configurator: {
+                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+            }
+        }).execute();
+
+        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+            const cached = await cacheService.get<WorkoutInterface>(cacheKey);
+
+            if (cached) {
+                this.workoutsStore.setDraftWorkout(cached);
+                this.exerciseStore.setWorkoutExercises(cached.workout_exercises);
+                return;
+            }
+        }
+
+        if (response.ok) {
+            const json = await response.json();
+            await cacheService.set(cacheKey, json.workout, response.headers.get('etag') || null);
+            this.workoutsStore.setDraftWorkout(json.workout);
+            this.exerciseStore.setWorkoutExercises(json.workout.workout_exercises);
+            return;
+        }
+
+        const cached = await cacheService.get<WorkoutInterface>(cacheKey);
+
+        if (cached) {
+            this.workoutsStore.setDraftWorkout(cached);
+            this.exerciseStore.setWorkoutExercises(cached.workout_exercises);
+        }
+    } catch (err) {
+        console.warn(`Failed to fetch workout ${id}, using cache if available:`, err);
+        const cached = await cacheService.get<WorkoutInterface>(cacheKey);
+
+        if (cached) {
+            this.workoutsStore.setDraftWorkout(cached);
+            this.exerciseStore.setWorkoutExercises(cached.workout_exercises);
+        }
+    }
+}
+
+  @action
+getLastUserWorkouts(limit: number): void {
+    try {
+        new Get({url: `${getApiBaseUrl()}/workouts/last?limit=${limit}`}).execute()
+            .then(r => r.json())
+            .then(res => {
+                if(res.ok) {
+                    this.workoutsStore.setLastWorkouts(res.data);
+                }});
+    } catch (error) {
+        console.error('Failed to fetch last workouts', error);
+    }
+}
 
     @action
   copyWorkout(id: number, navigate: (path: string) => void): void {

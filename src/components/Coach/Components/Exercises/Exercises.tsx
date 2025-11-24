@@ -149,10 +149,11 @@ const Exercises: React.FC<ExercisesInterface> = ({ coachExercisesStore, coachExe
 
             <div className="tabs">
                 <button className={activeTab === 'own' ? 'active' : ''} onClick={handleOwnClick}>
-                    {t('exercises.tabs.own')}
+                    {t('exercises.tabs.base')}
+
                 </button>
                 <button className={activeTab === 'base' ? 'active' : ''} onClick={handleBaseClick}>
-                    {t('exercises.tabs.base')}
+                    {t('exercises.tabs.own')}
                 </button>
                 <div>
                     <button onClick={() => handleOpenModal()}>{t('createExercise')}</button>
