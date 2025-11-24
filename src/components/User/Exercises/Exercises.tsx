@@ -170,7 +170,6 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                     {t('exercises.tabs.base')}
                 </button>
                 <button className={activeTab === 'base' ? 'active' : ''} onClick={handleBaseClick}>
-
                     {t('exercises.tabs.own')}
                 </button>
 
