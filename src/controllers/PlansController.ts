@@ -25,30 +25,37 @@ export default class PlansController extends BaseController {
     @action
     async getPlans(): Promise<void> {
         const cachedEtag = await cacheService.getVersion('plans');
-        console.log('Cached ETag for plans:', cachedEtag);
-        const response = await new Get({
-            configurator: {
-                headers: cachedEtag ? { 'If-None-Match': `${cachedEtag}` } : {}
-            },
-            url: `${getApiBaseUrl()}/plans`
-        }).execute();
-        console.log('Plans response status:', response.status);
-        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
-            const cached = await cacheService.get<PlanInterface[]>('plans');
-            console.log('Plans not changed, using cached data.', cached);
-            if (cached) {
-                this.plansStore.setPlans(cached);
-                return;
+
+        try {
+            const response = await new Get({
+                configurator: {
+                    headers: cachedEtag ? { 'If-None-Match': `${cachedEtag}` } : {}
+                },
+                url: `${getApiBaseUrl()}/plans`
+            }).execute();
+
+            if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+                const cached = await cacheService.get<PlanInterface[]>('plans');
+                console.log('Plans not changed, using cached data.', cached);
+                if (cached) {
+                    this.plansStore.setPlans(cached);
+                    return;
+                }
+                throw new Error('No cached plans available');
             }
-            throw new Error('No cached plans available');
+
+            const json = await response.json();
+
+            const etag = response.headers.get('etag') || null;
+
+            await cacheService.set('plans', json.plans, etag);
+            this.plansStore.setPlans(json.plans);}
+        catch (error) {
+            const cached = await cacheService.get<PlanInterface[]>('plans');
+
+            if (cached) {
+                this.plansStore.setPlans(cached);}
         }
-
-        const json = await response.json();
-
-        const etag = response.headers.get('etag') || null;
-
-        await cacheService.set('plans', json.plans, etag);
-        this.plansStore.setPlans(json.plans);
     }
 
     @action

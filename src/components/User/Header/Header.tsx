@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable init-declarations */
+
 import React, { useEffect, useState } from 'react';
 import LogoutIcon from '../../../icons/logout';
 import Dropdown from '../Dropdown/Dropdown';
@@ -21,7 +21,7 @@ export const Header = (): JSX.Element => {
         };
         checkStatus();
 
-        let listener: any;
+        let listener: any = null;
         const subscribe = async() => {
             listener = await onNetworkChange(setConnected);
         };
@@ -69,7 +69,7 @@ export const Header = (): JSX.Element => {
                 <div className="header__right">
                     {!connected && (
                         <span className="header__offline">
-                            🔴 Нет подключения
+                            🔴 Оффлайн режим
                         </span>
                     )}
                     <button onClick={logout}>

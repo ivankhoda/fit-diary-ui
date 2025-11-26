@@ -59,12 +59,40 @@ export default class UserController extends BaseController {
                 this.userStore.setUserProfile(data.user);
                 this.userStore.setCurrentUser(data.user);
                 localStorage.setItem('token', data.jwt);
+                localStorage.setItem('refresh_token', data.refresh_token);
                 return true;
             }
 
             return false;
         } catch (error) {
             console.error('Login error:', error);
+            return false;
+        }
+    }
+
+    @action
+    async refreshAccessToken(): Promise<boolean> {
+        const refreshToken = localStorage.getItem('refresh_token');
+
+        if (!refreshToken) {return false;}
+
+        try {
+            const response = await fetch(`${getApiBaseUrl()}/users/refresh`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refresh_token: refreshToken })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.access_token) {
+                localStorage.setItem('access_token', data.access_token);
+                return true;
+            }
+            this.logout();
+            return false;
+        } catch (err) {
+            console.error('Failed to refresh access token', err);
             return false;
         }
     }

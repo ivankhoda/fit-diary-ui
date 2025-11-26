@@ -53,7 +53,7 @@ const TrainingGoal: React.FC = inject('trainingGoalsStore', 'exercisesStore', 'e
                 deadline: goal.deadline.toString().split('T')[0],
             });
             if (goal.exercise_id) {
-                exercisesController.getExercises();
+                // ExercisesController.getExercises();
             }
         }
     }, [trainingGoalsStore.currentGoal]);

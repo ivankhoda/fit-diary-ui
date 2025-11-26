@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import { action } from 'mobx';
 import TrainingGoalsStore, { TrainingGoalInterface, MilestoneInterface } from '../store/trainingGoalsStore';
 import Delete from '../utils/DeleteRequest';
@@ -31,62 +32,104 @@ export default class TrainingGoalsController extends BaseController {
 
     @action
     async getGoals(): Promise<void> {
-        const cacheKey = 'training_goals';
-        const cachedEtag = await cacheService.getVersion(cacheKey);
+        try {const cacheKey = 'training_goals';
+            const cachedEtag = await cacheService.getVersion(cacheKey);
 
-        const response = await new Get({
-            configurator: {
-                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
-            },
-            url: `${getApiBaseUrl()}/training_goals`,
+            const response = await new Get({
+                configurator: {
+                    headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+                },
+                url: `${getApiBaseUrl()}/training_goals`,
 
-        }).execute();
+            }).execute();
 
-        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
-            const cached = await cacheService.get<TrainingGoalInterface[]>(cacheKey);
+            if (response.status === NOT_CHANGE_RESPONSE_CODE) {
+                const cached = await cacheService.get<TrainingGoalInterface[]>(cacheKey);
+
+                if (cached) {
+                    this.trainingGoalsStore.setGoals(cached);
+                    return;
+                }
+            }
+
+            const json = await response.json();
+            const etag = response.headers.get('etag');
+
+            await cacheService.set(cacheKey, json.goals, etag);
+
+            this.trainingGoalsStore.setGoals(json.goals);
+        } catch (err) {
+        // Fallback on network error
+            const cached = await cacheService.get<TrainingGoalInterface[]>('training_goals');
 
             if (cached) {
                 this.trainingGoalsStore.setGoals(cached);
-                return;
             }
         }
-
-        const json = await response.json();
-        const etag = response.headers.get('etag');
-
-        await cacheService.set(cacheKey, json.goals, etag);
-
-        this.trainingGoalsStore.setGoals(json.goals);
     }
 
 @action
-    async getGoalDetails(goalId: number): Promise<void> {
-        const cacheKey = `training_goal_${goalId}`;
-        const cachedEtag = await cacheService.getVersion(cacheKey);
+    async getGoalDetails(goalId: number): Promise<TrainingGoalInterface | null> {
+        try {
+        // Get all cached goals
+            const allGoals = await cacheService.get<TrainingGoalInterface[]>('training_goals');
+            const cached = allGoals?.find(goal => goal.id === goalId);
 
-        const response = await new Get({
-            configurator: {
-                headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
-            },
-            url: `${getApiBaseUrl()}/training_goals/${goalId}`,
+            const cachedEtag = cached ? await cacheService.getVersion('training_goals') : null;
 
-        }).execute();
+            const response = await new Get({
+                configurator: {
+                    headers: cachedEtag ? { 'If-None-Match': cachedEtag } : {}
+                },
+                url: `${getApiBaseUrl()}/training_goals/${goalId}`,
+            }).execute();
 
-        if (response.status === NOT_CHANGE_RESPONSE_CODE) {
-            const cached = await cacheService.get<TrainingGoalInterface>(cacheKey);
+            // 304 Not Modified -> use cached
+            if (response.status === NOT_CHANGE_RESPONSE_CODE && cached) {
+                this.trainingGoalsStore.setCurrentGoal(cached);
+                return cached;
+            }
+
+            // Fresh data from API
+            if (response.ok) {
+                const json = await response.json();
+
+                if (allGoals) {
+                    const index = allGoals.findIndex(goal => goal.id === goalId);
+
+                    if (index >= 0) {
+                        allGoals[index] = json.goal;
+                    } else {
+                        allGoals.push(json.goal);
+                    }
+
+                    await cacheService.set('training_goals', allGoals, response.headers.get('etag') || null);
+                }
+
+                this.trainingGoalsStore.setCurrentGoal(json.goal);
+                return json.goal;
+            }
+
+            // API error but cached value exists
+            if (cached) {
+                this.trainingGoalsStore.setCurrentGoal(cached);
+                return cached;
+            }
+
+            return null;
+        } catch (err) {
+        // Fallback on network error
+            const allGoals = await cacheService.get<TrainingGoalInterface[]>('training_goals');
+            const cached = allGoals?.find(goal => goal.id === goalId);
 
             if (cached) {
                 this.trainingGoalsStore.setCurrentGoal(cached);
-                return;
+                return cached;
             }
+
+            this.trainingGoalsStore.setCurrentGoal(null);
+            return null;
         }
-
-        const json = await response.json();
-        const etag = response.headers.get('etag');
-
-        await cacheService.set(cacheKey, json.goal, etag);
-
-        this.trainingGoalsStore.setCurrentGoal(json.goal);
     }
 
     @action

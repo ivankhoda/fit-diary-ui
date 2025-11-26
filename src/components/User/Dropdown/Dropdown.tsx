@@ -54,7 +54,6 @@ const filterOptionsByVisibility = (
         if (option.subOptions) {
             const filteredSubs = filterOptionsByVisibility(option.subOptions);
 
-            // Если после фильтрации подопций ничего не осталось — скрыть весь пункт
             if (filteredSubs.length === 0) {return null;}
 
             return { ...option, subOptions: filteredSubs };
