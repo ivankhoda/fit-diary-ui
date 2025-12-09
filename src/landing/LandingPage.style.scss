@@ -2,16 +2,17 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #222;
   line-height: 1.6;
-  background: #fafafa;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
   min-height: 100vh;
   padding: 0 15px;
 
   &__hero {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     text-align: center;
     padding: 100px 15px 80px;
-    box-shadow: inset 0 -6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     border-bottom-left-radius: 60px;
     border-bottom-right-radius: 60px;
 
@@ -24,11 +25,11 @@
 
   &__title {
     font-size: 3.6rem;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 20px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    letter-spacing: 0.03em;
-    color: #dcdcdc;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
+    color: #ffffff;
 
     @media (max-width: 480px) {
       font-size: 2.4rem;
@@ -39,8 +40,13 @@
       height: auto;
       display: block;
       margin: 2rem auto;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.02);
+      }
     }
 
   &__subtitle {
@@ -48,8 +54,8 @@
     max-width: 600px;
     margin: 0 auto 40px;
     font-weight: 400;
-    color: #dcdcdc;
-    line-height: 1.5;
+    color: #f0f0f0;
+    line-height: 1.6;
 
     @media (max-width: 480px) {
       font-size: 1rem;
@@ -60,31 +66,31 @@
   }
 
   &__cta-button {
-    background: #ff6b00;
+    background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
     color: white;
-    padding: 16px 36px;
-    border-radius: 30px;
+    padding: 18px 40px;
+    border-radius: 50px;
     font-size: 1.3rem;
-    font-weight: 600;
+    font-weight: 700;
     border: none;
     cursor: pointer;
-    box-shadow: 0 6px 14px rgba(255, 107, 0, 0.4);
+    box-shadow: 0 8px 24px rgba(255, 107, 0, 0.4);
     transition: all 0.3s ease;
     user-select: none;
     min-width: 180px;
 
     &:hover,
     &:focus {
-      background: #e65c00;
-      box-shadow: 0 8px 18px rgba(230, 92, 0, 0.7);
+      background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+      box-shadow: 0 12px 32px rgba(255, 140, 0, 0.5);
       outline: none;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
     }
 
     &--large {
       font-size: 1.6rem;
-      padding: 20px 48px;
-      letter-spacing: 0.04em;
+      padding: 22px 52px;
+      letter-spacing: 0.02em;
       font-weight: 700;
       margin-top: 20px;
       display: inline-block;
@@ -106,11 +112,11 @@
 
   &__section-title {
     text-align: center;
-    font-size: 2.4rem;
-    font-weight: 700;
+    font-size: 2.8rem;
+    font-weight: 800;
     margin: 80px 0 40px;
-    color: #333;
-    letter-spacing: 0.02em;
+    color: #1e293b;
+    letter-spacing: -0.02em;
 
     @media (max-width: 480px) {
       font-size: 1.8rem;
@@ -119,17 +125,17 @@
   }
 
   &__benefits {
-    padding: 50px 20px;
-    background: #fff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
+    padding: 60px 30px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
     max-width: 700px;
     margin: 0 auto;
 
     @media (max-width: 480px) {
-      padding: 30px 15px;
+      padding: 40px 20px;
       max-width: 100%;
-      border-radius: 15px;
+      border-radius: 20px;
     }
   }
 
@@ -141,11 +147,11 @@
 
   &__benefit-item {
     font-size: 1.25rem;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     padding-left: 2.4em;
     position: relative;
     font-weight: 500;
-    color: #444;
+    color: #475569;
 
     &::before {
       content: "✔";
@@ -154,25 +160,25 @@
       top: 2px;
       font-weight: 900;
       font-size: 1.5rem;
-      color: #4caf50;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      color: #10b981;
+      text-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
     }
 
     @media (max-width: 480px) {
       font-size: 1.1rem;
       padding-left: 1.8em;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
     }
   }
 
   &__how,
   &__who {
-    padding: 50px 20px;
+    padding: 60px 20px;
     max-width: 900px;
     margin: 0 auto;
 
     @media (max-width: 480px) {
-      padding: 30px 15px;
+      padding: 40px 15px;
       max-width: 100%;
     }
   }
@@ -189,24 +195,24 @@
   }
 
   &__step {
-    background: white;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 20px;
-    padding: 28px 30px;
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.07);
+    padding: 32px 36px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     flex: 1;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 
     &:hover {
       transform: translateY(-10px);
-      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 20px 50px rgba(102, 126, 234, 0.2);
     }
 
     h3 {
       font-size: 1.6rem;
       margin-bottom: 12px;
-      color: #ff6b00;
+      color: #667eea;
       font-weight: 700;
-      letter-spacing: 0.02em;
+      letter-spacing: -0.01em;
 
       @media (max-width: 480px) {
         font-size: 1.3rem;
@@ -215,8 +221,8 @@
 
     p {
       font-size: 1.1rem;
-      color: #555;
-      line-height: 1.5;
+      color: #64748b;
+      line-height: 1.6;
       font-weight: 400;
 
       @media (max-width: 480px) {
@@ -230,16 +236,21 @@
     margin: 0 auto;
     font-size: 1.25rem;
     font-weight: 500;
-    color: #555;
+    color: #475569;
     text-align: center;
 
     p {
-      margin-bottom: 16px;
-      transition: color 0.3s ease;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
       cursor: default;
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.5);
 
       &:hover {
-        color: #ff6b00;
+        color: #667eea;
+        background: rgba(255, 255, 255, 0.9);
+        transform: scale(1.05);
       }
 
       @media (max-width: 480px) {
@@ -255,17 +266,19 @@
   }
 
   &__cta {
-    background: #222;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     color: white;
     text-align: center;
     padding: 100px 20px;
+    margin-top: 60px;
+    border-radius: 24px;
 
     h2 {
       color: white;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 2.8rem;
       margin-bottom: 16px;
-      letter-spacing: 0.03em;
+      letter-spacing: -0.02em;
 
       @media (max-width: 480px) {
         font-size: 2rem;
@@ -277,13 +290,65 @@
       font-size: 1.25rem;
       font-weight: 400;
       margin-bottom: 32px;
-      color: #ddd;
-      line-height: 1.5;
+      color: #e2e8f0;
+      line-height: 1.6;
 
       @media (max-width: 480px) {
         font-size: 1rem;
         margin-bottom: 24px;
       }
+    }
+  }
+
+  &__founder {
+    padding: 80px 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+
+    p {
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: #475569;
+      margin-bottom: 20px;
+      text-align: left;
+
+      @media (max-width: 480px) {
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+    }
+
+    @media (max-width: 480px) {
+      padding: 50px 20px;
+      max-width: 100%;
+    }
+  }
+
+  &__footer {
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 60px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+
+    a {
+      color: #e2e8f0;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #ffffff;
+        text-decoration: underline;
+      }
+    }
+
+    @media (max-width: 480px) {
+      padding: 30px 15px;
+      margin-top: 40px;
+      font-size: 0.9rem;
     }
   }
 }

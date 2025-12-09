@@ -2,11 +2,11 @@
 
 .login-form {
   margin: 0 auto;
-  padding: 30px;
-  background-color: #fff;
+  padding: 40px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   font-family: "Roboto";
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,33 +19,39 @@
 
   .form-title {
     text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #1e293b;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 
     .form-label {
       display: block;
       font-weight: 600;
-      color: #555;
-      margin-bottom: 5px;
+      color: #475569;
+      margin-bottom: 8px;
     }
 
     .form-input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
       font-size: 16px;
-    }
+      transition: all 0.3s ease;
+      background: #ffffff;
 
-    .form-input:focus {
-      outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      &:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
     }
 
 
@@ -62,32 +68,28 @@
 
   .form-button {
     width: 100%;
-    padding: 10px;
-    background-color: styles.$button-dark;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     color: #fff;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 
     &:hover {
-      width: 100%;
-    padding: 10px;
-    background-color: styles.$button-dark;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+      transform: translateY(-2px);
     }
 
     &:disabled {
-      background-color: #ccc;
+      background: #cbd5e1;
       cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+      transition: none;
     }
   }
 
