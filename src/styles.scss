@@ -1,16 +1,18 @@
 @use "../styles/mobile.scss" as mobile;
 @use "../styles/mixins.scss" as mixins;
 
-$primary-color: #0e7dde;
-$secondary-color: #4F5B66;
-$accent-color: #f8f9fa;
+$primary-color: #2563eb;
+$secondary-color: #475569;
+$accent-color: #f8fafc;
 $background-color: #FFFFFF;
-$button-dark: #5c6d7e;
+$button-dark: #334155;
 
-$color-light-gray: #BDBDBA;
-$color-dark-gray: #464748;
-$color-blue: #009EDB;
+$color-light-gray: #e2e8f0;
+$color-dark-gray: #1e293b;
+$color-blue: #3b82f6;
 $white-color: #FFFFFF;
+$success-color: #10b981;
+$error-color: #ef4444;
 
 // Шрифты
 $body-font-family: "Roboto";
@@ -40,7 +42,7 @@ $content-padding: 20px;
 
 // Кнопки
 $button-background-color: $accent-color;
-$button-color: #0077c2;;
+$button-color: $color-blue;
 $button-padding: 8px 8px;
 $button-border-radius: 5px;
 
@@ -79,7 +81,8 @@ body {
   font-size: $base-font-size;
   line-height: $line-height;
   color: $secondary-color;
-  background-color: $background-color;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background-attachment: fixed;
 
   textarea {
     font-family: $body-font-family;
@@ -166,17 +169,44 @@ h6 {
 }
 
 button {
-  background-color: $button-background-color;
-  color: $button-dark;
+  background-color: $primary-color;
+  color: $white-color;
   padding: $button-padding;
   border-radius: $button-border-radius;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .button {
-  background-color: $button-background-color;
-  color: $button-color;
+  background-color: $primary-color;
+  color: $white-color;
   padding: $button-padding;
   border-radius: $button-border-radius;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
 }
 
 a {
