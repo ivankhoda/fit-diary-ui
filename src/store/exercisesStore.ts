@@ -1,10 +1,9 @@
 
 import { action, makeObservable, observable } from 'mobx';
-import { Exercise } from '../components/User/Exercises/Exercises';
 
 export interface ExerciseInterface {
     exercise_id?: number
-    id: number;
+    id?: number;
     uuid?: string;
     name?: string;
     description?: string;
@@ -21,8 +20,50 @@ export interface ExerciseInterface {
     ended_at?: string;
     order?: string
     workout_exercise_id?: number;
+    workout_id?: number;
     comment?: string;
     own?: boolean
+  }
+
+export interface WorkoutExerciseInterface extends ExerciseInterface {
+    name?: string;
+    exercise_id?: number
+    workout_id?: number;
+    order?: string;
+    temp?: boolean;
+    type_of_measurement?: string;
+  }
+
+export interface Exercise {
+      uuid?: string;
+      instanceId?: string;
+      id: number;
+      name: string;
+      category: 'strength' | 'cardio' | 'flexibility' | 'balance';
+      difficulty: 'beginner' | 'intermediate' | 'advanced';
+      type_of_measurement?: string
+      description: string;
+      duration: number;
+      muscle_groups: string[];
+      own?: boolean;
+      coach_owned?: boolean
+  }
+
+export interface ExerciseFormData extends Exercise {
+
+    created_at?: string;
+    description: string;
+
+    duration: number;
+    id: number;
+    muscle_groups: string[];
+    type_of_measurement: string;
+    name: string;
+    updated_at?: string;
+    public?: boolean
+    uuid?: string;
+    own?: boolean;
+    temp?: boolean;
   }
 
 export interface SetInterface {

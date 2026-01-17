@@ -6,6 +6,11 @@
   "scripts": {
     "start": "NODE_ENV=development GENERATE_SOURCEMAP=false webpack serve --open --config webpack.dev.js",
     "build": "NODE_ENV=production webpack --config webpack.production.js",
+    "build:clean": "rm -rf dist && npm run build",
+    "sync": "npx cap sync",
+    "build:mobile": "npm run build && npx cap sync",
+    "open:ios": "npx cap open ios",
+    "open:android": "npx cap open android",
     "test": "npx jest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -44,6 +49,7 @@
     "@types/react-modal": "^3.16.3",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
+    "autoprefixer": "^10.4.23",
     "babel-loader": "^9.1.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
@@ -66,18 +72,22 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "mini-css-extract-plugin": "^2.9.2",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0",
     "prettier": "^3.5.3",
     "sass-loader": "^16.0.3",
     "storybook": "^8.5.2",
     "style-loader": "^3.3.4",
     "stylelint": "^15.4.0",
     "stylelint-scss": "^4.6.0",
+    "tailwindcss": "^3.4.19",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",
     "webpack": "^5.79.0",
     "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^5.2.2"
+    "webpack-dev-server": "^5.2.2",
+    "workbox-webpack-plugin": "^7.4.0"
   },
   "dependencies": {
     "@capacitor-community/keep-awake": "^7.1.0",
@@ -90,6 +100,7 @@
     "@capacitor/keyboard": "^7.0.1",
     "@capacitor/local-notifications": "^7.0.1",
     "@capacitor/network": "^7.0.1",
+    "@capacitor/preferences": "^7.0.3",
     "@capacitor/share": "^7.0.1",
     "@capacitor/splash-screen": "^7.0.1",
     "@capgo/capacitor-updater": "^7.8.7",
@@ -126,7 +137,12 @@
     "sass": "^1.81.0",
     "save-dev": "^0.0.1-security",
     "swiper": "^11.2.4",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.8.0",
+    "workbox-core": "^7.4.0",
+    "workbox-expiration": "^7.4.0",
+    "workbox-precaching": "^7.4.0",
+    "workbox-routing": "^7.4.0",
+    "workbox-strategies": "^7.4.0"
   },
   "eslintConfig": {
     "extends": [

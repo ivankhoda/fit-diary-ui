@@ -91,70 +91,75 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
     }, []);
 
     return (
-        <>
+        <div className="register-wrapper">
             <div className="register-form">
-                <p className="form-title">{t('register')}</p>
-                <BackButton/>
-                <form id="register" onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email" className="form-label">
-                            {t('email')}
-                            <input
-                                id="email"
-                                className="form-input"
-                                type="email"
-                                value={email}
-                                onChange={handleEmailChange}
-                            />
-                        </label>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password" className="form-label">
-                            {`${t('password')} (${t('characters_min', { count: MIN_PASSWORD_LENGTH })})`}
-                            <input
-                                id="password"
-                                className="form-input"
-                                type="password"
-                                value={password}
-                                onChange={handlePasswordChange}
-                            />
-                        </label>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="confirm-password" className="form-label">
-                            {t('confirm_password')}
-                            <input
-                                id="confirm-password"
-                                className="form-input"
-                                type="password"
-                                value={confirmPassword}
-                                onChange={handleConfirmPasswordChange}
-                            />
-                        </label>
-                    </div>
+                <div className="form-header">
+                    <BackButton/>
+                    <h1 className="form-title">{t('register')}</h1>
+                </div>
 
-                    <div className="form-group">
-                        <button className="form-button" type="submit" disabled={!email || !password || !confirmPassword}>
-                            {t('button_register')}
-                        </button>
-                    </div>
-                    {errors.length > 0 && (
-                        <div className="form-error">
-                            {errors.map((error, index) => (
-                                <p key={index}>{error}</p>
-                            ))}
+                <div className="form-content">
+                    <form id="register" onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="email" className="form-label">
+                                {t('email')}
+                                <input
+                                    id="email"
+                                    className="form-input"
+                                    type="email"
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                />
+                            </label>
                         </div>
-                    )}
-                </form>
-                <button className="toggle-button" onClick={toggleForm}>
-                    {t('auth.have_account')}
-                </button>
+                        <div className="form-group">
+                            <label htmlFor="password" className="form-label">
+                                {`${t('password')} (${t('characters_min', { count: MIN_PASSWORD_LENGTH })})`}
+                                <input
+                                    id="password"
+                                    className="form-input"
+                                    type="password"
+                                    value={password}
+                                    onChange={handlePasswordChange}
+                                />
+                            </label>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="confirm-password" className="form-label">
+                                {t('confirm_password')}
+                                <input
+                                    id="confirm-password"
+                                    className="form-input"
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={handleConfirmPasswordChange}
+                                />
+                            </label>
+                        </div>
+
+                        <div className="form-group">
+                            <button className="form-button" type="submit" disabled={!email || !password || !confirmPassword}>
+                                {t('button_register')}
+                            </button>
+                        </div>
+                        {errors.length > 0 && (
+                            <div className="form-error">
+                                {errors.map((error, index) => (
+                                    <p key={index}>{error}</p>
+                                ))}
+                            </div>
+                        )}
+                    </form>
+                    <button className="toggle-button" onClick={toggleForm}>
+                        {t('auth.have_account')}
+                    </button>
+                </div>
             </div>
             <p className="auth__legal">
                 Регистрируясь, вы принимаете{' '}
                 <a href="https://planka.tech/terms-of-use" target="_blank" rel="noreferrer">условия использования</a> и{' '}
                 <a href="https://planka.tech/privacy-policy" target="_blank" rel="noreferrer">политику конфиденциальности</a>.
             </p>
-        </>
+        </div>
     );
 };

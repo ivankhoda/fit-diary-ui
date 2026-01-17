@@ -1,3 +1,4 @@
+import './tailwind.css';
 import './styles.scss';
 
 import React from 'react';
@@ -12,6 +13,7 @@ import controllers from './controllers/controllers';
 import en from './locales/en.json';
 import ru from './locales/ru.json';
 import stores from './store/stores';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 i18n.init({
     interpolation: {escapeValue: false},
@@ -32,3 +34,17 @@ root.render(
         </I18nextProvider>
     </Provider>
 );
+
+// Register service worker for offline support
+serviceWorkerRegistration.register({
+    onSuccess: () => console.log('App is ready for offline use.'),
+    onUpdate: registration => {
+        console.log('New version available. Updating...');
+        // Auto-update to new version
+        if (registration.waiting) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            window.location.reload();
+        }
+    },
+});
+

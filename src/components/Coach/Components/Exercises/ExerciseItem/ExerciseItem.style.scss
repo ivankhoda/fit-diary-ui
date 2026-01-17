@@ -1,28 +1,96 @@
 .exercise-item {
   display: flex;
   flex-direction: column;
-  align-items: start;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: #fff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  // Subtle gradient overlay on hover
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
 
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: #cbd5e0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 768px) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (max-width: 480px) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: 768px) {
+      transform: scale(0.99);
+    }
   }
 
   .exercise-header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+
+    @media (max-width: 480px) {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+    }
 
     h2 {
-      font-size: 18px;
-      color: #333;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a202c;
       margin: 0;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+
+      @media (max-width: 768px) {
+        font-size: 18px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 16px;
+      }
     }
   }
 
@@ -30,36 +98,106 @@
   .exercise-details {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
     width: 100%;
-    padding: 10px 0;
     font-size: 14px;
-    color: #6e1313;
+    color: #4a5568;
+
+    @media (max-width: 768px) {
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 6px;
+      font-size: 12px;
+      flex-direction: column;
+      align-items: stretch;
+    }
 
     p {
       margin: 0;
+
       strong {
-        color: #333;
+        color: #2d3748;
+        font-weight: 600;
       }
     }
   }
 
   .show-exercise-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    background-color:  #a5a5a5;;
-    color: #fff;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+
+    @media (max-width: 768px) {
+      padding: 9px 16px;
+      font-size: 13px;
+      gap: 6px;
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 13px;
+      justify-content: center;
+    }
 
     svg {
-      margin-left: 5px;
+      font-size: 12px;
+      transition: transform 0.25s ease;
+
+      @media (max-width: 768px) {
+        font-size: 11px;
+      }
     }
 
     &:hover {
-      background-color:  #606061;
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      @media (max-width: 768px) {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      @media (max-width: 480px) {
+        transform: translateY(-1px);
+      }
+
+      svg {
+        transform: translateX(2px);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+      @media (max-width: 480px) {
+        transform: scale(0.98);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid #2d3748;
+      outline-offset: 2px;
     }
   }
 }

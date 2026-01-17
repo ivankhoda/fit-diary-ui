@@ -12,18 +12,32 @@ const CoachModeContext = createContext<{
     setMode: () => {},
 });
 
-const LOCAL_STORAGE_KEY = 'app_mode';
+/*
+ * Disable coach mode completely for v1.0
+ * const LOCAL_STORAGE_KEY = 'app_mode';
+ */
 
 export const CoachModeProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
-    const getInitialMode = (): Mode => {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-        return saved === 'coach' ? 'coach' : 'user';
-    };
+    const getInitialMode = (): Mode => 
+        /*
+         * COACH MODE DISABLED FOR V1.0 - Always return 'user'
+         * Const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+         * Return saved === 'coach' ? 'coach' : 'user';
+         */
+        'user'
+    ;
 
     const [mode, setMode] = useState<Mode>(getInitialMode);
 
     useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, mode);
+        /*
+         * COACH MODE DISABLED FOR V1.0
+         * LocalStorage.setItem(LOCAL_STORAGE_KEY, mode);
+         * Force user mode
+         */
+        if (mode !== 'user') {
+            setMode('user');
+        }
     }, [mode]);
 
     return (

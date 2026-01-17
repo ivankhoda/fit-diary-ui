@@ -3,14 +3,30 @@
   display: inline-block;
 
   .coach-dropdown-toggle {
-    background: none;
-    border: none;
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
     cursor: pointer;
-    padding: 10px;
+    padding: 10px 12px;
     outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: #edf2f7;
+      border-color: #cbd5e0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
 
     svg {
-      fill: #333;
+      fill: #1a202c;
       width: 20px;
       height: 20px;
       transition: transform 0.3s ease;
@@ -24,90 +40,135 @@
 
 .coach-dropdown-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   left: 0;
-  min-width: 150px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 220px;
+  background-color: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   z-index: 100;
-  padding: 0;
+  padding: 8px;
+  animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 .coach-dropdown-item {
   position: relative;
-  padding: 10px;
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
+  padding: 0;
+  background-color: transparent;
+  border-bottom: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-family: 'Roboto';
-
-  &:hover {
-    background-color: #f7f7f7;
-  }
+  border-radius: 6px;
+  margin-bottom: 4px;
 
   &:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    background-color: #f7fafc;
   }
 
   .coach-dropdown-link {
     display: block;
-    color: #333;
+    color: #1a202c;
     text-decoration: none;
-    padding: 8px 12px;
-    transition: color 0.2s ease;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
 
     &:hover {
-      color: #007bff;
+      color: #1a202c;
+      background-color: #edf2f7;
     }
   }
 
   .coach-dropdown-submenu-trigger {
     display: block;
     width: 100%;
-    padding: 10px;
+    padding: 12px 14px;
     text-align: left;
     background: none;
     border: none;
-    color: #333;
+    color: #1a202c;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
 
     &:hover {
-      background-color: #f7f7f7;
+      background-color: #edf2f7;
     }
   }
 
   .coach-dropdown-submenu {
     position: absolute;
-    top: 0; // привязан к .coach-dropdown-item
+    top: 0;
     left: 100%;
-    min-width: 150px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 8px;
+    min-width: 200px;
+    background-color: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     z-index: 200;
-    padding: 0;
+    padding: 8px;
+    animation: slideRight 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @keyframes slideRight {
+      from {
+        opacity: 0;
+        transform: translateX(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
 
     .coach-dropdown-link {
-      padding: 10px 15px;
+      padding: 10px 14px;
       white-space: nowrap;
-      border-bottom: 1px dashed #bfb9a4;
+      border-bottom: none;
+      margin-bottom: 4px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 }
 
 @media (max-width: 768px) {
-  .coach-dropdown-menu,
-  .coach-dropdown-submenu {
-    min-width: 100%;
+  .coach-dropdown-menu {
+    min-width: 200px;
+    right: 0;
+    left: auto;
   }
 
-  .coach-dropdown-submenu {
-    top: 100%;
-    left: 0;
+  .coach-dropdown-item {
+    .coach-dropdown-submenu {
+      top: 100%;
+      left: 0;
+      margin-left: 0;
+      margin-top: 4px;
+      animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
   }
 }

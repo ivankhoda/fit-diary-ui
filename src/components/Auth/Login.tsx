@@ -102,85 +102,92 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
     }, []);
 
     return (
-        <div className="login-form">
-            <p className="form-title">
-                {isRecoveryMode ? t('password_recovery') : t('login_first')}
-            </p>
-            <BackButton/>
-            {message && <div className="form-message success">{message}</div>}
-            {error && <div className="form-message error">{error}</div>}
+        <div className="login-wrapper">
+            <div className="login-form">
+                <div className="form-header">
+                    <BackButton/>
+                    <h1 className="form-title">
+                        {isRecoveryMode ? t('password_recovery') : t('login_first')}
+                    </h1>
+                </div>
 
-            {isRecoveryMode
-                ? (
-                    <form id="recovery" onSubmit={handleRecoverySubmit}>
-                        <div className="form-group">
-                            <label htmlFor="email" className="form-label">
-                                {t('enter_email')}
-                                <input
-                                    id="email"
-                                    className="form-input"
-                                    type="email"
-                                    name="email"
-                                    value={email}
-                                    onChange={handleSetEmail}
-                                />
-                            </label>
-                        </div>
-                        <div className="form-group">
-                            <button className="form-button" type="submit" disabled={!email}>
-                                {t('send_recovery_email')}
-                            </button>
-                        </div>
-                        <div className="form-recovery">
-                            <button type="button" className="form-recovery-link" onClick={handleSwitchToLogin}>
-                                {t('back_to_login')}
-                            </button>
-                        </div>
-                    </form>
-                )
-                : (
-                    <form id="login" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="login" className="form-label">
-                                {t('login')}
-                                <input
-                                    id="login_input"
-                                    className="form-input"
-                                    type="text"
-                                    name="login"
-                                    value={email}
-                                    onChange={handleSetEmail}
-                                />
-                            </label>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password" className="form-label">
-                                {t('password')}
-                                <input
-                                    id="password"
-                                    className="form-input"
-                                    type="password"
-                                    name="password"
-                                    value={password}
-                                    onChange={handleSetPassword}
-                                />
-                            </label>
-                        </div>
-                        <div className="form-group">
-                            <button className="form-button" type="submit" disabled={!email || !password}>
-                                {t('button_ok')}
-                            </button>
-                        </div>
-                        <div className="form-recovery">
-                            <button type="button" className="form-button" onClick={handleSwitchToRecovery}>
-                                {t('forgot_password')}
-                            </button>
-                        </div>
-                        <button className="toggle-button" onClick={toggleForm}>
-                            {t('auth.no_account')}
-                        </button>
-                    </form>
-                )}
+                {message && <div className="form-message success">{message}</div>}
+                {error && <div className="form-message error">{error}</div>}
+
+                <div className="form-content">
+                    {isRecoveryMode
+                        ? (
+                            <form id="recovery" onSubmit={handleRecoverySubmit}>
+                                <div className="form-group">
+                                    <label htmlFor="email" className="form-label">
+                                        {t('enter_email')}
+                                        <input
+                                            id="email"
+                                            className="form-input"
+                                            type="email"
+                                            name="email"
+                                            value={email}
+                                            onChange={handleSetEmail}
+                                        />
+                                    </label>
+                                </div>
+                                <div className="form-group">
+                                    <button className="form-button" type="submit" disabled={!email}>
+                                        {t('send_recovery_email')}
+                                    </button>
+                                </div>
+                                <div className="form-recovery">
+                                    <button type="button" className="form-recovery-link" onClick={handleSwitchToLogin}>
+                                        {t('back_to_login')}
+                                    </button>
+                                </div>
+                            </form>
+                        )
+                        : (
+                            <form id="login" onSubmit={handleSubmit}>
+                                <div className="form-group">
+                                    <label htmlFor="login" className="form-label">
+                                        {t('login')}
+                                        <input
+                                            id="login_input"
+                                            className="form-input"
+                                            type="text"
+                                            name="login"
+                                            value={email}
+                                            onChange={handleSetEmail}
+                                        />
+                                    </label>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="password" className="form-label">
+                                        {t('password')}
+                                        <input
+                                            id="password"
+                                            className="form-input"
+                                            type="password"
+                                            name="password"
+                                            value={password}
+                                            onChange={handleSetPassword}
+                                        />
+                                    </label>
+                                </div>
+                                <div className="form-group">
+                                    <button className="form-button" type="submit" disabled={!email || !password}>
+                                        {t('button_ok')}
+                                    </button>
+                                </div>
+                                <div className="form-recovery">
+                                    <button type="button" className="form-button" onClick={handleSwitchToRecovery}>
+                                        {t('forgot_password')}
+                                    </button>
+                                </div>
+                                <button className="toggle-button" onClick={toggleForm}>
+                                    {t('auth.no_account')}
+                                </button>
+                            </form>
+                        )}
+                </div>
+            </div>
         </div>
     );
 };

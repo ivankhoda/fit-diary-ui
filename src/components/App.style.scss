@@ -106,16 +106,66 @@ input, textarea {
 }
 
 .description-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin-top: env(safe-area-inset-top);
+  margin-left: env(safe-area-inset-left);
+  margin-right: env(safe-area-inset-right);
+  margin-bottom: env(safe-area-inset-bottom);
+  padding: 40px 20px 20px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
 
-      margin-top: env(safe-area-inset-top);
-      margin-left:  env(safe-area-inset-left);
-      margin-right: env(safe-area-inset-right);
-      margin-bottom: env(safe-area-inset-bottom);
-      margin: 40px 20px 20px 20px;
+  .description-header {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: fadeInDown 0.6s ease-out;
+  }
+
+  .description-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0 0 20px 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.5px;
+  }
+
+  .description-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.8s ease-out 0.2s both;
+  }
+
+  .description-text {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #495057;
+    max-width: 700px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .description-footer {
+    margin-top: 30px;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+  }
 
   .support {
     position: absolute;
-    bottom: 20px; // Ensures it's at the bottom
+    bottom: 20px;
     left: 50%;
     width: 90%;
     transform: translateX(-50%);
@@ -125,56 +175,197 @@ input, textarea {
     gap: 8px;
 
     p {
-        font-size: 14px;
-        color: #555;
-        text-align: center;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
     }
 
     .boosty-icon {
-        width: 50px;
-        height: 50px;
-        cursor: pointer;
-        transition: transform 0.2s ease-in-out;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
 
-        &:hover {
-            transform: scale(1.1);
-        }
+      &:hover {
+        transform: scale(1.1);
+      }
 
-        &:active {
-            transform: scale(0.9);
-        }
+      &:active {
+        transform: scale(0.9);
+      }
     }
 
     .tooltip {
-        display: none;
-        font-size: 12px;
-        color: white;
-        background-color: black;
-        padding: 4px 8px;
-        border-radius: 4px;
-        position: absolute;
-        bottom: 60px; // Places it above the icon
-        left: 50%;
-        transform: translateX(-50%);
-        white-space: nowrap;
+      display: none;
+      font-size: 12px;
+      color: white;
+      background-color: black;
+      padding: 4px 8px;
+      border-radius: 4px;
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
     }
 
-    @media (hover: none) { // Mobile users (no hover)
-        .tooltip {
-            display: block;
-        }
+    @media (hover: none) {
+      .tooltip {
+        display: block;
+      }
     }
-}
+  }
 
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 30px 15px 15px 15px;
+
+    .description-header {
+      margin-bottom: 20px;
+    }
+
+    .description-title {
+      font-size: 1.75rem;
+    }
+
+    .description-text {
+      padding: 20px;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .description-footer {
+      margin-top: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 10px 10px 10px;
+
+    .description-header {
+      margin-bottom: 15px;
+    }
+
+    .description-title {
+      font-size: 1.5rem;
+    }
+
+    .description-text {
+      padding: 18px;
+      font-size: 0.95rem;
+      border-radius: 12px;
+    }
+
+    .description-footer {
+      margin-top: 15px;
+    }
+  }
+
+  /* Tablet/landscape orientation */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .description-text {
+      max-width: 650px;
+      padding: 28px;
+    }
+  }
+
+  /* Large screens */
+  @media (min-width: 1440px) {
+    .description-title {
+      font-size: 3rem;
+    }
+
+    .description-text {
+      max-width: 800px;
+      padding: 40px;
+      font-size: 1.2rem;
+    }
+  }
 }
-.proceed-button{
+.proceed-button {
   width: 100%;
-  background: #f4f1eb;
-  padding: 8px 12px;
-  border: 2px solid #bfb9a4;
-  border-radius: 5px;
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  color: white;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease;
-  margin-top: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 18px 40px;
+    font-size: 1.2rem;
+  }
 }

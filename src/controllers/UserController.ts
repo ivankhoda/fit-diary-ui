@@ -114,11 +114,12 @@ export default class UserController extends BaseController {
     }
 
     @action
-    getUserFromCache(): CachedUserProfile | null {
-        const cached = localStorage.getItem('current_user');
+    async getUserFromCache(): Promise<CachedUserProfile> {
+        const cached = await cacheService.get<CachedUserProfile>('current_user');
 
         if (cached) {
-            return JSON.parse(cached) as CachedUserProfile;
+            this.userStore.setUserProfile(cached);
+            this.userStore.setCurrentUser(cached);
         }
         return null;
     }

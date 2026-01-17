@@ -12,7 +12,9 @@ import CoachExercisesController from '../../controllers/CoachExercisesController
 import CoachExercisesStore from '../../store/CoachExercisesStore';
 import ExerciseItem from './ExerciseItem/ExerciseItem';
 import CoachExerciseModal from './ExerciseModal/CoachExerciseModal';
-import { Exercise } from '../../../User/Exercises/Exercises';
+
+import Pagination from '../../../Common/Pagination/Pagination';
+import { Exercise } from '../../../../store/exercisesStore';
 
 export interface ExercisesInterface {
     coachExercisesStore?: CoachExercisesStore;
@@ -106,13 +108,9 @@ const Exercises: React.FC<ExercisesInterface> = ({ coachExercisesStore, coachExe
         setIsModalVisible(true);
     }, []);
 
-    const handleNextPage = useCallback(() => {
-        if (currentPage < totalPages) { setCurrentPage(prev => prev + 1); }
-    }, [currentPage, totalPages]);
-
-    const handlePreviousPage = useCallback(() => {
-        if (currentPage > 1) { setCurrentPage(prev => prev - 1); }
-    }, [currentPage, totalPages]);
+    const handlePageChange = useCallback((page: number) => {
+        setCurrentPage(page);
+    }, []);
 
     const handleSortChange = useCallback((tab: 'base' | 'own') => {
         handleTabChange(tab);
@@ -144,37 +142,41 @@ const Exercises: React.FC<ExercisesInterface> = ({ coachExercisesStore, coachExe
     }, [handleOpenModal]);
 
     return (
-        <div className="container">
-            <h1>{t('exercises.title')}</h1>
-
-            <div className="tabs">
-                <button className={activeTab === 'own' ? 'active' : ''} onClick={handleOwnClick}>
-                    {t('exercises.tabs.own')}
-                </button>
-                <button className={activeTab === 'base' ? 'active' : ''} onClick={handleBaseClick}>
-                    {t('exercises.tabs.base')}
-                </button>
-                <div>
-                    <button onClick={() => handleOpenModal()}>{t('createExercise')}</button>
-
-                    {isModalVisible && (
-                        <CoachExerciseModal onClose={handleModalClose} onSave={handleSaveSuccess}
-                            coachExercisesController={coachExercisesController}
-                            exercise={exerciseToEdit}
-                        />
-                    )}
-                </div>
-
+        <div className="exercises-container">
+            <div className="exercises-header">
+                <h1 className="exercises-title">{t('exercises.title')}</h1>
             </div>
 
-            <div className="filters">
+            <div className="exercises-tabs">
+                <button className={`exercises-tab ${activeTab === 'own' ? 'exercises-tab--active' : ''}`} onClick={handleOwnClick}>
+                    {t('exercises.tabs.own')}
+                </button>
+                <button className={`exercises-tab ${activeTab === 'base' ? 'exercises-tab--active' : ''}`} onClick={handleBaseClick}>
+                    {t('exercises.tabs.base')}
+                </button>
+                <button className="exercises-create-btn" onClick={() => handleOpenModal()}>
+                    {t('createExercise')}
+                </button>
+
+                {isModalVisible && (
+                    <CoachExerciseModal
+                        onClose={handleModalClose}
+                        onSave={handleSaveSuccess}
+                        coachExercisesController={coachExercisesController}
+                        exercise={exerciseToEdit}
+                    />
+                )}
+            </div>
+
+            <div className="exercises-filters">
                 <input
                     type="text"
+                    className="exercises-search"
                     placeholder={t('exercises.searchPlaceholder')}
                     value={searchQuery}
                     onChange={handleSearchChange}
                 />
-                <select onChange={handleMuscleGroupChange} value={selectedMuscleGroup || ''}>
+                <select className="exercises-filter" onChange={handleMuscleGroupChange} value={selectedMuscleGroup || ''}>
                     <option value="">{t('exercises.allMuscleGroups')}</option>
                     {muscleGroups.map(group => (
                         <option key={group.name} value={group.name}>
@@ -183,7 +185,8 @@ const Exercises: React.FC<ExercisesInterface> = ({ coachExercisesStore, coachExe
                     ))}
                 </select>
             </div>
-            <div className="filtered-exercises">
+
+            <div className="exercises-list">
                 {filteredExercises.length > 0
                     ? (
                         filteredExercises.map(exercise => (
@@ -196,21 +199,17 @@ const Exercises: React.FC<ExercisesInterface> = ({ coachExercisesStore, coachExe
                         ))
                     )
                     : (
-                        <p>{t('exercises.noExercises')}</p>
+                        <p className="exercises-empty">{t('exercises.noExercises')}</p>
                     )}
             </div>
 
-            {filteredExercises && filteredExercises.length> 0 &&<div className="pagination">
-                <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                    {t('paginationPrevious') }
-                </button>
-                <span>
-                    { currentPage} / {totalPages }
-                </span>
-                <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                    { t('paginationNext')}
-                </button>
-            </div>}
+            {filteredExercises && filteredExercises.length > 0 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
+            )}
         </div>
     );
 };

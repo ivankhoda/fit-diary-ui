@@ -33,6 +33,7 @@ import CommonExercises from "./Public/PublicExercises/PublicExercises";
 import AboutApp from "./Public/About/AboutApp";
 import UserStore from "../store/userStore";
 import UserController from "../controllers/UserController";
+import { OfflineIndicator } from "./Common/OfflineIndicator";
 
 Modal.setAppElement('#root');
 
@@ -55,8 +56,12 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
         setIsLogin(false);
   }
   useEffect(() => {
-      userController.restoreCurrentUser();
-    }, []);
+      userController.getUserFromCache();
+      console.log("App mounted, fetching user from cache");
+      console.log(userStore.currentUser);
+    }, [userController, userStore]);
+
+
 
   return (
      <CoachModeProvider>
@@ -77,7 +82,7 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
           path="/users/confirmation/*"
           element={<ConfirmRegistrationWithToken />}
         />
-        {userStore.currentUser ? (
+        {userStore?.currentUser && token ? (
           <>
             {isAdmin() && <Route path="/admin/*" element={<AdminRoutes />} />}
             <Route path="/*" element={<MainAppRoutes token={token} />} />
@@ -120,13 +125,14 @@ const AdminRoutes = (): JSX.Element => {
 };
 
 const MainAppRoutes = ({ token }: { token: string }) => {
-  const { mode } = useCoachMode();
+  // COACH MODE DISABLED FOR V1.0
+  // const { mode } = useCoachMode();
 
 
   return (
     <>
-      {mode === "coach" ?
-      <CoachPanel/> :
+      {/* COACH MODE DISABLED FOR V1.0 - Always show user interface */}
+      {/* {mode === "coach" ? <CoachPanel/> : */}
       <>
       <Header />
       <WorkingPanel>
@@ -138,7 +144,7 @@ const MainAppRoutes = ({ token }: { token: string }) => {
       </WorkingPanel>
       <Footer />
       </>
-      }
+      {/* } */}
        <ToastContainer />
     </>
   );

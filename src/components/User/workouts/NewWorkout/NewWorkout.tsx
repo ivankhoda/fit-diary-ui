@@ -49,8 +49,6 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
             };
             fetchWorkoutData();
         }
-        exercisesController?.getExercises();
-        workoutsController?.getUsersWithPermissions();
     }, [workoutId,
         workoutsController,
         exercisesController]);
@@ -208,9 +206,9 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                         <div className="exercise-list">
                             {filteredExercises.map(exercise => (
                                 <div
-                                    key={`${exercise.id}`}
+                                    key={`${exercise.id || exercise.uuid}`}
                                     className={`exercise-item ${
-                                        selectedExercises.some(e => e.id.toString() === exercise.id.toString()) ? 'selected' : ''
+                                        selectedExercises.some(e => e.id?.toString() === exercise.id?.toString()) ? 'selected' : ''
                                     }`}
                                     onClick={() => handleExerciseClick(exercise)}
                                 >

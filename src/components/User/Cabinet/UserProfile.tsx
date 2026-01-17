@@ -7,7 +7,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
-import { Clipboard } from '@capacitor/clipboard';
+// Import { Clipboard } from '@capacitor/clipboard';
 import { useNavigate } from 'react-router-dom';
 
 import UserStore from '../../../store/userStore';
@@ -29,10 +29,9 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
     const [lastName, setLastName] = useState(user?.last_name || '');
     const [telegramUsername, setTelegramUsername] = useState(user?.telegram_username || '');
     const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || '');
-    const [linkCode, setLinkCode] = useState('');
+    // Removed for v1.0: linkCode, copied
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [copied, setCopied] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
     useEffect(() => {
@@ -44,13 +43,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
         }
     }, [user]);
 
-    const handleCopyCode = useCallback(async() => {
-        if (!linkCode) {return;}
-
-        await Clipboard.write({ string: linkCode });
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-    }, [linkCode]);
+    /*
+     * COACH MODE DISABLED FOR V1.0 - Removed:
+     * HandleCopyCode callback
+     * HandleGenerateCode callback
+     */
 
     const handleSubmit = useCallback(async() => {
         await triggerImpact();
@@ -88,21 +85,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
         phoneNumber,
         userController,
         t]);
-
-    const handleGenerateCode = useCallback(async() => {
-        try {
-            const response = await userController?.generateCoachLinkCode();
-
-            if (response?.ok && response?.code) {
-                setLinkCode(response.code);
-                setError('');
-            } else {
-                setError(t('Ошибка при генерации кода'));
-            }
-        } catch (e) {
-            setError(t('Ошибка при генерации кода'));
-        }
-    }, [userController, t]);
 
     const handleDeleteUser = useCallback(async() => {
         await userController?.deleteUser();
@@ -174,7 +156,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
                     </button>
                 </div>
 
-                <div className="form-group">
+                {/* COACH MODE DISABLED FOR V1.0 */}
+                {/* <div className="form-group">
                     <label>{t('Код для добавления тренером')}</label>
                     <button type="button" onClick={handleGenerateCode}>
                         {t('Сгенерировать код')}
@@ -188,7 +171,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
                             {copied && <span className="copy-toast">{t('Скопировано!')}</span>}
                         </p>
                     )}
-                </div>
+                </div> */}
 
                 <div className="form-group">
                     <button

@@ -20,12 +20,18 @@ export const DescriptionScreen = (): React.ReactElement => {
 
     return (
         <div className="description-container">
-            <h1>{t('desc.title')}</h1>
-            <PublicMenu/>
-            <div>{textWithLineBreaks}</div>
-            <button className="proceed-button" onClick={proceedToAuth}>
-                {t('desc.login')}
-            </button>
+            <div className="description-header">
+                <h1 className="description-title">{t('desc.title')}</h1>
+                <PublicMenu/>
+            </div>
+            <div className="description-content">
+                <div className="description-text">{textWithLineBreaks}</div>
+            </div>
+            <div className="description-footer">
+                <button className="proceed-button" onClick={proceedToAuth}>
+                    {t('desc.login')}
+                </button>
+            </div>
         </div>
     );
 };

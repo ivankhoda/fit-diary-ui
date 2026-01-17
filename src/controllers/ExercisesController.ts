@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-statements */
 import { action } from 'mobx';
-import ExercisesStore, { ExerciseInterface } from '../store/exercisesStore';
+import ExercisesStore, { Exercise, ExerciseFormData, ExerciseInterface, WorkoutExerciseInterface } from '../store/exercisesStore';
 import WorkoutsStore from '../store/workoutStore';
 import Delete from '../utils/DeleteRequest';
 import Get from '../utils/GetRequest';
@@ -14,18 +14,10 @@ import Patch from '../utils/PatchRequest';
 import Post from '../utils/PostRequest';
 import { BaseController } from './BaseController';
 import getApiBaseUrl from '../utils/apiUrl';
-import { ExerciseFormData } from '../components/User/Exercises/ExerciseModal/ExerciseModal';
 import { cacheService } from '../services/cacheService';
-import { Exercise } from '../components/User/Exercises/Exercises';
+import { v4 as uuidv4 } from 'uuid';
 import { NOT_CHANGE_RESPONSE_CODE } from '../components/Common/constants';
-
-interface OfflineAction {
-    type: 'create' | 'update' | 'delete';
-    entity: 'exercise';
-    id?: number;
-    data?: ExerciseFormData;
-    timestamp: number;
-}
+import { createOfflineQueueStrategy, offlineActionQueueService } from '../services/offlineQueue';
 
 export default class ExercisesController extends BaseController {
     exerciseStore: ExercisesStore;
@@ -213,7 +205,6 @@ export default class ExercisesController extends BaseController {
     @action
     async createExercise(data?: ExerciseFormData): Promise<void> {
         try {
-        // Пытаемся создать на сервере
             const response = await new Post({
                 params: { exercise: data },
                 url: `${getApiBaseUrl()}/exercises`,
@@ -222,63 +213,29 @@ export default class ExercisesController extends BaseController {
             const json = await response.json();
 
             if (json.ok) {
-            // Добавляем в стор
                 this.exerciseStore.addGeneralExercise(json.res);
 
-                // Сохраняем в кеш
-                await cacheService.set(
-                    'exercises',
-                    JSON.parse(JSON.stringify(this.exerciseStore.generalExercises))
-                );
+                await cacheService.set('exercises',JSON.parse(JSON.stringify(this.exerciseStore.generalExercises)));
             }
         } catch (err) {
-            console.warn('Network offline, saving createExercise to offline queue', err);
-
-            // Получаем текущую оффлайн-очередь
-            let offlineQueue = await cacheService.get<OfflineAction[]>('offlineQueue');
-
-            // Если что-то пошло не так, создаем новый массив
-            if (!Array.isArray(offlineQueue)) {
-                offlineQueue = [];
-            }
-
-            // Добавляем новое действие
-            offlineQueue.push({
-                type: 'create',
-                entity: 'exercise',
-                data,
-                timestamp: Date.now(),
-            });
-
-            await cacheService.set('offlineQueue', offlineQueue);
-
-            // Создаем временный объект Exercise с временным ID
             const tempId = Date.now();
-            const tempExercise: Exercise & { temp?: boolean } = {
+            const tempExercise: ExerciseFormData = {...data,
                 id: tempId,
-                uuid: `temp-${tempId}`,
-                name: data?.name || 'Новое упражнение',
-                category: (data?.category as 'strength' | 'cardio' | 'flexibility' | 'balance') || 'strength',
-                difficulty: (data?.difficulty as 'beginner' | 'intermediate' | 'advanced') || 'intermediate',
-                muscle_groups: data?.muscle_groups || [],
-                description: data?.description || '',
-                duration: data?.duration || 0,
+                uuid: uuidv4(),
+                own: true,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
                 temp: true,
             };
 
-            // Добавляем в стор
+            await createOfflineQueueStrategy.addCreateAction('exercise', tempExercise);
             this.exerciseStore.addGeneralExercise(tempExercise);
-
-            // Сохраняем стор в кеш
-            await cacheService.set(
-                'exercises',
-                JSON.parse(JSON.stringify(this.exerciseStore.generalExercises))
-            );
+            await cacheService.set('exercises',JSON.parse(JSON.stringify(this.exerciseStore.generalExercises)));
         }
     }
 
     @action
-    async updateExercise(id: string, data?: ExerciseFormData): Promise<void> {
+    async updateExercise(id: number, data?: ExerciseFormData): Promise<void> {
         try {
             const response = await new Patch({ params: { exercise: data }, url: `${getApiBaseUrl()}/exercises/${id}` }).execute();
             const json = await response.json();
@@ -288,14 +245,9 @@ export default class ExercisesController extends BaseController {
                 await cacheService.set('exercises', this.exerciseStore.generalExercises);
             }
         } catch (err) {
-            console.warn('Network offline, saving updateExercise to offline queue', err);
-            const offlineQueue: OfflineAction[] = (await cacheService.get('offlineQueue')) || [];
-            offlineQueue.push({ type: 'update', entity: 'exercise', id: Number(id), data, timestamp: Date.now() });
-            await cacheService.set('offlineQueue', offlineQueue);
-
-            // Обновляем локально
+            await createOfflineQueueStrategy.addUpdateAction('exercise', id, data);
             this.exerciseStore.updateGeneralExercise({ id: Number(id), ...data } as any);
-            await cacheService.set('exercises', this.exerciseStore.generalExercises);
+            await cacheService.set('exercises', JSON.parse(JSON.stringify(this.exerciseStore.generalExercises)));
         }
     }
 
@@ -311,27 +263,50 @@ export default class ExercisesController extends BaseController {
             }
         } catch (err) {
             console.warn('Network offline, saving deleteExercise to offline queue', err);
-            const offlineQueue: OfflineAction[] = (await cacheService.get('offlineQueue')) || [];
-            offlineQueue.push({ type: 'delete', entity: 'exercise', id, timestamp: Date.now() });
-            await cacheService.set('offlineQueue', offlineQueue);
+
+            // Add to offline queue using strategy pattern
+            await createOfflineQueueStrategy.addDeleteAction('exercise', id);
 
             // Удаляем локально
             this.exerciseStore.deleteGeneralExercise({ id } as any);
-            await cacheService.set('exercises', this.exerciseStore.generalExercises);
+            await cacheService.set('exercises', JSON.parse(JSON.stringify(this.exerciseStore.generalExercises)));
         }
     }
 
     @action
 async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<ExerciseInterface | null> {
+    const params = { exercise_id, workout_id };
+
     try {
-        const params = { exercise_id, workout_id };
         const response = await new Post({ params: { workout_exercise: params }, url: `${getApiBaseUrl()}/workout_exercises` }).execute();
         const json = await response.json();
         this.exerciseStore.addWorkoutExercise(json);
+
+        const cacheKey = `workout_exercises_${workout_id}`;
+        await cacheService.set(cacheKey, this.exerciseStore.workoutExercises);
+
         return json;
     } catch (err) {
-        console.error('Failed to add workout exercise:', err);
-        return null;
+        console.warn('Network offline, saving addWorkoutExercise to offline queue', err);
+
+        const exercise_base = this.exerciseStore.generalExercises.find(ex => ex.id === exercise_id);
+        const tempExercise: WorkoutExerciseInterface = {
+            uuid: uuidv4(),
+            name: exercise_base?.name,
+            exercise_id: exercise_base?.id,
+            type_of_measurement: exercise_base?.type_of_measurement,
+            order: String(this.exerciseStore.workoutExercises.length + 1),
+            workout_id: Number(workout_id),
+            temp: true,
+        };
+
+        await createOfflineQueueStrategy.addCreateAction('workout_exercise', tempExercise);
+        this.exerciseStore.addWorkoutExercise(tempExercise);
+
+        const cacheKey = `workout_exercises_${workout_id}`;
+        await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+
+        return tempExercise;
     }
 }
 
@@ -341,8 +316,25 @@ async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<Exerc
             const response = await new Delete({ params: { workout_exercise: { id } }, url: `${getApiBaseUrl()}/workout_exercises/${id}` }).execute();
             const json = await response.json();
             this.exerciseStore.deleteWorkoutExercise(json.id);
+
+            const workout_id = this.workoutsStore.draftWorkout?.id;
+
+            if (workout_id) {
+                const cacheKey = `workout_exercises_${workout_id}`;
+                await cacheService.set(cacheKey, this.exerciseStore.workoutExercises);
+            }
         } catch (err) {
-            console.error('Failed to delete workout exercise:', err);
+            console.warn('Network offline, saving deleteWorkoutExercise to offline queue', err);
+
+            await createOfflineQueueStrategy.addDeleteAction('workout_exercise', id);
+            this.exerciseStore.deleteWorkoutExercise(id);
+
+            const workout_id = this.workoutsStore.draftWorkout?.id;
+
+            if (workout_id) {
+                const cacheKey = `workout_exercises_${workout_id}`;
+                await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+            }
         }
     }
 
@@ -350,73 +342,46 @@ async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<Exerc
     async editWorkoutExercise(params: ExerciseInterface): Promise<void> {
         try {
             const response = await new Patch({ params: { workout_exercise: params },
-                url: `${getApiBaseUrl()}/workout_exercises/${params.id}` }).execute();
+                url: `${getApiBaseUrl()}/workout_exercises/${params.uuid}` }).execute();
             const json = await response.json();
             this.workoutsStore.updateOrAddDraftWorkoutExercise(json);
             this.exerciseStore.updateWorkoutExercise(json);
+
+            const workout_id = params.workout_id || this.workoutsStore.draftWorkout?.id;
+
+            if (workout_id) {
+                const cacheKey = `workout_exercises_${workout_id}`;
+                await cacheService.set(cacheKey, this.exerciseStore.workoutExercises);
+            }
         } catch (err) {
-            console.error('Failed to edit workout exercise:', err);
+            console.warn('Network offline, saving editWorkoutExercise to offline queue', err);
+
+            await createOfflineQueueStrategy.addUpdateAction('workout_exercise', params.uuid, params);
+            this.workoutsStore.updateOrAddDraftWorkoutExercise(params);
+            this.exerciseStore.updateWorkoutExercise(params);
+
+            const workout_id = params.workout_id || this.workoutsStore.draftWorkout?.id;
+
+            if (workout_id) {
+                const cacheKey = `workout_exercises_${workout_id}`;
+                await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+            }
         }
     }
 
     @action
     async syncOfflineQueue(): Promise<void> {
-        let offlineQueue = await cacheService.get<OfflineAction[]>('offlineQueue');
+        try {
+            const results = await offlineActionQueueService.syncOfflineQueue();
 
-        if (!Array.isArray(offlineQueue) || offlineQueue.length === 0) {
-            console.log('Offline queue is empty, nothing to sync.');
-            return;
+            const successCount = results.filter(r => r.success).length;
+            const failedCount = results.filter(r => !r.success).length;
+
+            console.log(`Sync completed: ${successCount} successful, ${failedCount} failed`);
+
+            await this.getExercises();
+        } catch (err) {
+            console.error('Failed to sync offline queue:', err);
         }
-
-        const successfulActions: OfflineAction[] = [];
-        console.log(`Syncing ${offlineQueue.length} offline actions...`);
-        for (const action of offlineQueue) {
-            try {
-                switch (action.type) {
-                case 'create':
-                    if (action.entity === 'exercise' && action.data) {
-                        const response = await new Post({
-                            params: { exercise: action.data },
-                            url: `${getApiBaseUrl()}/exercises`,
-                        }).execute();
-
-                        const json = await response.json();
-                        console.log('Sync create exercise action response:', json);
-                        if (json.ok) {
-                            const tempExercise = this.exerciseStore.generalExercises.find(
-                                e => e.uuid?.startsWith('temp-') && e.name === action.data?.name
-                            );
-
-                            if (tempExercise) {
-                                this.exerciseStore.updateGeneralExercise(json.res);
-                            } else {
-                                this.exerciseStore.addGeneralExercise(json.res);
-                            }
-
-                            // Сохраняем в кэш
-                            await cacheService.set(
-                                'exercises',
-                                JSON.parse(JSON.stringify(this.exerciseStore.generalExercises))
-                            );
-
-                            successfulActions.push(action);
-                        }
-                    }
-                    break;
-
-                // Можно добавить 'update' и 'delete' по аналогии
-                default:
-                    console.warn('Unknown offline action type', action.type);
-                }
-            } catch (err) {
-                console.error('Failed to sync offline action', action, err);
-            }
-        }
-
-        // Удаляем успешно выполненные действия из очереди
-        offlineQueue = offlineQueue.filter(action => !successfulActions.includes(action));
-        await cacheService.set('offlineQueue', offlineQueue);
-
-        console.log('Offline queue sync completed');
     }
 }

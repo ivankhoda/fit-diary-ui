@@ -16,6 +16,10 @@ PODS:
     - Capacitor
   - CapacitorNetwork (7.0.1):
     - Capacitor
+  - CapacitorPreferences (7.0.3):
+    - Capacitor
+  - CapacitorShare (7.0.1):
+    - Capacitor
   - CapacitorSplashScreen (7.0.1):
     - Capacitor
   - CapgoCapacitorUpdater (7.8.7):
@@ -36,6 +40,8 @@ DEPENDENCIES:
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
   - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
+  - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
+  - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapgoCapacitorUpdater (from `../../node_modules/@capgo/capacitor-updater`)"
 
@@ -63,6 +69,10 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/local-notifications"
   CapacitorNetwork:
     :path: "../../node_modules/@capacitor/network"
+  CapacitorPreferences:
+    :path: "../../node_modules/@capacitor/preferences"
+  CapacitorShare:
+    :path: "../../node_modules/@capacitor/share"
   CapacitorSplashScreen:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapgoCapacitorUpdater:
@@ -71,19 +81,21 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   BigInt: f668a80089607f521586bbe29513d708491ef2f7
-  Capacitor: 4738747ece274c45e4d9bec9ae394a6269169e64
-  CapacitorClipboard: b98aead5dc7ec595547fc2c5d75bacd2ae3338bc
-  CapacitorCommunityKeepAwake: 36e0cfbc6ae293d93f828724e6d5388a5f02ed5a
+  Capacitor: 78ad32d4b0d9dfa25402eb8b0ac46c2b8a4696b8
+  CapacitorClipboard: 70bfdb42b877b320a6e511ab94fa7a6a55d57ecb
+  CapacitorCommunityKeepAwake: 05c75aab989f60e621870cf03b24a144a5544c30
   CapacitorCordova: 34618fa1b14b6b091fd60a7658f7654044ae8d8a
-  CapacitorHaptics: 70e47470fa1a6bd6338cd102552e3846b7f9a1b3
-  CapacitorKeyboard: 969647d0ca2e5c737d7300088e2517aa832434e2
-  CapacitorLocalNotifications: 4ea60b9347eac60b37cb4daaf62d12060bb00972
-  CapacitorNetwork: 07ec4c69c1bb696f41c23e00d31bda1bbb221bba
-  CapacitorSplashScreen: 19cd3573e57507e02d6f34597a8c421e00931487
-  CapgoCapacitorUpdater: 155a5050e1ad315e96ed6bf1b003f266bda3b1e6
+  CapacitorHaptics: 1f1e17041f435d8ead9ff2a34edd592c6aa6a8d6
+  CapacitorKeyboard: 09fd91dcde4f8a37313e7f11bde553ad1ed52036
+  CapacitorLocalNotifications: c2212755b33d2513b8bb325096ce3a64d4039ae3
+  CapacitorNetwork: 15cb4385f0913a8ceb5e9a4d7af1ec554bdb8de8
+  CapacitorPreferences: 913eef88272c13eb6445b21e51fe8ef6635412cc
+  CapacitorShare: e573823f511f260f598d0423c33b1e3d7bbe5fd1
+  CapacitorSplashScreen: 1d67815a422a9b61539c94f283c08ed56667c0fc
+  CapgoCapacitorUpdater: 90b09b7c3c23c02f1b0dfe42db51d0abaf1910f3
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
 
-PODFILE CHECKSUM: 1f16a86a11d9b248efbcdc81ccd15cfa81bfb5ad
+PODFILE CHECKSUM: b58a5a9d3e14303b3ea0ce229fc7318618a69441
 
 COCOAPODS: 1.16.2

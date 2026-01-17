@@ -4,9 +4,7 @@ import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import DropDownIcon from '../../../icons/DropDownIcon';
 import { MenuLink } from '../Link/Link';
 import './Dropdown.style.scss';
-import { useCoachMode } from '../../Coach/CoachContext';
-import { useToken } from '../../Auth/useToken';
-import { useNavigate } from 'react-router';
+// Removed for v1.0: useCoachMode, useToken
 import { userStore } from '../../../store/global';
 import { observer } from 'mobx-react-lite';
 import { inject } from 'mobx-react';
@@ -40,9 +38,12 @@ const options: OptionInterface[] = [
     },
     { linkTo: '/profile', text: 'Профиль' },
 
-    {
-        text: 'Тренерская',
-    },
+    /*
+     * COACH MODE DISABLED FOR V1.0
+     * {
+     *     Text: 'Тренерская',
+     * },
+     */
     {text: 'О приложении', linkTo: '/about'},
 ];
 
@@ -66,19 +67,20 @@ const Dropdown = (): React.ReactElement => {
     const [isOpen, setIsOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const navigate = useNavigate();
 
-    const {  setMode } = useCoachMode();
-    const { isCoach } = useToken();
+    /*
+     * Removed coach mode functionality for v1.0:
+     * - useCoachMode hook
+     * - isCoach from useToken
+     * - navigate for coach mode routing
+     */
 
     const filteredOptions = useMemo(() => filterOptionsByVisibility(options), [userProfile]);
 
-    const handleCoachModeClick = useCallback(() => {
-        setMode('coach');
-        setIsOpen(false);
-        setOpenSubMenu(null);
-        navigate('/');
-    }, [setMode, navigate]);
+    /*
+     * COACH MODE DISABLED FOR V1.0 - Removed coach mode click handler
+     * Const handleCoachModeClick = useCallback(...)
+     */
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
@@ -92,7 +94,8 @@ const Dropdown = (): React.ReactElement => {
         return () => document.removeEventListener('click', handleOutsideClick);
     }, []);
 
-    const handleButtonClick = useCallback(() => {
+    const handleButtonClick = useCallback((event: React.MouseEvent) => {
+        event.stopPropagation();
         setIsOpen(prev => !prev);
         setOpenSubMenu(null);
     }, []);
@@ -102,12 +105,13 @@ const Dropdown = (): React.ReactElement => {
         setOpenSubMenu(null);
     }, []);
 
-    const handleSubMenuToggle = useCallback((optionText: string) => {
+    const handleSubMenuToggle = useCallback((optionText: string, event: React.MouseEvent) => {
+        event.stopPropagation();
         setOpenSubMenu(prev => (prev === optionText ? null : optionText));
     }, []);
 
     const createSubMenuToggleHandler = useCallback(
-        (optionText: string) => () => handleSubMenuToggle(optionText),
+        (optionText: string) => (event: React.MouseEvent) => handleSubMenuToggle(optionText, event),
         [handleSubMenuToggle]
     );
 
@@ -147,14 +151,17 @@ const Dropdown = (): React.ReactElement => {
                                     )}
                                 </div>
                             );
-                        } else if (option.text === 'Тренерская' && isCoach()) {
-                            return (
-                                <div key={option.text} className="dropdown-item">
-                                    <button className="dropdown-submenu-trigger" onClick={handleCoachModeClick}>
-                                        {option.text}
-                                    </button>
-                                </div>
-                            );
+                        /*
+                         * COACH MODE DISABLED FOR V1.0
+                         * } else if (option.text === 'Тренерская' && isCoach()) {
+                         *     Return (
+                         *         <div key={option.text} className="dropdown-item">
+                         *             <button className="dropdown-submenu-trigger" onClick={handleCoachModeClick}>
+                         *                 {option.text}
+                         *             </button>
+                         *         </div>
+                         *     );
+                         */
                         } else if (option.linkTo) {
                             return (
                                 <div key={option.text} className="dropdown-item">

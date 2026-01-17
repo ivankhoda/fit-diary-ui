@@ -16,7 +16,7 @@ const HomeScreen: React.FC = () => {
 
     return (
         <button className="back-button" onClick={handleClick}>
-            <FaHome size={26} className="back-button__icon" />
+            <FaHome size={16} className="back-button__icon" />
             <span className="back-button__text">Главный экран</span>
         </button>
     );

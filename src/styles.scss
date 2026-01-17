@@ -208,12 +208,6 @@ tr {
   text-decoration: none;
 }
 
-.container {
-  max-width: $container-max-width;
-  margin: 0 10px auto;
-  height: 100vh;
-}
-
 .link-container {
   display: grid;
   grid-template-columns: 1fr 1fr;

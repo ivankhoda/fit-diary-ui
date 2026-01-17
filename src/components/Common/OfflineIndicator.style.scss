@@ -1,0 +1,81 @@
+.offline-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 8px 16px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 200px;
+
+    &.offline {
+        border-left: 4px solid #ff9800;
+    }
+
+    &.online {
+        border-left: 4px solid #4CAF50;
+    }
+
+    &__status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    &__icon {
+        font-size: 16px;
+    }
+
+    &__text {
+        color: #ff9800;
+    }
+
+    &__pending {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #666;
+    }
+
+    &__count {
+        background: #4CAF50;
+        color: white;
+        border-radius: 12px;
+        padding: 2px 8px;
+        font-weight: 600;
+        min-width: 24px;
+        text-align: center;
+    }
+
+    &__spinner {
+        animation: spin 1s linear infinite;
+        font-size: 18px;
+        color: #4CAF50;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .offline-indicator {
+        top: 5px;
+        right: 5px;
+        font-size: 12px;
+        padding: 6px 12px;
+        min-width: 150px;
+    }
+}

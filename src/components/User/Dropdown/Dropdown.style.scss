@@ -111,7 +111,6 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       z-index: 200;
       padding: 0;
-      display: none;
       user-select: none;
 
       .dropdown-link {
@@ -123,10 +122,6 @@
           border-bottom: none;
         }
       }
-    }
-
-    &:hover > .dropdown-submenu {
-      display: block;
     }
   }
 }

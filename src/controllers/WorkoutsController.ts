@@ -72,7 +72,6 @@ export default class WorkoutController extends BaseController {
                 this.workoutsStore.setWorkouts(cached);
             }
         } catch (err) {
-            console.warn('Failed to fetch workouts, using cache if available:', err);
             const cached = await cacheService.get<WorkoutInterface[]>('workouts');
 
             if (cached) {
@@ -119,7 +118,6 @@ export default class WorkoutController extends BaseController {
               this.workoutsStore.setWorkouts([]);
           }
       } catch (err) {
-          console.warn('Failed to fetch coach workouts, using cache if available:', err);
           const cached = await cacheService.get<WorkoutInterface[]>('workouts_by_coach');
 
           if (cached) {
@@ -136,6 +134,7 @@ async getWorkout(id: string): Promise<void> {
 
     try {
         const cachedEtag = await cacheService.getVersion(cacheKey);
+        console.log('Fetching workout with ID:', cachedEtag);
         const response = await new Get({
             url: `${getApiBaseUrl()}/workouts/${id}`,
             configurator: {

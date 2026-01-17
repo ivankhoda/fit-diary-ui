@@ -43,7 +43,7 @@
           &:focus {
               outline: none;
               border-color: #1976d2;
-              box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+              box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
           }
       }
 
@@ -132,7 +132,7 @@
       &:focus {
         outline: none;
         border-color: #5c9dff;
-        box-shadow: 0 0 0 3px rgba(92, 157, 255, 0.3);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
       }
     }
   }

@@ -6,20 +6,7 @@ import i18n, { t } from 'i18next';
 import './ExerciseModal.style.scss';
 import ExercisesController from '../../../../controllers/ExercisesController';
 import { categoryMap, difficultyMap, measurementKeys, muscleGroups } from '../../../Admin/ExercisesManagement/maps';
-
-export interface ExerciseFormData {
-  category: string;
-  created_at: string;
-  description: string;
-  difficulty: string;
-  duration: number;
-  id: string;
-  muscle_groups: string[];
-  type_of_measurement: string;
-  name: string;
-  updated_at: string;
-  public: boolean
-}
+import { ExerciseFormData } from '../../../../store/exercisesStore';
 
 type Props = {
   onClose: () => void;
@@ -31,12 +18,12 @@ type Props = {
 
 const ExerciseCreateModal: React.FC<Props> = ({ isOpen, onClose, onSave, exercisesController, exercise }) => {
     const [formData, setFormData] = useState<ExerciseFormData>({
-        category: '',
+        category: 'strength',
         created_at: '',
         description: '',
-        difficulty: '',
+        difficulty: 'beginner',
         duration: 0,
-        id: '',
+        id: null,
         muscle_groups: [],
         name: '',
         type_of_measurement: '',

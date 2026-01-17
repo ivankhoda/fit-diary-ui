@@ -47,7 +47,6 @@ export const Header = (): JSX.Element => {
     useEffect(() => {
         const handleOnline = async() => {
             if (connected) {
-                console.log('Network restored! Syncing offline actions...');
                 try {
                     await exercisesController.syncOfflineQueue();
                 } catch (err) {

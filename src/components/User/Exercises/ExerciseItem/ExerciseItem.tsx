@@ -9,8 +9,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import './ExerciseItem.style.scss';
 import { useTranslation } from 'react-i18next';
-import { Exercise } from '../Exercises';
 import { useToken } from '../../../Auth/useToken';
+import { Exercise } from '../../../../store/exercisesStore';
 
 interface ExerciseItemProps {
   exercise: Exercise;

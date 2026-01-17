@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import Workout from './Workout/Workout';
 import UserController from '../../../controllers/UserController';
 import { useTranslation } from 'react-i18next';
+import Pagination from '../../Common/Pagination/Pagination';
 
 interface WorkoutsInterface {
     exercisesStore?: ExercisesStore;
@@ -62,17 +63,9 @@ const Workouts: React.FC<WorkoutsInterface> = ({
         currentPage,
         activeTab]);
 
-    const handlePageClick = useCallback((page: number) => {
+    const handlePageChange = useCallback((page: number) => {
         setCurrentPage(page);
     }, []);
-
-    const handlePreviousClick = useCallback(() => {
-        setCurrentPage(prev => Math.max(prev - 1, 1));
-    }, []);
-
-    const handleNextClick = useCallback(() => {
-        setCurrentPage(prev => Math.min(prev + 1, totalPages));
-    }, [totalPages]);
 
     const handleTabChange = useCallback((tab: 'own' | 'assigned') => {
         setActiveTab(tab);
@@ -86,26 +79,6 @@ const Workouts: React.FC<WorkoutsInterface> = ({
     const handleAssignedTabClick = useCallback(() => {
         handleTabChange('assigned');
     }, [handleTabChange]);
-
-    // Extracted handler to avoid inline arrow in JSX
-    const handlePaginationButtonClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-        const page = Number(event.currentTarget.dataset.page);
-
-        if (!isNaN(page)) {
-            handlePageClick(page);
-        }
-    }, [handlePageClick]);
-
-    const renderPaginationButtons = () => Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-        <button
-            key={page}
-            className={page === currentPage ? 'active' : ''}
-            data-page={page}
-            onClick={handlePaginationButtonClick}
-        >
-            {page}
-        </button>
-    ));
 
     return (
         <div className="workouts-section">
@@ -134,15 +107,8 @@ const Workouts: React.FC<WorkoutsInterface> = ({
                 </div>
 
                 {filteredWorkouts.length > 0 && (
-                    <div className="pagination-controls">
-                        <button disabled={currentPage === 1} onClick={handlePreviousClick}>
-                            {t('workouts.pagination.previous')}
-                        </button>
-                        {renderPaginationButtons()}
-                        <button disabled={currentPage === totalPages} onClick={handleNextClick}>
-                            {t('workouts.pagination.next')}
-                        </button>
-                    </div>
+                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}
+                    />
                 )}
             </div>
         </div>

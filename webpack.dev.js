@@ -8,6 +8,8 @@ module.exports = merge(common, {
     devServer: {
         static: './dist',
         historyApiFallback: true,
-        allowedHosts: ['.ru.tuna.am']
+        allowedHosts: ['.ru.tuna.am'],
+        hot: true,
+        liveReload: true
     }
 });

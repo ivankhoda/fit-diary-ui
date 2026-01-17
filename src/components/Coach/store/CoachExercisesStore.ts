@@ -1,7 +1,6 @@
 
 import { action, makeObservable, observable } from 'mobx';
-import { ExerciseInterface, SetInterface } from '../../../store/exercisesStore';
-import { Exercise } from '../../User/Exercises/Exercises';
+import { Exercise, ExerciseInterface, SetInterface } from '../../../store/exercisesStore';
 
 export interface CoachExercise  extends Exercise{
     public?: boolean

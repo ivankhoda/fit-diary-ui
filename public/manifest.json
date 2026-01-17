@@ -1,27 +1,32 @@
 {
-  "name": "Planka",
+  "name": "Planka - Fitness Diary",
   "short_name": "Planka",
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#f8fafd",
+  "theme_color": "#4CAF50",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "plank.png",
+      "src": "icons/192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
-      "src": "plank.png",
+      "src": "icons/512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "description": "Приложение для тренировок.",
+  "description": "Fitness diary app with offline support. Track your workouts, exercises, and training goals.",
   "categories": [
     "entertainment",
     "fitness",
-    "sports"
-  ]
+    "sports",
+    "health"
+  ],
+  "prefer_related_applications": false
 }

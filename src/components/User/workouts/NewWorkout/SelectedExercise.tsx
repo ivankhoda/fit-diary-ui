@@ -53,19 +53,22 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleReps = useCallback((r: string) => {
         handleExerciseDetailChange(id, 'repetitions', r);
-    }, []);
+        handleUpdate('repetitions', r);
+    }, [exercise]);
 
     const handleWeightChange = useCallback((w: string) => {
         handleExerciseDetailChange(id, 'weight', w);
-    }, []);
+        handleUpdate('weight', w);
+    }, [exercise]);
 
     const handleDurationChange = useCallback((d: string) => {
         handleExerciseDetailChange(id, 'duration', d);
-    }, [exercise]);
+    }, []);
 
     const handleDistanceChange = useCallback((d: string) => {
         handleExerciseDetailChange(id, 'distance', d);
-    }, []);
+        handleUpdate('distance', d);
+    }, [exercise]);
 
     const handleCommentChange = useCallback((d: string) => {
         handleExerciseDetailChange(id, 'comment', d);
@@ -73,6 +76,12 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleBlur = useCallback((field: string, value: string | number | null) => {
         const updatedExercise = { ...exercise, [field]: value };
+        editWorkoutExercise(updatedExercise);
+    }, [exercise]);
+
+    const handleUpdate = useCallback((field: string, value: string | number | null) => {
+        const updatedExercise = { ...exercise, [field]: value };
+        console.log('Updating exercise:', updatedExercise);
         editWorkoutExercise(updatedExercise);
     }, [exercise]);
 
