@@ -40,7 +40,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onRegisterClick }) => {
                     <li className="landing__benefit-item">⚡ Быстрый старт без верификации</li>
                     <li className="landing__benefit-item">📈 Отслеживание прогресса и целей</li>
                     <li className="landing__benefit-item">🧩 Конструктор тренировок и планов</li>
-                    <li className="landing__benefit-item">👥 Для тренеров и учеников</li>
                 </ul>
                 <img
                     src="/images/benefits.webp"
