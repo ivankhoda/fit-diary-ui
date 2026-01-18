@@ -10,7 +10,7 @@ import './CurrentWorkout.style.scss';
 import './CurrentExercise/CurrentExercise.style.scss';
 import { workoutsController } from '../../../../controllers/global';
 import { useNavigate, useParams } from 'react-router';
-import SelectedExercise from '../NewWorkout/SelectedExercise';
+import ViewExerciseCard from './ViewExerciseCard';
 import { CurrentExercise } from './CurrentExercise/CurrentExercise';
 import { UserExercisesList } from './UserExercisesList/UserExercisesList';
 import i18next from 'i18next';
@@ -241,19 +241,19 @@ export const CurrentWorkout: React.FC<Props> =
 
         return currentWorkout
             ? (
-                <div className='workout-container'>
-                    <h2 className='workout-name'>{currentWorkout.name}</h2>
+                <div className='user-workout-container'>
+                    <h2 className='user-workout-title'>{currentWorkout.name}</h2>
 
                     {currentWorkout.workout_exercises.length > 0
                         ? (
-                            <div className="exercises-container">
+                            <div className="user-exercises-list">
                                 <DndProvider backend={TouchBackend}>
                                     <Swiper
                                         modules={[Navigation, Pagination]}
                                         spaceBetween={15}
                                         slidesPerView={1}
                                         pagination={{ clickable: true }}
-                                        className="exercise-swiper"
+                                        className="user-exercise-swiper"
                                         initialSlide={activeSlideIndex}
                                         onSwiper={onSwiper}
                                         onSlideChange={handleSlideChange}
@@ -261,10 +261,8 @@ export const CurrentWorkout: React.FC<Props> =
                                         {selectedExercises.length > 0 &&
                                         selectedExercises.map(exercise => (
                                             <SwiperSlide key={exercise.id}>
-                                                <SelectedExercise
-                                                    key={exercise.id}
+                                                <ViewExerciseCard
                                                     exercise={exercise}
-                                                    mode="view"
                                                     onClick={handleExerciseClickFactory(exercise)}
                                                 />
                                             </SwiperSlide>
@@ -291,7 +289,7 @@ export const CurrentWorkout: React.FC<Props> =
                     {currentWorkout.completion_rate > 0 && <ProgressBar value={currentWorkout.completion_rate} />}
                     {currentWorkout?.user_exercises?.length > 0 && (
                         <UserExercisesList userExercises={currentWorkout.user_exercises.slice().sort((a, b) => a.id - b.id)} deleteSet={deleteSet}/>)}
-                    <button className='save-btn' onClick={handleFinishClick}>
+                    <button className='user-finish-btn' onClick={handleFinishClick}>
                         {i18next.t('workout.finish')}
                     </button>
 
@@ -303,12 +301,12 @@ export const CurrentWorkout: React.FC<Props> =
                         currentWorkoutId={currentWorkout.id}
                     />)}
 
-                    {<button className='save-btn' onClick={handleAddExercise}>
+                    {<button className='user-add-exercise-btn' onClick={handleAddExercise}>
                         {i18next.t('workout.add_exercise')}
                     </button>}
                 </div>
             )
             : (
-                <div>Нет тренировки.</div>
+                <div className='user-no-workout'>Нет тренировки.</div>
             );
     }));

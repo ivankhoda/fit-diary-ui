@@ -233,19 +233,19 @@ export const CurrentWorkout: React.FC<Props> =
 
         return currentWorkout
             ? (
-                <div className='workout-container'>
-                    <h2 className='workout-name'>{currentWorkout.name}</h2>
+                <div className='coach-workout-container'>
+                    <h2 className='coach-workout-title'>{currentWorkout.name}</h2>
 
                     {currentWorkout.workout_exercises.length > 0
                         ? (
-                            <div className="exercises-container">
+                            <div className="coach-exercises-list">
                                 <DndProvider backend={TouchBackend}>
                                     <Swiper
                                         modules={[Navigation, Pagination]}
                                         spaceBetween={15}
                                         slidesPerView={1}
                                         pagination={{ clickable: true }}
-                                        className="exercise-swiper"
+                                        className="coach-exercise-swiper"
                                         initialSlide={activeSlideIndex}
                                         onSwiper={onSwiper}
                                         onSlideChange={handleSlideChange}
@@ -283,7 +283,7 @@ export const CurrentWorkout: React.FC<Props> =
                     {currentWorkout.completion_rate > 0 && <ProgressBar value={currentWorkout.completion_rate} />}
                     {currentWorkout?.user_exercises?.length > 0 && (
                         <UserExercisesList userExercises={currentWorkout.user_exercises.slice().sort((a, b) => a.id - b.id)} deleteSet={deleteSet}/>)}
-                    <button className='save-btn' onClick={handleFinishClick}>
+                    <button className='coach-finish-btn' onClick={handleFinishClick}>
                         {i18next.t('workout.finish')}
                     </button>
 
@@ -295,12 +295,12 @@ export const CurrentWorkout: React.FC<Props> =
                         currentWorkoutId={currentWorkout.id}
                     />)}
 
-                    {<button className='save-btn' onClick={handleAddExercise}>
+                    {<button className='coach-add-exercise-btn' onClick={handleAddExercise}>
                         {i18next.t('workout.add_exercise')}
                     </button>}
                 </div>
             )
             : (
-                <div>Нет тренировки.</div>
+                <div className='coach-no-workout'>Нет тренировки.</div>
             );
     }));

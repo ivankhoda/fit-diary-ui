@@ -167,10 +167,11 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
                     </div>
                 )}
                 <div className='button-group'>
+                    {currentUserExercise && currentUserExercise?.started_at && <button onClick={handleSetDone}>{t('workout.setDone')}</button>}
                     {currentUserExercise && currentUserExercise?.started_at && <button onClick={handleFinishExerciseClick}>
                         {t('workout.finishExercise')}
                     </button>}
-                    {currentUserExercise && currentUserExercise?.started_at && <button onClick={handleSetDone}>{t('workout.setDone')}</button>}
+
                     {currentUserExercise && !currentUserExercise?.started_at && <button onClick={handleStartExerciseClick}>
                         {t('workout.startExercise')}
                     </button>}

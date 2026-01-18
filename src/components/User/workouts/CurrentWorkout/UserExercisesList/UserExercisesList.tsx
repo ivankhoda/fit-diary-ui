@@ -28,11 +28,11 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
 
     const handleToggleExpand = useCallback((userExercise: ExerciseInterface) => () => toggleExpand(userExercise.id), [toggleExpand]);
     return (
-        <div className="user-exercises-container">
-            <h2>{t('workoutData.exercisesDone')}</h2>
-            <div className="user-exercise-table-header">
+        <div className="user-exercises-list-container">
+            <h2 className="user-exercises-list-title">{t('workoutData.exercisesDone')}</h2>
+            <div className="user-exercises-list-table-header">
                 <span>{t('workoutData.exerciseName')}</span>
-                <div className='user-exercise-table-summary'>
+                <div className='user-exercises-list-table-summary'>
                     <span><FaRegClock /></span>
                     <span><FaRedoAlt /></span>
                 </div>
@@ -40,18 +40,18 @@ export const UserExercisesList: React.FC<UserExercisesListProps> = ({ userExerci
 
             {userExercises.map(userExercise => (
                 (
-                    <div key={userExercise.id} className="exercise-item">
-                        <div className="exercise-header" onClick={handleToggleExpand(userExercise)}>
-                            <div className="header-top-row">
-                                <p className="exercise-name">{userExercise.name}</p>
-                                <div className="exercise-mini-summary">
-                                    {userExercise.formatted_duration && <p className="exercise-sets">{userExercise.formatted_duration}</p>}
-                                    {userExercise.number_of_sets && <p className="exercise-sets">{userExercise.number_of_sets.length}</p>}
+                    <div key={userExercise.id} className="user-exercises-list-item">
+                        <div className="user-exercises-list-header" onClick={handleToggleExpand(userExercise)}>
+                            <div className="user-exercises-list-header-top-row">
+                                <p className="user-exercises-list-name">{userExercise.name}</p>
+                                <div className="user-exercises-list-mini-summary">
+                                    {userExercise.formatted_duration && <p className="user-exercises-list-sets">{userExercise.formatted_duration}</p>}
+                                    {userExercise.number_of_sets && <p className="user-exercises-list-sets">{userExercise.number_of_sets.length}</p>}
                                 </div>
                             </div>
 
                             {userExercise.comment && (
-                                <p className="user-exercise-comment">{userExercise.comment}</p>
+                                <p className="user-exercises-list-comment">{userExercise.comment}</p>
                             )}
                         </div>
 

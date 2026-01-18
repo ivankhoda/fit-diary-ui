@@ -1,0 +1,70 @@
+/* View Exercise Card Styles */
+.view-exercise-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.view-exercise-header {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.view-exercise-header strong {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  overflow-wrap: anywhere;
+}
+
+.view-exercise-content {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.view-exercise-data {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: start;
+
+  span {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+  }
+}
+
+.view-exercise-comment {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+  width: 100%;
+
+  span {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+  }
+}

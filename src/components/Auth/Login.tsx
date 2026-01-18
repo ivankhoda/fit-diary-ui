@@ -35,6 +35,13 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
             const success = await userController?.login({ email, password });
 
             if (success) {
+                // Get the token from localStorage and update the App component's state
+                const token = localStorage.getItem('token');
+
+                if (token) {
+                    setToken(token);
+                }
+
                 if (isAdmin()) {
                     navigate('/admin');
                 } else {

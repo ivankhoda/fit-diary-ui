@@ -42,7 +42,7 @@ export const useToken = () => {
 
   const saveToken = (userToken: string | null) => {
     if (userToken) {
-      localStorage.setItem("token", JSON.stringify(userToken));
+      localStorage.setItem("token", userToken);
       setToken(userToken);
     } else {
       console.warn("Attempted to save an undefined token:", userToken);

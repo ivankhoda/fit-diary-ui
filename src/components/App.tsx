@@ -61,6 +61,13 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
       console.log(userStore.currentUser);
     }, [userController, userStore]);
 
+  // Update user when token changes (after login)
+  useEffect(() => {
+    if (token && !userStore?.currentUser) {
+      userController?.getUserFromCache();
+    }
+  }, [token, userStore?.currentUser, userController]);
+
 
 
   return (

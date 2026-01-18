@@ -14,7 +14,7 @@ import ExercisesController from '../../../../controllers/ExercisesController';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserProfile } from '../../../../store/userStore';
-import SelectedExercise from './SelectedExercise';
+import EditExerciseCard from './EditExerciseCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { toast } from 'react-toastify';
@@ -228,14 +228,14 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
                     {selectedExercises.length > 0 &&
             selectedExercises.map((e, index) => (
                 <div key={e.id} className="selected-exercise-container">
-                    <SelectedExercise
+                    <EditExerciseCard
                         index={index}
                         exercise={e}
                         handleExerciseDelete={handleExerciseDelete}
                         handleExerciseDetailChange={handleExerciseDetailChange}
                         editWorkoutExercise={handleEditWorkoutExercise}
                         moveExercise={moveExercise}
-                        mode="edit"
+
                         length={selectedExercises.length}
                     />
                 </div>

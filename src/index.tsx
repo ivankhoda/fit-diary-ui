@@ -1,4 +1,3 @@
-import './tailwind.css';
 import './styles.scss';
 
 import React from 'react';

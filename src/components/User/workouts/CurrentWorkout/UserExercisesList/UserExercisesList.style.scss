@@ -1,7 +1,7 @@
-.user-exercises-container{
+.user-exercises-list-container {
   margin: 5px;
 
-  .user-exercise-table-header {
+  .user-exercises-list-table-header {
     display: grid;
     grid-template-columns: 3fr 1fr;
     padding: 8px 0;
@@ -10,96 +10,92 @@
     margin: 8px;
   }
 
-  .user-exercise-table-summary{
+  .user-exercises-list-table-summary {
     width: 100%;
     display: flex;
     justify-content: space-between;
   }
 
-
-  h2 {
+  .user-exercises-list-title {
     font-size: 18px;
     padding-right: 10px;
     padding-left: 10px;
     margin-top: 10px;
   }
 
-  .exercise-item {
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  justify-content: space-between;
-  align-content: center;
-  margin:0;
-
-  :hover{
-    transform: none !important;
-  }
-
-  .exercise-header{
-    width: 100%;
+  .user-exercises-list-item {
     display: flex;
     flex-direction: column;
+    align-items: baseline;
+    justify-content: space-between;
+    align-content: center;
+    margin: 0;
 
-    .header-top-row {
+    :hover {
+      transform: none !important;
+    }
+
+    .user-exercises-list-header {
+      width: 100%;
       display: flex;
-      justify-content: space-between;
-      align-items: start;
-      width: 100%;
+      flex-direction: column;
 
-      .p {
-        text-align: left;
-      }
-
-      :nth-child(2) {
-        text-align: right;
-      }
-
-      :nth-child(3) {
-        text-align: right;
-      }
-
-
-      .exercise-name {
-        font-size: 16px;
-        font-weight: 600;
-        color: #333;
-      }
-
-      .exercise-mini-summary {
+      .user-exercises-list-header-top-row {
         display: flex;
-        gap: 10px;
-        min-width: 100px;
-        justify-content: right;
-        &:has(.exercise-sets:nth-child(2)) {
-          justify-content: space-between;
+        justify-content: space-between;
+        align-items: start;
+        width: 100%;
+        margin: 0px 8px 0px 8px;
+
+        .p {
+          text-align: left;
         }
-        > *:only-child {
-         justify-content: right;
+
+        :nth-child(2) {
+          text-align: right;
         }
 
+        :nth-child(3) {
+          text-align: right;
+        }
 
-
-        .exercise-sets {
-          display: block;
-          min-width: 20px;
+        .user-exercises-list-name {
           font-size: 16px;
-          color: #666;
-          font-weight: 500;
+          font-weight: 600;
+          color: #333;
+          align-self: start;
+        }
 
+        .user-exercises-list-mini-summary {
+          display: flex;
+          gap: 10px;
+          min-width: 100px;
+          justify-content: right;
+
+          &:has(.user-exercises-list-sets:nth-child(2)) {
+            justify-content: space-between;
+          }
+
+          > *:only-child {
+            justify-content: right;
+          }
+
+          .user-exercises-list-sets {
+            display: block;
+            min-width: 20px;
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+          }
         }
       }
-    }
-    .user-exercise-comment {
-      width: 100%;
-      font-size: 14px;
-      color: #555;
-      padding-left: 2px;
-    }
 
-  }
-  .exercise-name{
-    align-self: start;
-  }
+      .user-exercises-list-comment {
+        width: 100%;
+        font-size: 14px;
+        color: #555;
+        padding-left: 2px;
+      }
+    }
   }
 }

@@ -1,5 +1,6 @@
 @use "../styles/mobile.scss" as mobile;
 @use "../styles/mixins.scss" as mixins;
+@use "styles/ios-safe-areas.scss";
 
 $primary-color: #0e7dde;
 $secondary-color: #4F5B66;
@@ -97,9 +98,8 @@ body {
 
 html, body, #root {
   margin: 0;
-  // height: 100%;
   font-size: 16px;
-  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   scroll-padding-bottom: 300px;
