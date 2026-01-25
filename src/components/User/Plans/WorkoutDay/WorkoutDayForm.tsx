@@ -57,6 +57,7 @@ const WorkoutDayForm: React.FC<WorkoutDayFormProps> = ({
     const [position, setPosition] = useState(day?.position || '');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [scheduledDate, setScheduledDate] = useState(day?.scheduled_date || '');
+    const [nameError, setNameError] = useState('');
 
     useEffect(() => {
         setModeView(isEditing ? 'edit' : 'view');
@@ -92,6 +93,12 @@ const WorkoutDayForm: React.FC<WorkoutDayFormProps> = ({
     }, [day, onDelete]);
 
     const handleSubmit = useCallback(() => {
+        if (!name.trim()) {
+            setNameError('Название дня обязательно для заполнения');
+            return;
+        }
+        setNameError('');
+
         const payload: WorkoutDayInterface = {
             date: scheduleType === 'by_date' ? date : null,
             day_number: scheduleType === 'by_day_number' ? dayNumber : null,
@@ -223,8 +230,9 @@ const WorkoutDayForm: React.FC<WorkoutDayFormProps> = ({
             />
 
             <div className="form-group">
-                <label>Название дня:</label>
-                <input type="text" value={name} onChange={handleChange(setName)} />
+                <label>Название дня: *</label>
+                <input type="text" value={name} onChange={handleChange(setName)}/>
+                {nameError && <span className="error-message">{nameError}</span>}
             </div>
 
             <div className="form-group">

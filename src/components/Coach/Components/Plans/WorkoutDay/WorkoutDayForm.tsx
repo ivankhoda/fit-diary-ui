@@ -223,8 +223,8 @@ const WorkoutDayForm: React.FC<WorkoutDayFormProps> = ({
             />
 
             <div className="form-group">
-                <label>Название дня:</label>
-                <input type="text" value={name} onChange={handleChange(setName)} />
+                <label>Название дня: *</label>
+                <input type="text" value={name} onChange={handleChange(setName)} required={true}/>
             </div>
 
             <div className="form-group">

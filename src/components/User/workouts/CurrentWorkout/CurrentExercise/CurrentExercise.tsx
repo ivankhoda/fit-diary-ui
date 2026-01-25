@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './CurrentExercise.style.scss';
 import { useTranslation } from 'react-i18next';
 import { ExerciseInterface } from '../../../../../store/exercisesStore';
@@ -42,6 +42,7 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
 
     const handleFinishExerciseClick = useCallback(() => {
         finishExerciseClick(exercise);
+        stopTimer();
     }, [finishExerciseClick, exercise]);
 
     const handleStartExerciseClick = useCallback(() => {
@@ -66,27 +67,39 @@ export const CurrentExercise: React.FC<CurrentExerciseProps> =({exercise,
         ].join(':');
     };
 
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    const startTimer = () => {
+        if (!currentUserExercise?.started_at) {return;}
+
+        const startTime = new Date(currentUserExercise.started_at).getTime();
+
+        if (intervalRef.current) {clearInterval(intervalRef.current);}
+
+        intervalRef.current = setInterval(() => {
+            const now = new Date().getTime();
+            const elapsed = now - startTime;
+            setDuration(formatDuration(elapsed));
+        }, 1000);
+    };
+
+    const stopTimer = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+        setDuration('00:00');
+    };
+
     useEffect(() => {
-        let interval: NodeJS.Timeout | undefined = null;
-
         if (currentUserExercise?.started_at) {
-            const startTime = new Date(currentUserExercise.started_at).getTime();
-
-            interval = setInterval(() => {
-                const now = new Date().getTime();
-                const elapsed = now - startTime;
-                setDuration(formatDuration(elapsed));
-            }, 1000);
+            startTimer();
+        } else {
+            stopTimer();
         }
 
-        return () => {
-            if (interval) {clearInterval(interval);}
-        };
-    }, [currentUserExercise, exercise]);
-
-    useEffect(() => {
-        setDuration('00:00');
-    }, [exercise.id]);
+        return () => stopTimer();
+    }, [currentUserExercise?.started_at]);
 
     return (
         <div className='current-exercise'>

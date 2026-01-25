@@ -25,8 +25,7 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({
                 setError('Выберите тренировку');
             }
         }
-    }, [
-        workoutId, required]);
+    }, [workoutId, required]);
 
     const handleWorkoutChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = Number(e.target.value);

@@ -303,12 +303,14 @@ getLastUserWorkouts(limit: number): void {
           });
   }
 
-  @action
-  addExercise(params: AddExerciseParamsInterface): void {
-      new Post({params: {workout_exercise: params}, url: `${getApiBaseUrl()}/workout_exercises`}).execute()
-          .then(r => r.json())
-          .then(res => this.exerciseStore.addWorkoutExercise(res));
-  }
+  /*
+   *   @action
+   *   AddExercise(params: AddExerciseParamsInterface): void {
+   *       New Post({params: {workout_exercise: params}, url: `${getApiBaseUrl()}/workout_exercises`}).execute()
+   *           .then(r => r.json())
+   *           .then(res => this.exerciseStore.addWorkoutExercise(res));
+   *   }
+   */
 
   @action
   saveWorkoutName(): void {
@@ -464,12 +466,12 @@ getLastUserWorkouts(limit: number): void {
       new Post({params: {user_workout: {exercise_id, workout_id, id }},
           url: `${getApiBaseUrl()}/user_workouts/start_exercise`}).execute()
           .then(r => r.json())
-          .then(res => {
+          .then(action(res => {
               if(res.ok){
-                  this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
                   this.exerciseStore.setCurrentUserExercise(res.user_exercise);
+                  this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
               }
-          });
+          }));
   }
 
   @action
@@ -477,13 +479,12 @@ getLastUserWorkouts(limit: number): void {
       new Post({params: {user_workout: {exercise_id, workout_id, id: exercise.id, exercise }},
           url: `${getApiBaseUrl()}/user_workouts/finish_exercise`}).execute()
           .then(r => r.json())
-          .then(res => {
+          .then(action(res => {
               if(res.ok){
-                  this.workoutsStore.setCurrentUserWorkoutExercises(res.user_exercises);
-                  this.workoutsStore.updateCurrentWorkoutCompletionRate(res.workout_completion_rate);
                   this.exerciseStore.setCurrentUserExercise(null);
+                  this.workoutsStore.updateWorkoutAfterFinish(res.user_exercises, res.workout_completion_rate);
               }
-          });
+          }));
   }
   // eslint-disable-next-line max-params
   setDone(exercise: ExerciseInterface, p: {id: number, weight?: string, repetitions?: string, duration?: string, distance?: string}): void {

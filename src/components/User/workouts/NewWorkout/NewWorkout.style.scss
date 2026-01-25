@@ -1,6 +1,7 @@
 @use "/src/styles.scss" as styles;
 
 .new-workout-section {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
@@ -9,6 +10,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   min-height: 100vh;
   min-height: 100dvh;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     padding: 20px;
@@ -151,6 +153,9 @@
     height: auto;
     min-height: unset;
     max-height: unset;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 
     &:last-child {
       border-bottom: none;

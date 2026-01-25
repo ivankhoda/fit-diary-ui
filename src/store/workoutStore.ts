@@ -236,6 +236,20 @@ export default class WorkoutsStore {
     }
 
     @action
+    updateWorkoutAfterFinish(userExercises: ExerciseInterface[], completion_rate: number): void {
+        if (this.currentUserWorkout) {
+            this.currentUserWorkout = {
+                ...this.currentUserWorkout,
+                user_exercises: userExercises,
+                // eslint-disable-next-line sort-keys
+                completion_rate
+            };
+        } else {
+            console.error('No current user workout is set');
+        }
+    }
+
+    @action
     setCurrentUserWorkoutSets(set: SetInterface): void {
         if (!this.currentUserWorkout) {
             console.error('No current user workout is set');

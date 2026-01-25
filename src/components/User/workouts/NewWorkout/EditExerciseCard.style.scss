@@ -147,3 +147,74 @@
     }
   }
 }
+
+.comment-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  width: 100%;
+}
+
+.comment-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 1.2rem;
+  color: #555;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #007bff;
+  }
+}
+
+.comment-field {
+  flex: 1;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.exercise-comment.hidden {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s, visibility 0.2s, height 0.2s;
+}
+
+.exercise-comment.visible {
+  opacity: 1;
+  visibility: visible;
+  height: 50px;
+  transition: opacity 0.2s, visibility 0.2s, height 0.2s;
+}
+
+.exercise-comment {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  margin: 0;
+  font-size: 0.9rem;
+  background-color: #f9f9f9;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+}
+
+.exercise-comment::placeholder {
+  font-size: 12px;
+  color: #999;
+  opacity: 1;
+}
+
+.comment-length-counter {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+  text-align: right;
+}

@@ -2,7 +2,7 @@
 /* eslint-disable max-statements */
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { exercisesStore, workoutsStore } from '../../../../store/global';
 import { WorkoutInterface } from '../../../../store/workoutStore';
 import { ExerciseInterface } from '../../../../store/exercisesStore';
@@ -32,7 +32,6 @@ interface Props {
 export const CurrentWorkout: React.FC<Props> =
     inject('exercisesStore', 'exercisesController', 'workoutsStore', 'workoutsController')(observer((): React.JSX.Element => {
         const [selectedExercise, setSelectedExercise] = useState<ExerciseInterface | null>(null);
-        const [selectedExercises, setSelectedExercises] = useState<ExerciseInterface[]>([]);
         const [weight, setWeight] = useState(selectedExercise?.weight?.toString() || '0');
         const [repetitions, setRepetitions] = useState(selectedExercise?.repetitions?.toString() || '0');
         const [duration, setDuration] = useState(selectedExercise?.duration ? selectedExercise?.duration : '');
@@ -42,7 +41,7 @@ export const CurrentWorkout: React.FC<Props> =
 
         const { workoutId } = useParams<{ workoutId: string }>();
 
-        const [sets] = useState(exercisesStore.currentUserExerciseSets);
+        // Const [sets] = useState(exercisesStore.currentUserExerciseSets);
 
         const [activeSlideIndex, setActiveSlideIndex] = useState(0);
         const swiperRef = useRef<SwiperClass | null>(null);
@@ -72,7 +71,7 @@ export const CurrentWorkout: React.FC<Props> =
         useEffect(() => {
             if (currentExercise && currentExercise.id !== selectedExercise?.id) {
                 handleExerciseClick(currentExercise);
-                const exerciseIndex = currentWorkout.workout_exercises.findIndex(ex => ex.id === currentExercise.id);
+                const exerciseIndex = currentWorkout?.workout_exercises?.findIndex(ex => ex.id === currentExercise.id);
 
                 if (exerciseIndex >= 0) {
                     setActiveSlideIndex(exerciseIndex);
@@ -80,20 +79,17 @@ export const CurrentWorkout: React.FC<Props> =
                 }
             }
         }, [
-            sets,
-            currentWorkout,
-            currentExercise,
-            selectedExercise?.id,
+            currentExercise, currentExercise?.id,
         ]);
 
         useEffect(() => {
             if (currentWorkout && !currentExercise && !currentUserExercise) {
-                const userExercises = currentWorkout.user_exercises.map(ex => ({
+                const userExercises = currentWorkout.user_exercises?.map(ex => ({
                     id: ex.id,
                     workout_exercise_id: ex.workout_exercise_id,
-                }));
+                })) || [];
 
-                const nextExercise = currentWorkout.workout_exercises.find(
+                const nextExercise = currentWorkout.workout_exercises?.find(
                     ex => !userExercises.some(userEx => userEx.workout_exercise_id === ex.id)
                 );
 
@@ -106,9 +102,12 @@ export const CurrentWorkout: React.FC<Props> =
                     }
                 }
             }
-        }, [currentWorkout,
+        }, [
             currentExercise,
-            currentWorkout?.user_exercises]);
+            currentUserExercise,
+            currentWorkout?.user_exercises?.length,
+            currentWorkout?.workout_exercises?.length,
+        ]);
 
         const onSwiper = useCallback((swiper: SwiperClass) => {
             swiperRef.current = swiper;
@@ -123,9 +122,7 @@ export const CurrentWorkout: React.FC<Props> =
             setActiveSlideIndex(newIndex);
         }, []);
 
-        useEffect(() => {
-            if (currentWorkout) {setSelectedExercises(currentWorkout.workout_exercises);}
-        }, [currentWorkout]);
+        const selectedExercises = useMemo(() => currentWorkout?.workout_exercises || [], [currentWorkout?.workout_exercises]);
 
         const handleWeight = useCallback((w: string) => {setSelectedExercise(prev => ({...prev,weight: w}));
             setWeight(w);

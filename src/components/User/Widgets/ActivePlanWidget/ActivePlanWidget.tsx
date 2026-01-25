@@ -29,7 +29,6 @@ const ActivePlanWidgetComponent: React.FC<Props> = ({ userStore, plansStore }) =
         }
     }, [currentUser?.active_plan?.plan_id, plansStore?.currentPlan]);
 
-    console.log('Active plans to display:', activePlans);
     if (!activePlans.length) {return null;}
 
     return (

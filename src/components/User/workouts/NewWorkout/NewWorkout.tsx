@@ -59,6 +59,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
         if (fetchedWorkout) {
             setWorkoutName(fetchedWorkout.name || '');
             setDescription(fetchedWorkout.description || '');
+            console.log(exercisesStore?.workoutExercises);
             setSelectedExercises(
                 (exercisesStore?.workoutExercises || []).sort((a, b) => {
                     if (a.order === b.order) {
@@ -73,6 +74,7 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     }, [workoutsStore?.draftWorkout]);
 
     const handleExerciseClick = async(exercise: ExerciseInterface) => {
+        console.log(exercise);
         try {
             await exercisesController?.addWorkoutExercise(workoutId, exercise.id);
 
@@ -151,8 +153,11 @@ const NewWorkout: React.FC<NewWorkoutProps> = ({
     };
 
     const filteredExercises =
+
     exercisesStore?.generalExercises?.filter(exercise =>
         exercise?.name?.toLowerCase().includes(exerciseSearchTerm.toLowerCase())) || [];
+
+    console.log(exercisesStore.generalExercises);
 
     const moveExercise = useCallback((dragIndex: number, hoverIndex: number) => {
         setSelectedExercises(prevExercises => {

@@ -57,8 +57,6 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
   }
   useEffect(() => {
       userController.getUserFromCache();
-      console.log("App mounted, fetching user from cache");
-      console.log(userStore.currentUser);
     }, [userController, userStore]);
 
   // Update user when token changes (after login)

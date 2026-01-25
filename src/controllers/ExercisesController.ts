@@ -274,7 +274,7 @@ export default class ExercisesController extends BaseController {
     }
 
     @action
-async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<ExerciseInterface | null> {
+async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<WorkoutExerciseInterface> {
     const params = { exercise_id, workout_id };
 
     try {
@@ -283,12 +283,15 @@ async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<Exerc
         this.exerciseStore.addWorkoutExercise(json);
 
         const cacheKey = `workout_exercises_${workout_id}`;
-        await cacheService.set(cacheKey, this.exerciseStore.workoutExercises);
+
+        try {
+            await cacheService.set(cacheKey, this.exerciseStore.workoutExercises);
+        } catch (cacheErr) {
+            console.warn('Failed to cache workout exercises:', cacheErr);
+        }
 
         return json;
     } catch (err) {
-        console.warn('Network offline, saving addWorkoutExercise to offline queue', err);
-
         const exercise_base = this.exerciseStore.generalExercises.find(ex => ex.id === exercise_id);
         const tempExercise: WorkoutExerciseInterface = {
             uuid: uuidv4(),
@@ -300,12 +303,17 @@ async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<Exerc
             temp: true,
         };
 
-        await createOfflineQueueStrategy.addCreateAction('workout_exercise', tempExercise);
-        this.exerciseStore.addWorkoutExercise(tempExercise);
+        try {
+            console.warn('Network offline, saving addWorkoutExercise to offline queue', err);
 
-        const cacheKey = `workout_exercises_${workout_id}`;
-        await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+            await createOfflineQueueStrategy.addCreateAction('workout_exercise', tempExercise);
+            this.exerciseStore.addWorkoutExercise(tempExercise);
 
+            const cacheKey = `workout_exercises_${workout_id}`;
+            await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+        } catch (cacheErr) {
+            console.warn('Failed to cache workout exercises:', cacheErr);
+        }
         return tempExercise;
     }
 }
@@ -324,22 +332,25 @@ async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<Exerc
                 await cacheService.set(cacheKey, this.exerciseStore.workoutExercises);
             }
         } catch (err) {
-            console.warn('Network offline, saving deleteWorkoutExercise to offline queue', err);
+            try {console.warn('Network offline, saving deleteWorkoutExercise to offline queue', err);
 
-            await createOfflineQueueStrategy.addDeleteAction('workout_exercise', id);
-            this.exerciseStore.deleteWorkoutExercise(id);
+                await createOfflineQueueStrategy.addDeleteAction('workout_exercise', id);
+                this.exerciseStore.deleteWorkoutExercise(id);
 
-            const workout_id = this.workoutsStore.draftWorkout?.id;
+                const workout_id = this.workoutsStore.draftWorkout?.id;
 
-            if (workout_id) {
-                const cacheKey = `workout_exercises_${workout_id}`;
-                await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+                if (workout_id) {
+                    const cacheKey = `workout_exercises_${workout_id}`;
+                    await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+                }}
+            catch (catchErr){
+                console.log(catchErr);
             }
         }
     }
 
     @action
-    async editWorkoutExercise(params: ExerciseInterface): Promise<void> {
+    async editWorkoutExercise(params: WorkoutExerciseInterface): Promise<void> {
         try {
             const response = await new Patch({ params: { workout_exercise: params },
                 url: `${getApiBaseUrl()}/workout_exercises/${params.uuid}` }).execute();
@@ -354,17 +365,20 @@ async addWorkoutExercise(workout_id: string, exercise_id: number): Promise<Exerc
                 await cacheService.set(cacheKey, this.exerciseStore.workoutExercises);
             }
         } catch (err) {
-            console.warn('Network offline, saving editWorkoutExercise to offline queue', err);
+            try {console.warn('Network offline, saving editWorkoutExercise to offline queue', err);
 
-            await createOfflineQueueStrategy.addUpdateAction('workout_exercise', params.uuid, params);
-            this.workoutsStore.updateOrAddDraftWorkoutExercise(params);
-            this.exerciseStore.updateWorkoutExercise(params);
+                await createOfflineQueueStrategy.addUpdateAction('workout_exercise', params.uuid, params);
+                this.workoutsStore.updateOrAddDraftWorkoutExercise(params);
+                this.exerciseStore.updateWorkoutExercise(params);
 
-            const workout_id = params.workout_id || this.workoutsStore.draftWorkout?.id;
+                const workout_id = params.workout_id || this.workoutsStore.draftWorkout?.id;
 
-            if (workout_id) {
-                const cacheKey = `workout_exercises_${workout_id}`;
-                await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+                if (workout_id) {
+                    const cacheKey = `workout_exercises_${workout_id}`;
+                    await cacheService.set(cacheKey, JSON.parse(JSON.stringify(this.exerciseStore.workoutExercises)));
+                }}
+            catch (catchErr) {
+                console.log(catchErr);
             }
         }
     }
