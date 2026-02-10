@@ -454,8 +454,6 @@ getLastUserWorkouts(limit: number): void {
           .then(res => {
               if(res.status ==='ok') {
                   this.workoutsStore.setCurrentUserWorkout(res.user_workout);
-
-                  window.location.pathname = `/workout/${res.user_workout.id}`;
               }
           });
   }

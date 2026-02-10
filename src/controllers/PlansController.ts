@@ -36,7 +36,7 @@ export default class PlansController extends BaseController {
 
             if (response.status === NOT_CHANGE_RESPONSE_CODE) {
                 const cached = await cacheService.get<PlanInterface[]>('plans');
-                console.log('Plans not changed, using cached data.', cached);
+
                 if (cached) {
                     this.plansStore.setPlans(cached);
                     return;
