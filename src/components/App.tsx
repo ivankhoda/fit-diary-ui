@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Routes, BrowserRouter as Router, useNavigate } from "react-router-dom";
+import { Route, Routes, BrowserRouter as Router, useNavigate, Navigate } from "react-router-dom";
 import "./App.style.scss";
 import { Header } from "./User/Header/Header";
 import { inject, observer, Provider } from "mobx-react";
@@ -62,7 +62,7 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
         setIsLogin(false);
   }
   useEffect(() => {
-      userController.getUserFromCache();
+    userController?.getUserFromCache();
     }, [userController, userStore]);
 
 
@@ -79,6 +79,11 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
       return;
     }
 
+    if (!userController) {
+      setIsTgAuthPending(false);
+      return;
+    }
+
     userController.loginWithTelegram(initData)
       .then(ok => {
         if (ok) {
@@ -89,7 +94,7 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
       .catch(err => console.error('[Telegram auth] error:', err))
       .finally(() => setIsTgAuthPending(false));
 
-  }, [token]);
+  }, [token, userController, setToken]);
 
   useEffect(() => {
     if (token && !userStore?.currentUser) {
@@ -106,14 +111,14 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />
         <Route path="/about-deletion" element={<AccountDeletion />} />
-        <Route path="/landing" element={<LandingPage onRegisterClick={handleClick}/>}/>
+        <Route path="/landing" element={token ? <Navigate to="/" replace /> : <LandingPage onRegisterClick={handleClick}/>}/>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
         <Route path="/password/recovery" element={<PasswordRecovery />} />
         <Route path="/common-exercises" element={<CommonExercises />} />
          <Route path="/about" element={<AboutApp />} />
         <Route path='/exercises/:id' element={<Exercise />} />
-        <Route path='/login' element={<Login setToken={setToken} isAdmin={isAdmin} />}/>
-        <Route path='/registration' element={<Registration setToken={setToken} />}/>
+        <Route path='/login' element={token ? <Navigate to="/" replace /> : <Login setToken={setToken} isAdmin={isAdmin} />}/>
+        <Route path='/registration' element={token ? <Navigate to="/" replace /> : <Registration setToken={setToken} />}/>
         <Route
           path="/users/confirmation/*"
           element={<ConfirmRegistrationWithToken />}
