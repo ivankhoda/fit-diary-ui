@@ -70,7 +70,6 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
     const tgObj = window.Telegram?.WebApp;
     const initData = tgObj?.initData ?? '';
     const existingToken = localStorage.getItem('token');
-alert('[Telegram auth] initData: ' + initData);
     if (!initData) {
       setIsTgAuthPending(false);
       return;
@@ -82,7 +81,6 @@ alert('[Telegram auth] initData: ' + initData);
 
     userController.loginWithTelegram(initData)
       .then(ok => {
-        alert('[Telegram auth] loginWithTelegram result:');
         if (ok) {
           const newToken = localStorage.getItem('token');
           if (newToken) setToken(newToken);

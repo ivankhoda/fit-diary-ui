@@ -19,12 +19,10 @@ import { telegramReady, getTelegramThemeParams, isTelegramApp } from './services
 if (isTelegramApp()) {
     telegramReady();
     const params = getTelegramThemeParams();
-    // eslint-disable-next-line no-alert
-    alert('xxxx');
+
     if (params) {
         const root = document.documentElement;
         Object.entries(params).forEach(([key, value]) => {
-            // Telegram provides keys like bg_color → exposed as --tg-theme-bg-color
             root.style.setProperty(`--tg-theme-${key.replace(/_/gu, '-')}`, value as string);
         });
     }
