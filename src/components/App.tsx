@@ -47,7 +47,6 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(true);
 
-  // true while we are waiting for Telegram auth to complete — prevents flashing auth routes
   const [isTgAuthPending, setIsTgAuthPending] = useState<boolean>(() => {
     const initData = window.Telegram?.WebApp?.initData ?? '';
     const hasToken = Boolean(localStorage.getItem('token'));
@@ -66,12 +65,12 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
       userController.getUserFromCache();
     }, [userController, userStore]);
 
-  // Auto-login via Telegram initData when launched inside Telegram and no session exists
+
   useEffect(() => {
     const tgObj = window.Telegram?.WebApp;
     const initData = tgObj?.initData ?? '';
     const existingToken = localStorage.getItem('token');
-
+alert('[Telegram auth] initData: ' + initData);
     if (!initData) {
       setIsTgAuthPending(false);
       return;
@@ -81,7 +80,6 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
       return;
     }
 
-    console.log('[Telegram auth] Sending initData to backend...');
     userController.loginWithTelegram(initData)
       .then(ok => {
         alert('[Telegram auth] loginWithTelegram result:');
@@ -92,10 +90,9 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
       })
       .catch(err => console.error('[Telegram auth] error:', err))
       .finally(() => setIsTgAuthPending(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [token]);
 
-  // Update user when token changes (after login)
   useEffect(() => {
     if (token && !userStore?.currentUser) {
       userController?.getUserFromCache();
