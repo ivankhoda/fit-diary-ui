@@ -13,6 +13,22 @@ import en from './locales/en.json';
 import ru from './locales/ru.json';
 import stores from './store/stores';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { telegramReady, getTelegramThemeParams, isTelegramApp } from './services/telegramService';
+
+// Apply Telegram CSS variables to :root so SCSS can reference them via var(--tg-theme-bg-color) etc.
+if (isTelegramApp()) {
+    telegramReady();
+    const params = getTelegramThemeParams();
+    // eslint-disable-next-line no-alert
+    alert('xxxx');
+    if (params) {
+        const root = document.documentElement;
+        Object.entries(params).forEach(([key, value]) => {
+            // Telegram provides keys like bg_color → exposed as --tg-theme-bg-color
+            root.style.setProperty(`--tg-theme-${key.replace(/_/gu, '-')}`, value as string);
+        });
+    }
+}
 
 i18n.init({
     interpolation: {escapeValue: false},

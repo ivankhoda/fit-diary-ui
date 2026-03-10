@@ -7,7 +7,7 @@ const getApiBaseUrl = (): string => {
         return 'https://planka.tech/api';
     }
 
-    const url = process.env.NODE_ENV === 'production' ? `${baseUrl}/api` : `${baseUrl}:3000`;
+    const url = process.env.NODE_ENV === 'production' ? `${baseUrl}/api` : 'https://u65v14-163-5-63-252.ru.tuna.am';
 
     return url;
 };

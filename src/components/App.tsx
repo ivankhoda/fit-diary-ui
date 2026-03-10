@@ -47,6 +47,13 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(true);
 
+  // true while we are waiting for Telegram auth to complete — prevents flashing auth routes
+  const [isTgAuthPending, setIsTgAuthPending] = useState<boolean>(() => {
+    const initData = window.Telegram?.WebApp?.initData ?? '';
+    const hasToken = Boolean(localStorage.getItem('token'));
+    return Boolean(initData) && !hasToken;
+  });
+
   const proceedToAuth = () => {
     setIsDescriptionVisible(false);
   };
@@ -58,6 +65,35 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
   useEffect(() => {
       userController.getUserFromCache();
     }, [userController, userStore]);
+
+  // Auto-login via Telegram initData when launched inside Telegram and no session exists
+  useEffect(() => {
+    const tgObj = window.Telegram?.WebApp;
+    const initData = tgObj?.initData ?? '';
+    const existingToken = localStorage.getItem('token');
+
+    if (!initData) {
+      setIsTgAuthPending(false);
+      return;
+    }
+    if (existingToken) {
+      setIsTgAuthPending(false);
+      return;
+    }
+
+    console.log('[Telegram auth] Sending initData to backend...');
+    userController.loginWithTelegram(initData)
+      .then(ok => {
+        alert('[Telegram auth] loginWithTelegram result:');
+        if (ok) {
+          const newToken = localStorage.getItem('token');
+          if (newToken) setToken(newToken);
+        }
+      })
+      .catch(err => console.error('[Telegram auth] error:', err))
+      .finally(() => setIsTgAuthPending(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   // Update user when token changes (after login)
   useEffect(() => {
@@ -87,7 +123,7 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
           path="/users/confirmation/*"
           element={<ConfirmRegistrationWithToken />}
         />
-        {userStore?.currentUser && token ? (
+        {token ? (
           <>
             {isAdmin() && <Route path="/admin/*" element={<AdminRoutes />} />}
             <Route path="/*" element={<MainAppRoutes token={token} />} />
@@ -171,7 +207,6 @@ const AuthRoutes = ({
       const toggleForm = () => {
     setLoginPath(loginPath === 'registration' ? 'login': 'registration')
     navigate(loginPath)
-    console.log(loginPath)
   };
   return (
   <div className="auth-container">

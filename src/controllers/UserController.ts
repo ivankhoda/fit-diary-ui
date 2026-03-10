@@ -98,6 +98,48 @@ export default class UserController extends BaseController {
     }
 
     @action
+    async loginWithTelegram(initData: string): Promise<boolean> {
+        // eslint-disable-next-line no-alert
+        alert(`${getApiBaseUrl()}/users/telegram_auth`);
+        // eslint-disable-next-line no-alert
+        alert(`initData: ${  initData}`);
+        try {
+            const response = await fetch(`${getApiBaseUrl()}/users/telegram_auth`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ init_data: initData }),
+            });
+
+            const data = await response.json();
+            // eslint-disable-next-line no-alert
+            alert(`Response from Telegram auth: ${response.status} ${response.statusText}, body: ${JSON.stringify(data)}`);
+            if (!response.ok) {
+                console.error('Telegram auth failed:', data);
+                return false;
+            }
+
+            if (data.user && data.jwt) {
+                const userToCache = { ...data.user, jwt: data.jwt };
+                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                this.userStore.setUserProfile(data.user);
+                this.userStore.setCurrentUser(data.user);
+                localStorage.setItem('token', data.jwt);
+                if (data.refresh_token) {
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                }
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            // eslint-disable-next-line no-alert
+            alert(`Telegram login error: ${  error}`);
+            console.error('Telegram login error:', error);
+            return false;
+        }
+    }
+
+    @action
     logout(): void {
         this.userStore.clearUserData();
         cacheService.clear('current_user');

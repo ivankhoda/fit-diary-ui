@@ -25,7 +25,6 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
         if (isIOS) {
             useCapacitorKeyboardAvoiding(containerRef);
         }
-
         return (
             <div className="working-panel" id="working-panel" ref={containerRef} >
                 {location.pathname !== '/' && <SmallControlPanel/>}
@@ -41,13 +40,12 @@ export const WorkingPanel: React.FC<PropsWithChildren<WorkingPanelProps>> = inje
                 </FloatingWidget>
             )}
 
-            {userStore?.userProfile?.has_active_workout && (
-                <FloatingWidget>
-                    <div className="widget-content">
-                        <CurrentWorkoutWidget />
-                    </div>
-                </FloatingWidget>
-            )}
+            <FloatingWidget>
+                <div className="widget-content">
+                    <CurrentWorkoutWidget />
+                </div>
+            </FloatingWidget>
+
         </div>}
                 {children}
             </div>

@@ -134,6 +134,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userStore, userController }) 
                         type="text"
                         value={telegramUsername}
                         maxLength={50}
+                        disabled
                         onChange={e => setTelegramUsername(e.target.value)}
                     />
                     <small>{telegramUsername.length}/50</small>
