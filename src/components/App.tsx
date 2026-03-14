@@ -16,11 +16,9 @@ import { PasswordRecovery } from "./Auth/PasswordRecovery";
 import { adminRoutes } from "./Admin/routes/routes";
 import adminStores from "./Admin/store/stores";
 import adminControllers from "./Admin/controllers/controllers";
-import { useTranslation } from "react-i18next";
 import { t, use } from "i18next";
 import Footer from "./User/Footer/Footer";
 import { CoachModeProvider, useCoachMode } from "./Coach/CoachContext";
-import { CoachPanel } from "./Coach/CoachPanel";
 import LandingPage from "../landing/LandingPage";
 import PrivacyPolicy from "./privacy/PrivacyPolicy";
 import TermsOfUse from "./terms/TermsOfUse";
@@ -33,7 +31,7 @@ import CommonExercises from "./Public/PublicExercises/PublicExercises";
 import AboutApp from "./Public/About/AboutApp";
 import UserStore from "../store/userStore";
 import UserController from "../controllers/UserController";
-import { OfflineIndicator } from "./Common/OfflineIndicator";
+
 
 Modal.setAppElement('#root');
 
@@ -133,7 +131,7 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
             path="/*"
             element={
               isDescriptionVisible ? (
-                <DescriptionScreen />
+                <DescriptionScreen setToken={setToken} />
               ) : (
                 <AuthRoutes
                   isLogin={isLogin}

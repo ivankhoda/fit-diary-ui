@@ -62,7 +62,7 @@ export default class PlansController extends BaseController {
     async getPlanDetails(planId: number): Promise<void> {
         const cacheKey = `plan_${planId}`;
         const localPlan = await cacheService.get<PlanInterface>(cacheKey);
-        console.log('Local plan from cache:', localPlan);
+
         if (localPlan) {
             this.plansStore.setCurrentPlan(localPlan);
         }

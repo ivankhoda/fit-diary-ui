@@ -52,7 +52,6 @@ root.render(
 serviceWorkerRegistration.register({
     onSuccess: () => console.log('App is ready for offline use.'),
     onUpdate: registration => {
-        console.log('New version available. Updating...');
         // Auto-update to new version
         if (registration.waiting) {
             registration.waiting.postMessage({ type: 'SKIP_WAITING' });

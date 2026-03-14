@@ -1,15 +1,34 @@
 import React, { ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Registration.style.scss';
-import getApiBaseUrl from '../../utils/apiUrl';
 import { useNavigate } from 'react-router';
 import BackButton from '../Common/BackButton/BackButton';
+import { inject } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
+import UserController from '../../controllers/UserController';
+import { TelegramRegisterButton } from './TelegramRegisterButton/TelegramRegisterButton';
 
-type Form = {
-    setToken: (token: string | null) => void;
+const MIN_PASSWORD_LENGTH = 8;
+
+const validateRegistrationForm = (
+    password: string,
+    confirmPassword: string,
+): string[] => {
+    if (password.length < MIN_PASSWORD_LENGTH) {
+        return [`Пароль должен быть минимум ${MIN_PASSWORD_LENGTH} символов.`];
+    }
+    if (password !== confirmPassword) {
+        return ['Пароли не совпадают.'];
+    }
+    return [];
 };
 
-export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
+type FormProps = {
+    setToken: (token: string | null) => void;
+    userController?: UserController;
+};
+
+export const RegistrationComponent: React.FC<FormProps> = ({ setToken, userController }): ReactNode => {
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,62 +36,36 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
     const [errors, setErrors] = useState<string[]>([]);
     const navigate = useNavigate();
 
-    const MIN_PASSWORD_LENGTH = 8;
-
-    const registerUser = async(credentials: {
-        user: {
-            email: string | undefined;
-            password: string | undefined;
-            password_confirmation: string | undefined;
-        };
-    }) => {
-        const response = await fetch(`${getApiBaseUrl()}/users`, {
-            body: JSON.stringify(credentials),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            method: 'POST',
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            setErrors(data.errors || []);
-            return null;
-        }
-        window.location.reload();
-        return data.jwt;
-    };
-
     const handleSubmit = useCallback(async(event: React.FormEvent) => {
         event.preventDefault();
         setErrors([]);
 
-        if (password.length < MIN_PASSWORD_LENGTH) {
-            setErrors([`Пароль должен быть минимум ${MIN_PASSWORD_LENGTH} символов.`]);
+        const validationErrors = validateRegistrationForm(password, confirmPassword);
+
+        if (validationErrors.length > 0) {
+            setErrors(validationErrors);
             return;
         }
 
-        if (password !== confirmPassword) {
-            setErrors(['Пароли не совпадают.']);
+        const result = await userController?.register({ email, password, password_confirmation: confirmPassword });
+
+        if (!result || result.errors.length > 0) {
+            if (result?.errors.length) {setErrors(result.errors);}
             return;
         }
 
-        const token = await registerUser({
-            user: {
-                email,
-                password,
-                password_confirmation: confirmPassword,
-            },
-        });
+        if (result.success) {
+            const token = localStorage.getItem('token');
 
-        if (token) {
-            setToken(token);
+            if (token) {setToken(token);}
         }
-    }, [email,
+    }, [
+        email,
         password,
         confirmPassword,
-        setToken]);
+        setToken,
+        userController,
+    ]);
 
     const handleEmailChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -88,7 +81,7 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
 
     const toggleForm = useCallback(() => {
         navigate('/login');
-    }, []);
+    }, [navigate]);
 
     return (
         <div className="register-wrapper">
@@ -99,6 +92,11 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
                 </div>
 
                 <div className="form-content">
+                    <TelegramRegisterButton setToken={setToken} onErrors={setErrors}/>
+                    <div className="auth-divider">
+                        <span>{t('auth.or')}</span>
+                    </div>
+
                     <form id="register" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="email" className="form-label">
@@ -138,7 +136,11 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
                         </div>
 
                         <div className="form-group">
-                            <button className="form-button" type="submit" disabled={!email || !password || !confirmPassword}>
+                            <button
+                                className="form-button"
+                                type="submit"
+                                disabled={!email || !password || !confirmPassword}
+                            >
                                 {t('button_register')}
                             </button>
                         </div>
@@ -163,3 +165,5 @@ export const Registration: React.FC<Form> = ({ setToken }): ReactNode => {
         </div>
     );
 };
+
+export const Registration = inject('userController')(observer(RegistrationComponent));

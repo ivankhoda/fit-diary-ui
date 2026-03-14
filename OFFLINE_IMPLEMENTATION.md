@@ -298,7 +298,6 @@ const CACHE_TTL = 1000 * 60 * 60 * 24; // Cache expiration
 // Listen for sync completion
 window.addEventListener("offline-sync-complete", (event: CustomEvent) => {
   const result = event.detail;
-  console.log(`Synced: ${result.syncedCount}, Failed: ${result.failedCount}`);
 });
 
 // Trigger manual sync

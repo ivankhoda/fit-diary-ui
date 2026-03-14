@@ -131,6 +131,98 @@ export default class UserController extends BaseController {
     }
 
     @action
+    async register(credentials: {
+        email: string;
+        password: string;
+        password_confirmation: string;
+    }): Promise<{ errors: string[]; success: boolean }> {
+        try {
+            const response = await fetch(`${getApiBaseUrl()}/users`, {
+                body: JSON.stringify({ user: credentials }),
+                headers: { 'Content-Type': 'application/json' },
+                method: 'POST',
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                return { errors: data.errors || [], success: false };
+            }
+
+            window.location.reload();
+
+            return { errors: [], success: true };
+        } catch {
+            return { errors: [], success: false };
+        }
+    }
+
+    @action
+    async registerWithTelegram(initData: string): Promise<{ errors: string[]; success: boolean }> {
+        console.log('Attempting Telegram registration with initData:', initData);
+        try {
+            const response = await fetch(`${getApiBaseUrl()}/users/telegram_register`, {
+                body: JSON.stringify({ init_data: initData }),
+                headers: { 'Content-Type': 'application/json' },
+                method: 'POST',
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                return { errors: data.errors || [], success: false };
+            }
+
+            if (data.user && data.jwt) {
+                const userToCache = { ...data.user, jwt: data.jwt };
+                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                this.userStore.setUserProfile(data.user);
+                this.userStore.setCurrentUser(data.user);
+                localStorage.setItem('token', data.jwt);
+                if (data.refresh_token) {
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                }
+
+                return { errors: [], success: true };
+            }
+
+            return { errors: [], success: false };
+        } catch {
+            return { errors: [], success: false };
+        }
+    }
+
+    @action
+    async loginWithTelegramWidget(initData: string): Promise<{ errors: string[]; success: boolean }> {
+        try {
+            const response = await fetch(`${getApiBaseUrl()}/users/telegram_widget_auth`, {
+                body: JSON.stringify({ init_data: initData }),
+                headers: { 'Content-Type': 'application/json' },
+                method: 'POST',
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                return { errors: data.errors || [], success: false };
+            }
+
+            if (data.user && data.jwt) {
+                const userToCache = { ...data.user, jwt: data.jwt };
+                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                this.userStore.setUserProfile(data.user);
+                this.userStore.setCurrentUser(data.user);
+                localStorage.setItem('token', data.jwt);
+                if (data.refresh_token) {
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                }
+                return { errors: [], success: true };
+            }
+
+            return { errors: [], success: false };
+        } catch {
+            return { errors: [], success: false };
+        }
+    }
+
+    @action
     logout(): void {
         this.userStore.clearUserData();
         cacheService.clear('current_user');

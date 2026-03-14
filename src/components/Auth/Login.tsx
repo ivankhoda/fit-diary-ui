@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Login.style.scss';
@@ -8,6 +9,7 @@ import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
 import UserController from '../../controllers/UserController';
 import UserStore from '../../store/userStore';
+import { TelegramLoginButton } from './TelegramLoginButton/TelegramLoginButton';
 
 type FormProps = {
     setToken: (token: string | null) => void;
@@ -25,6 +27,7 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
+    const [errors, setErrors] = useState<string[]>([]);
 
     const handleSubmit = useCallback(
         async(event: React.FormEvent) => {
@@ -35,7 +38,6 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
             const success = await userController?.login({ email, password });
 
             if (success) {
-                // Get the token from localStorage and update the App component's state
                 const token = localStorage.getItem('token');
 
                 if (token) {
@@ -151,47 +153,58 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
                             </form>
                         )
                         : (
-                            <form id="login" onSubmit={handleSubmit}>
-                                <div className="form-group">
-                                    <label htmlFor="login" className="form-label">
-                                        {t('login')}
-                                        <input
-                                            id="login_input"
-                                            className="form-input"
-                                            type="text"
-                                            name="login"
-                                            value={email}
-                                            onChange={handleSetEmail}
-                                        />
-                                    </label>
+                            <>
+                                <TelegramLoginButton setToken={setToken} onErrors={setErrors}/>
+                                {errors.length > 0 && (
+                                    <div className="form-message error">
+                                        {errors.map((e, i) => <div key={i}>{e}</div>)}
+                                    </div>
+                                )}
+                                <div className="auth-divider">
+                                    <span>{t('auth.or')}</span>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="password" className="form-label">
-                                        {t('password')}
-                                        <input
-                                            id="password"
-                                            className="form-input"
-                                            type="password"
-                                            name="password"
-                                            value={password}
-                                            onChange={handleSetPassword}
-                                        />
-                                    </label>
-                                </div>
-                                <div className="form-group">
-                                    <button className="form-button" type="submit" disabled={!email || !password}>
-                                        {t('button_ok')}
+                                <form id="login" onSubmit={handleSubmit}>
+                                    <div className="form-group">
+                                        <label htmlFor="login" className="form-label">
+                                            {t('login')}
+                                            <input
+                                                id="login_input"
+                                                className="form-input"
+                                                type="text"
+                                                name="login"
+                                                value={email}
+                                                onChange={handleSetEmail}
+                                            />
+                                        </label>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="password" className="form-label">
+                                            {t('password')}
+                                            <input
+                                                id="password"
+                                                className="form-input"
+                                                type="password"
+                                                name="password"
+                                                value={password}
+                                                onChange={handleSetPassword}
+                                            />
+                                        </label>
+                                    </div>
+                                    <div className="form-group">
+                                        <button className="form-button" type="submit" disabled={!email || !password}>
+                                            {t('button_ok')}
+                                        </button>
+                                    </div>
+                                    <div className="form-recovery">
+                                        <button type="button" className="form-button" onClick={handleSwitchToRecovery}>
+                                            {t('forgot_password')}
+                                        </button>
+                                    </div>
+                                    <button className="toggle-button" onClick={toggleForm}>
+                                        {t('auth.no_account')}
                                     </button>
-                                </div>
-                                <div className="form-recovery">
-                                    <button type="button" className="form-button" onClick={handleSwitchToRecovery}>
-                                        {t('forgot_password')}
-                                    </button>
-                                </div>
-                                <button className="toggle-button" onClick={toggleForm}>
-                                    {t('auth.no_account')}
-                                </button>
-                            </form>
+                                </form>
+                            </>
                         )}
                 </div>
             </div>

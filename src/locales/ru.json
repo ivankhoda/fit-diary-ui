@@ -210,6 +210,7 @@
   "paginationNext": "Вперёд →",
   "workout": "Тренировка",
   "something_went_wrong": "Что-то пошло не так",
+  "loading": "Загрузка...",
   "login_failed": "Ошибка входа",
   "send_password_reset": "Отправить письмо для сброса пароля",
   "password_reset_successful": "Пароль успешно изменен",
@@ -401,7 +402,10 @@
 
   "auth": {
     "no_account": "Нет аккаунта? Зарегистрируйтесь",
-    "have_account": "Уже есть аккаунт? Войдите"
+    "have_account": "Уже есть аккаунт? Войдите",
+    "register_with_telegram": "Зарегистрироваться через Telegram",
+    "login_with_telegram": "Войти через Telegram",
+    "or": "или"
   },
   "monday": "Понедельник",
   "tuesday": "Вторник",

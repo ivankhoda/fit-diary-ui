@@ -134,7 +134,7 @@ async getWorkout(id: string): Promise<void> {
 
     try {
         const cachedEtag = await cacheService.getVersion(cacheKey);
-        console.log('Fetching workout with ID:', cachedEtag);
+
         const response = await new Get({
             url: `${getApiBaseUrl()}/workouts/${id}`,
             configurator: {

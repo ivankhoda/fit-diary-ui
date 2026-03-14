@@ -110,7 +110,7 @@ export const cacheService = {
         };
         queue.push(newAction);
         await localforage.setItem(OFFLINE_QUEUE_KEY, queue);
-        console.log('Added to offline queue:', newAction);
+
         return id;
     },
 
@@ -152,8 +152,6 @@ export const cacheService = {
             return { success: true, syncedCount: 0, failedCount: 0, errors: [] };
         }
 
-        console.log(`Syncing ${queue.length} offline actions...`);
-
         const result: SyncResult = {
             success: true,
             syncedCount: 0,
@@ -183,7 +181,6 @@ export const cacheService = {
                 if (response.ok) {
                     result.syncedCount++;
                     await this.removeFromQueue(action.id);
-                    console.log(`Successfully synced action ${action.id}`);
                 } else {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
@@ -203,7 +200,6 @@ export const cacheService = {
         }
 
         result.success = result.failedCount === 0;
-        console.log('Sync completed:', result);
 
         return result;
     },

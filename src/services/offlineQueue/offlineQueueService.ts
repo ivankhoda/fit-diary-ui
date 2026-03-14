@@ -6,8 +6,6 @@ import { QueueItemResult } from './baseService';
 
 class OfflineActionQueueService {
     async syncOfflineQueue(): Promise<QueueItemResult[]> {
-        console.log('Starting offline queue synchronization...');
-
         try {
             const results = await queueProcessor.processQueue();
 

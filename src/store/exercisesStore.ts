@@ -144,7 +144,6 @@ export default class ExercisesStore {
 
     @action
     addWorkoutExercise(exercise: ExerciseInterface): void {
-        console.log('Adding workout exercise:', exercise);
         const exists = this.workoutExercises.some(ex =>
             (ex.id && ex.id === exercise.id) ||
             (ex.uuid && ex.uuid === exercise.uuid));

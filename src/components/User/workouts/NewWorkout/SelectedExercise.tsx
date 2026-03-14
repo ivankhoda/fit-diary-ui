@@ -81,7 +81,7 @@ const SelectedExercise: React.FC<SelectedExerciseProps> = ({
 
     const handleUpdate = useCallback((field: string, value: string | number | null) => {
         const updatedExercise = { ...exercise, [field]: value };
-        console.log('Updating exercise:', updatedExercise);
+
         editWorkoutExercise(updatedExercise);
     }, [exercise]);
 

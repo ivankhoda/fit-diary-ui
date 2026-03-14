@@ -140,6 +140,66 @@
   }
 }
 
+.tg-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 24px;
+  background: #2aabee;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(42, 171, 238, 0.35);
+
+  &__icon {
+    width: 22px;
+    height: 22px;
+    fill: #fff;
+    flex-shrink: 0;
+  }
+
+  &:hover:not(:disabled) {
+    background: #1a96d4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(42, 171, 238, 0.45);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #adb5bd;
+  font-size: 14px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  span {
+    padding: 0 12px;
+  }
+}
+
 .toggle-button {
   width: 100%;
   padding: 14px 24px;

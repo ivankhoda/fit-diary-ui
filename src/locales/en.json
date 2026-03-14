@@ -272,6 +272,7 @@
   },
 
   "something_went_wrong": "Something went wrong",
+  "loading": "Loading...",
   "login_failed": "Login failed",
   "password_reset_link_sent": "Password reset link sent",
   "send_password_reset": "Send password reset link",
@@ -339,7 +340,10 @@
 },
   "auth": {
     "no_account": "Don't have an account? Sign Up",
-    "have_account": "Already have an account? Sign In"
+    "have_account": "Already have an account? Sign In",
+    "register_with_telegram": "Register with Telegram",
+    "login_with_telegram": "Log in with Telegram",
+    "or": "or"
   },
   "monday": "Monday",
   "tuesday": "Tuesday",

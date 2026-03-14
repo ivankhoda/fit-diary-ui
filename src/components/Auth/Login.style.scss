@@ -142,6 +142,26 @@
     }
   }
 
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: #adb5bd;
+    font-size: 14px;
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    span {
+      padding: 0 12px;
+    }
+  }
+
   .toggle-button {
     width: 100%;
     padding: 14px 24px;
