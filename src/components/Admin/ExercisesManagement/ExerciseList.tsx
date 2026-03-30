@@ -1,9 +1,3 @@
-/* eslint-disable max-lines-per-function */
-/* eslint-disable no-magic-numbers */
-/* eslint-disable max-statements */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable sort-keys */
-/* eslint-disable react/jsx-no-bind */
 import React, { useState, useCallback, useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactPaginate from 'react-paginate';
@@ -14,15 +8,16 @@ import AdminExercisesStore, { AdminExerciseProfile } from '../store/AdminExercis
 import i18n from 'i18next';
 import { categoryMap, difficultyMap, muscleGroups } from './maps';
 
+const ITEMS_PER_PAGE = 20;
+const ORDER_ASC = 1;
+const ORDER_DESC = -1;
+
 export interface ExerciseListProps {
     adminExercisesStore?: AdminExercisesStore;
     adminExercisesController?: AdminExercisesController;
 }
 
-const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStore, adminExercisesController }) => {
-    const navigate = useNavigate();
-    const { exercises } = adminExercisesStore!;
-
+const useFilterState = () => {
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [searchName, setSearchName] = useState<string>('');
     const [filterCategory, setFilterCategory] = useState<string>('');
@@ -30,28 +25,55 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
     const [filterMuscleGroup, setFilterMuscleGroup] = useState<string>('');
     const [sortKey, setSortKey] = useState<string>('');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-    const exercisesPerPage = 20;
 
-    useEffect(() => {
-        adminExercisesController.getExercises();
-    }, [adminExercisesController]);
-
-    const handleExerciseClick = useCallback((exercise: AdminExerciseProfile) => {
-        navigate(`/admin/exercises/${exercise.id}`);
-    }, [navigate]);
-
-    const handlePageChange = (data: { selected: number }) => {
-        setCurrentPage(data.selected);
+    return {
+        currentPage,
+        filterCategory,
+        filterDifficulty,
+        filterMuscleGroup,
+        searchName,
+        setCurrentPage,
+        setFilterCategory,
+        setFilterDifficulty,
+        setFilterMuscleGroup,
+        setSearchName,
+        setSortDirection,
+        setSortKey,
+        sortDirection,
+        sortKey,
     };
+};
 
-    const handleSort = (key: string) => {
+const useExerciseFilters = (exercises: AdminExerciseProfile[]) => {
+    const {
+        currentPage,
+        filterCategory,
+        filterDifficulty,
+        filterMuscleGroup,
+        searchName,
+        setCurrentPage,
+        setFilterCategory,
+        setFilterDifficulty,
+        setFilterMuscleGroup,
+        setSearchName,
+        setSortDirection,
+        setSortKey,
+        sortDirection,
+        sortKey,
+    } = useFilterState();
+
+    const handleSort = useCallback((key: string) => {
         if (sortKey === key) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+            setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
         } else {
             setSortKey(key);
             setSortDirection('asc');
         }
-    };
+    }, [sortKey]);
+
+    const handleSortClick = useCallback((e: React.MouseEvent<HTMLTableHeaderCellElement>) => {
+        handleSort(e.currentTarget.dataset.sortKey ?? '');
+    }, [handleSort]);
 
     const clearFilters = useCallback(() => {
         setSearchName('');
@@ -63,26 +85,114 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
         setCurrentPage(0);
     }, []);
 
-    const handleCreateExercise = () => {
-        navigate('/admin/exercises/create');
-    };
+    const handlePageChange = useCallback((data: { selected: number }) => {
+        setCurrentPage(data.selected);
+    }, []);
+
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchName(e.target.value);
+    }, []);
+
+    const handleCategoryChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        setFilterCategory(e.target.value);
+    }, []);
+
+    const handleDifficultyChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        setFilterDifficulty(e.target.value);
+    }, []);
+
+    const handleMuscleGroupChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        setFilterMuscleGroup(e.target.value);
+    }, []);
+
+    const matchesFilters = (e: AdminExerciseProfile) =>
+        e.name.toLowerCase().includes(searchName.toLowerCase()) &&
+        (!filterCategory || e.category === filterCategory) &&
+        (!filterDifficulty || e.difficulty === filterDifficulty) &&
+        (!filterMuscleGroup || e.muscle_groups.includes(filterMuscleGroup));
 
     const filteredExercises = exercises
-        .filter(exercise =>
-            exercise.name.toLowerCase().includes(searchName.toLowerCase()) &&
-            (filterCategory ? exercise.category === filterCategory : true) &&
-            (filterDifficulty ? exercise.difficulty === filterDifficulty : true) &&
-            (filterMuscleGroup === '' ? true : exercise.muscle_groups.includes(filterMuscleGroup)))
+        .filter(matchesFilters)
         .sort((a, b) => {
             if (!sortKey) { return 0; }
+
+            const aVal = a[sortKey as keyof AdminExerciseProfile];
+            const bVal = b[sortKey as keyof AdminExerciseProfile];
+
             if (sortDirection === 'asc') {
-                return a[sortKey as keyof AdminExerciseProfile] > b[sortKey as keyof AdminExerciseProfile] ? 1 : -1;
+                return aVal > bVal ? ORDER_ASC : ORDER_DESC;
             }
-            return a[sortKey as keyof AdminExerciseProfile] < b[sortKey as keyof AdminExerciseProfile] ? 1 : -1;
+
+            return aVal < bVal ? ORDER_ASC : ORDER_DESC;
         });
 
-    const currentExercises = filteredExercises.slice(currentPage * exercisesPerPage, (currentPage + 1) * exercisesPerPage);
-    const pageCount = Math.ceil(filteredExercises.length / exercisesPerPage);
+    const currentExercises = filteredExercises.slice(
+        currentPage * ITEMS_PER_PAGE,
+        (currentPage + 1) * ITEMS_PER_PAGE,
+    );
+    const pageCount = Math.ceil(filteredExercises.length / ITEMS_PER_PAGE);
+
+    return {
+        clearFilters,
+        currentExercises,
+        filterCategory,
+        filterDifficulty,
+        filterMuscleGroup,
+        handleCategoryChange,
+        handleDifficultyChange,
+        handleMuscleGroupChange,
+        handlePageChange,
+        handleSearchChange,
+        handleSortClick,
+        pageCount,
+        searchName,
+        sortDirection,
+        sortKey,
+    };
+};
+
+const getSortIndicator = (key: string, sortKey: string, sortDirection: 'asc' | 'desc') => {
+    if (sortKey !== key) { return null; }
+
+    return sortDirection === 'asc' ? ' ▲' : ' ▼';
+};
+
+const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStore, adminExercisesController }) => {
+    const navigate = useNavigate();
+    const exercises = adminExercisesStore?.exercises ?? [];
+    const {
+        clearFilters,
+        currentExercises,
+        filterCategory,
+        filterDifficulty,
+        filterMuscleGroup,
+        handleCategoryChange,
+        handleDifficultyChange,
+        handleMuscleGroupChange,
+        handlePageChange,
+        handleSearchChange,
+        handleSortClick,
+        pageCount,
+        searchName,
+        sortDirection,
+        sortKey,
+    } = useExerciseFilters(exercises);
+
+    useEffect(() => {
+        adminExercisesController?.getExercises();
+    }, [adminExercisesController]);
+
+    const handleExerciseClick = useCallback((e: React.MouseEvent<HTMLTableRowElement>) => {
+        navigate(`/admin/exercises/${e.currentTarget.dataset.exerciseId}`);
+    }, [navigate]);
+
+    const handleCreateExercise = useCallback(() => {
+        navigate('/admin/exercises/create');
+    }, [navigate]);
+
+    if (!adminExercisesStore || !adminExercisesController) {
+        return null;
+    }
 
     return (
         <AdminPanel>
@@ -96,25 +206,25 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
                     <input
                         type="text"
                         value={searchName}
-                        onChange={e => setSearchName(e.target.value)}
+                        onChange={handleSearchChange}
                         placeholder={i18n.t('searchByName')}
                     />
                 </div>
 
                 <div className="filters">
-                    <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
+                    <select value={filterCategory} onChange={handleCategoryChange}>
                         {categoryMap.map(category => (
                             <option key={category} value={category}>{i18n.t(category)}</option>
                         ))}
                     </select>
 
-                    <select value={filterDifficulty} onChange={e => setFilterDifficulty(e.target.value)}>
+                    <select value={filterDifficulty} onChange={handleDifficultyChange}>
                         {difficultyMap.map(difficulty => (
                             <option key={difficulty} value={difficulty}>{i18n.t(difficulty)}</option>
                         ))}
                     </select>
 
-                    <select value={filterMuscleGroup} onChange={e => setFilterMuscleGroup(e.target.value)}>
+                    <select value={filterMuscleGroup} onChange={handleMuscleGroupChange}>
                         {muscleGroups.map(muscleGroup => (
                             <option key={muscleGroup.name} value={muscleGroup.name}>{i18n.t(muscleGroup.name)}</option>
                         ))}
@@ -126,21 +236,28 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
                 <table className="exercise-table">
                     <thead>
                         <tr>
-                            <th onClick={() => handleSort('id')}>{i18n.t('id')}</th>
-                            <th onClick={() => handleSort('name')}>{i18n.t('name')}</th>
-                            <th onClick={() => handleSort('category')}>{i18n.t('category')}</th>
-                            <th onClick={() => handleSort('difficulty')}>{i18n.t('difficulty')}</th>
-
+                            <th data-sort-key="id" onClick={handleSortClick}>{i18n.t('id')}{getSortIndicator('id', sortKey, sortDirection)}</th>
+                            <th data-sort-key="name" onClick={handleSortClick}>{i18n.t('name')}{getSortIndicator('name', sortKey, sortDirection)}</th>
+                            <th data-sort-key="category" onClick={handleSortClick}>
+                                {i18n.t('category')}{getSortIndicator('category', sortKey, sortDirection)}
+                            </th>
+                            <th data-sort-key="difficulty" onClick={handleSortClick}>
+                                {i18n.t('difficulty')}{getSortIndicator('difficulty', sortKey, sortDirection)}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {currentExercises.map(exercise => (
-                            <tr key={exercise.id} onClick={() => handleExerciseClick(exercise)} style={{ cursor: 'pointer' }}>
+                            <tr
+                                key={exercise.id}
+                                data-exercise-id={exercise.id}
+                                onClick={handleExerciseClick}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 <td>{exercise.id}</td>
                                 <td>{exercise.name}</td>
                                 <td>{i18n.t(`${exercise.category}`)}</td>
                                 <td>{i18n.t(`${exercise.difficulty}`)}</td>
-
                             </tr>
                         ))}
                     </tbody>

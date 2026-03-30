@@ -1,106 +1,146 @@
-/* eslint-disable max-lines-per-function */
-/* eslint-disable react/jsx-no-bind */
 
 import { inject, observer } from 'mobx-react';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import i18n from 'i18next';
+import { toast } from 'react-toastify';
 import AdminPanel from '../../AdminPanel';
 import { adminExercisesController } from '../../controllers/global';
 import { adminExercisesStore } from '../../store/global';
-import i18n from 'i18next';
-import './ExerciseData.style.scss';
 import { AdminExerciseProfile } from '../../store/AdminExercisesStore';
 import { categoryMap, difficultyMap, measurementKeys, muscleGroups } from '../maps';
-import { toast } from 'react-toastify';
+import {
+    AddLocalePanel,
+    MuscleGroupItem,
+    REQUIRED_LOCALE,
+    TranslationPanel,
+    useLocaleTranslations,
+} from './exerciseTranslationHelpers';
+import './ExerciseData.style.scss';
 
-const ExerciseData: React.FC = () => {
+const INITIAL_FORM_DATA: AdminExerciseProfile = {
+    category: '',
+    created_at: '',
+    description: '',
+    difficulty: '',
+    muscle_groups: [],
+    name: '',
+    type_of_measurement: '',
+    updated_at: '',
+};
+
+const useExerciseCreateForm = () => {
     const navigate = useNavigate();
-    const [currentExercise, setCurrentExercise] = useState<AdminExerciseProfile | null>(null);
     const [isDetailsVisible, setIsDetailsVisible] = useState(true);
-
-    const [formData, setFormData] = useState<AdminExerciseProfile>({
-        category: '',
-        created_at: '',
-        description: '',
-        difficulty: '',
-        muscle_groups: [],
-        name: '',
-        type_of_measurement: '',
-        updated_at: ''
-    });
+    const [formData, setFormData] = useState<AdminExerciseProfile>(INITIAL_FORM_DATA);
+    const localeState = useLocaleTranslations();
 
     useEffect(() => {
         const fetchedExercise = adminExercisesStore?.exercise;
 
         if (fetchedExercise) {
-            setCurrentExercise(fetchedExercise);
             setFormData(fetchedExercise);
         }
-    }, [adminExercisesStore?.exercise]);
+    }, []);
 
     const handleToggleDetails = useCallback(() => {
-        setIsDetailsVisible(prevState => !prevState);
+        setIsDetailsVisible(prev => !prev);
     }, []);
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         if (name === 'category') {
-            const key = categoryMap.find(el=> el === value);
-            setFormData(prevState => ({
-                ...prevState,
-                [name]: key || '',
-            }));
-        }
+            const key = categoryMap.find(el => el === value);
 
-        else if (name === 'difficulty') {
-            const key = difficultyMap.find(el=> el === value);
+            setFormData(prev => ({ ...prev, [name]: key ?? '' }));
+        } else if (name === 'difficulty') {
+            const key = difficultyMap.find(el => el === value);
 
-            setFormData(prevState => ({
-                ...prevState,
-                [name]: key || '',
-            }));
-        }
+            setFormData(prev => ({ ...prev, [name]: key ?? '' }));
+        } else if (name === 'type_of_measurement') {
+            const key = measurementKeys.find(el => el === value);
 
-        else if (name === 'type_of_measurement') {
-            const key = measurementKeys.find(el=> el === value);
-
-            setFormData(prevState => ({
-                ...prevState,
-                [name]: key || '',
-            }));
-        }
-
-        else {
-            setFormData(prevState => ({
-                ...prevState,
+            setFormData(prev => ({ ...prev, [name]: key ?? '' }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
                 [name]: name === 'duration' ? parseInt(value, 10) : value,
             }));
         }
     }, []);
 
     const handleGroupClick = useCallback((groupName: string) => {
-        const newSelectedGroups = formData.muscle_groups.includes(groupName)
-            ? formData.muscle_groups.filter(name => name!== groupName)
-            : [...formData.muscle_groups, groupName];
+        setFormData(prev => {
+            const groups = prev.muscle_groups ?? [];
+            const updated = groups.includes(groupName)
+                ? groups.filter(n => n !== groupName)
+                : [...groups, groupName];
 
-        setFormData(prevState => ({
-            ...prevState,
-            muscle_groups: newSelectedGroups,
-        }));
+            return { ...prev, muscle_groups: updated };
+        });
     }, []);
 
     const handleSaveExercise = useCallback(async() => {
-        const { name, category, difficulty, description} = formData;
+        const { category, difficulty } = formData;
+        const ruEntry = localeState.translations[REQUIRED_LOCALE];
 
-        if (!name || !category || !difficulty || !description) {
-            toast.success(i18n.t('pleaseFillAllFields'));
+        if (!ruEntry?.name || !category || !difficulty || !ruEntry?.description) {
+            toast.error(i18n.t('pleaseFillAllFields'));
+
             return;
         }
 
-        await adminExercisesController.createExercise(formData);
+        const nameTranslations: Record<string, string> = {};
+        const descriptionTranslations: Record<string, string> = {};
+
+        for (const [locale, entry] of Object.entries(localeState.translations)) {
+            nameTranslations[locale] = entry.name;
+            descriptionTranslations[locale] = entry.description;
+        }
+
+        await adminExercisesController.createExercise({
+            ...formData,
+            description: ruEntry.description,
+            description_translations: descriptionTranslations,
+            name: ruEntry.name,
+            name_translations: nameTranslations,
+        });
         navigate('/admin/exercises');
-    }, [formData, navigate]);
+    }, [
+        formData,
+        localeState.translations,
+        navigate,
+    ]);
+
+    return {
+        ...localeState,
+        formData,
+        handleGroupClick,
+        handleInputChange,
+        handleSaveExercise,
+        handleToggleDetails,
+        isDetailsVisible,
+    };
+};
+
+const ExerciseData: React.FC = () => {
+    const {
+        activeLocales,
+        availableLocalesToAdd,
+        formData,
+        handleAddLocale,
+        handleGroupClick,
+        handleInputChange,
+        handleLocaleToAddChange,
+        handleRemoveLocale,
+        handleSaveExercise,
+        handleToggleDetails,
+        handleTranslationChange,
+        isDetailsVisible,
+        localeToAdd,
+        translations,
+    } = useExerciseCreateForm();
 
     return (
         <AdminPanel>
@@ -113,25 +153,22 @@ const ExerciseData: React.FC = () => {
                     </h3>
                     {isDetailsVisible && (
                         <div className="exercise-section">
-                            <div>
-                                <strong>{i18n.t('name')}</strong>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData?.name || ''}
-                                    onChange={handleInputChange}
-                                    placeholder={i18n.t('name')}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <strong>{i18n.t('description')}</strong>
-                                <textarea
-                                    name="description"
-                                    value={formData?.description || ''}
-                                    onChange={handleInputChange}
-                                    placeholder={i18n.t('description')}
-                                    required
+                            <div className="translation-panels">
+                                {activeLocales.map(locale => (
+                                    <TranslationPanel
+                                        key={locale}
+                                        isRequired={locale === REQUIRED_LOCALE}
+                                        locale={locale}
+                                        onChange={handleTranslationChange}
+                                        onRemove={handleRemoveLocale}
+                                        value={translations[locale]}
+                                    />
+                                ))}
+                                <AddLocalePanel
+                                    available={availableLocalesToAdd}
+                                    localeToAdd={localeToAdd}
+                                    onAdd={handleAddLocale}
+                                    onChange={handleLocaleToAddChange}
                                 />
                             </div>
                             <div>
@@ -144,9 +181,9 @@ const ExerciseData: React.FC = () => {
                                     required
                                 >
                                     <option value="" disabled>{i18n.t('selectCategory')}</option>
-                                    {Object.keys(categoryMap).map(key => (
-                                        <option key={key} value={String(categoryMap[key as keyof typeof categoryMap])}>
-                                            {i18n.t(String(categoryMap[key as keyof typeof categoryMap]))}
+                                    {categoryMap.map(key => (
+                                        <option key={key} value={key}>
+                                            {i18n.t(key)}
                                         </option>
                                     ))}
                                 </select>
@@ -160,10 +197,10 @@ const ExerciseData: React.FC = () => {
                                     className="custom-select"
                                     required
                                 >
-                                    <option value="" disabled>{i18n.t('selectCategory')}</option>
-                                    {Object.keys(measurementKeys).map(key => (
-                                        <option key={key} value={String(measurementKeys[key as keyof typeof categoryMap])}>
-                                            {i18n.t(String(measurementKeys[key as keyof typeof categoryMap]))}
+                                    <option value="" disabled>{i18n.t('selectTypeOfMeasurement')}</option>
+                                    {measurementKeys.map(key => (
+                                        <option key={key} value={key}>
+                                            {i18n.t(key)}
                                         </option>
                                     ))}
                                 </select>
@@ -178,9 +215,9 @@ const ExerciseData: React.FC = () => {
                                     required
                                 >
                                     <option value="" disabled>{i18n.t('selectDifficulty')}</option>
-                                    {Object.keys(difficultyMap).map(key => (
-                                        <option key={key} value={String(difficultyMap[key as keyof typeof difficultyMap])}>
-                                            {i18n.t(String(difficultyMap[key as keyof typeof difficultyMap]))}
+                                    {difficultyMap.map(key => (
+                                        <option key={key} value={key}>
+                                            {i18n.t(key)}
                                         </option>
                                     ))}
                                 </select>
@@ -189,19 +226,14 @@ const ExerciseData: React.FC = () => {
                                 <strong>{i18n.t('muscleGroup')}</strong>
                                 <div className="muscle-groups">
                                     {muscleGroups.map(group => (
-                                        <div
+                                        <MuscleGroupItem
                                             key={group.name}
-                                            onClick={handleGroupClick.bind(null, group.name)}
-                                            className={formData.muscle_groups.includes(group.name) ? 'active' : ''}
-                                        >
-                                            {i18n.t(group.name)}
-                                        </div>
+                                            isActive={formData.muscle_groups?.includes(group.name) ?? false}
+                                            name={group.name}
+                                            onToggle={handleGroupClick}
+                                        />
                                     ))}
                                 </div>
-                            </div>
-                            <div className="dates">
-                                <p><strong>{i18n.t('createdAt')}</strong>: {currentExercise?.created_at || 'x'}</p>
-                                <p><strong>{i18n.t('updatedAt')}</strong>: {currentExercise?.updated_at || 'x'}</p>
                             </div>
                         </div>
                     )}

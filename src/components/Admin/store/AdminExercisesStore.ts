@@ -1,6 +1,11 @@
 /* eslint-disable no-magic-numbers */
 import { action, makeObservable, observable } from 'mobx';
 
+export interface ExerciseTranslation {
+    description?: string;
+    name?: string;
+}
+
 export interface AdminExerciseProfile {
     id?: number;
     exercise_id?: number;
@@ -19,6 +24,8 @@ export interface AdminExerciseProfile {
     sets?: number
     order?: string
     comment?: string;
+    name_translations?: Record<string, string>;
+    description_translations?: Record<string, string>;
 }
 const NOT_FOUND = -1;
 
