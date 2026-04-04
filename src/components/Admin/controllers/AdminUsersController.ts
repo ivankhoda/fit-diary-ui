@@ -51,6 +51,15 @@ export default class AdminUsersController extends BaseController {
     }
 
     @action
+    getUserWorkoutsDoneByUser(id: string): void {
+        new Get({ url: `${getApiBaseUrl()}/admin/users/${id}/user_workouts` }).execute()
+            .then(r => r.json())
+            .then(res => {
+                this.adminUsersStore.setUserWorkoutsDone(res);
+            });
+    }
+
+    @action
     getPermissonsByUser(id: string): void {
         new Get({ url: `${getApiBaseUrl()}/admin/users/${id}/permissions` }).execute()
             .then(r => r.json())

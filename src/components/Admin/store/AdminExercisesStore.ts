@@ -26,6 +26,7 @@ export interface AdminExerciseProfile {
     comment?: string;
     name_translations?: Record<string, string>;
     description_translations?: Record<string, string>;
+    public?: boolean;
 }
 const NOT_FOUND = -1;
 

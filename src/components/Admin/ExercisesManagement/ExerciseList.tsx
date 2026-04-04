@@ -7,6 +7,7 @@ import AdminExercisesController from '../controllers/AdminExercisesController';
 import AdminExercisesStore, { AdminExerciseProfile } from '../store/AdminExercisesStore';
 import i18n from 'i18next';
 import { categoryMap, difficultyMap, muscleGroups } from './maps';
+import FilterSelect, { type SelectOption } from '../../Common/FilterSelect';
 
 const ITEMS_PER_PAGE = 20;
 const ORDER_ASC = 1;
@@ -22,7 +23,8 @@ const useFilterState = () => {
     const [searchName, setSearchName] = useState<string>('');
     const [filterCategory, setFilterCategory] = useState<string>('');
     const [filterDifficulty, setFilterDifficulty] = useState<string>('');
-    const [filterMuscleGroup, setFilterMuscleGroup] = useState<string>('');
+    const [filterMuscleGroup, setFilterMuscleGroup] = useState<string[]>([]);
+    const [filterPublic, setFilterPublic] = useState<string>('');
     const [sortKey, setSortKey] = useState<string>('');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
@@ -31,11 +33,13 @@ const useFilterState = () => {
         filterCategory,
         filterDifficulty,
         filterMuscleGroup,
+        filterPublic,
         searchName,
         setCurrentPage,
         setFilterCategory,
         setFilterDifficulty,
         setFilterMuscleGroup,
+        setFilterPublic,
         setSearchName,
         setSortDirection,
         setSortKey,
@@ -50,11 +54,13 @@ const useExerciseFilters = (exercises: AdminExerciseProfile[]) => {
         filterCategory,
         filterDifficulty,
         filterMuscleGroup,
+        filterPublic,
         searchName,
         setCurrentPage,
         setFilterCategory,
         setFilterDifficulty,
         setFilterMuscleGroup,
+        setFilterPublic,
         setSearchName,
         setSortDirection,
         setSortKey,
@@ -79,7 +85,8 @@ const useExerciseFilters = (exercises: AdminExerciseProfile[]) => {
         setSearchName('');
         setFilterCategory('');
         setFilterDifficulty('');
-        setFilterMuscleGroup('');
+        setFilterMuscleGroup([]);
+        setFilterPublic('');
         setSortKey('');
         setSortDirection('asc');
         setCurrentPage(0);
@@ -93,23 +100,28 @@ const useExerciseFilters = (exercises: AdminExerciseProfile[]) => {
         setSearchName(e.target.value);
     }, []);
 
-    const handleCategoryChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFilterCategory(e.target.value);
+    const handleCategoryChange = useCallback((value: string) => {
+        setFilterCategory(value);
     }, []);
 
-    const handleDifficultyChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFilterDifficulty(e.target.value);
+    const handleDifficultyChange = useCallback((value: string) => {
+        setFilterDifficulty(value);
     }, []);
 
-    const handleMuscleGroupChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFilterMuscleGroup(e.target.value);
+    const handleMuscleGroupChange = useCallback((values: string[]) => {
+        setFilterMuscleGroup(values);
+    }, []);
+
+    const handlePublicChange = useCallback((value: string) => {
+        setFilterPublic(value);
     }, []);
 
     const matchesFilters = (e: AdminExerciseProfile) =>
-        e.name.toLowerCase().includes(searchName.toLowerCase()) &&
+        (e.name ?? '').toLowerCase().includes(searchName.toLowerCase()) &&
         (!filterCategory || e.category === filterCategory) &&
         (!filterDifficulty || e.difficulty === filterDifficulty) &&
-        (!filterMuscleGroup || e.muscle_groups.includes(filterMuscleGroup));
+        (!filterMuscleGroup.length || filterMuscleGroup.some(mg => (e.muscle_groups ?? []).includes(mg))) &&
+        (filterPublic === '' || (filterPublic === 'true' ? e.public === true : e.public !== true));
 
     const filteredExercises = exercises
         .filter(matchesFilters)
@@ -138,10 +150,12 @@ const useExerciseFilters = (exercises: AdminExerciseProfile[]) => {
         filterCategory,
         filterDifficulty,
         filterMuscleGroup,
+        filterPublic,
         handleCategoryChange,
         handleDifficultyChange,
         handleMuscleGroupChange,
         handlePageChange,
+        handlePublicChange,
         handleSearchChange,
         handleSortClick,
         pageCount,
@@ -149,6 +163,15 @@ const useExerciseFilters = (exercises: AdminExerciseProfile[]) => {
         sortDirection,
         sortKey,
     };
+};
+
+const useExerciseOptions = () => {
+    const categoryOptions: SelectOption[] = categoryMap.map(c => ({ label: i18n.t(c), value: c }));
+    const difficultyOptions: SelectOption[] = difficultyMap.map(d => ({ label: i18n.t(d), value: d }));
+    const muscleGroupOptions: SelectOption[] = muscleGroups.map(mg => ({ label: i18n.t(mg.name), value: mg.name }));
+    const publicOptions: SelectOption[] = [{ label: i18n.t('yes'), value: 'true' }, { label: i18n.t('no'), value: 'false' }];
+
+    return { categoryOptions, difficultyOptions, muscleGroupOptions, publicOptions };
 };
 
 const getSortIndicator = (key: string, sortKey: string, sortDirection: 'asc' | 'desc') => {
@@ -160,16 +183,19 @@ const getSortIndicator = (key: string, sortKey: string, sortDirection: 'asc' | '
 const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStore, adminExercisesController }) => {
     const navigate = useNavigate();
     const exercises = adminExercisesStore?.exercises ?? [];
+    const { categoryOptions, difficultyOptions, muscleGroupOptions, publicOptions } = useExerciseOptions();
     const {
         clearFilters,
         currentExercises,
         filterCategory,
         filterDifficulty,
         filterMuscleGroup,
+        filterPublic,
         handleCategoryChange,
         handleDifficultyChange,
         handleMuscleGroupChange,
         handlePageChange,
+        handlePublicChange,
         handleSearchChange,
         handleSortClick,
         pageCount,
@@ -212,23 +238,34 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
                 </div>
 
                 <div className="filters">
-                    <select value={filterCategory} onChange={handleCategoryChange}>
-                        {categoryMap.map(category => (
-                            <option key={category} value={category}>{i18n.t(category)}</option>
-                        ))}
-                    </select>
+                    <FilterSelect
+                        options={categoryOptions}
+                        value={filterCategory}
+                        onChange={handleCategoryChange}
+                        placeholder={i18n.t('allCategories')}
+                    />
 
-                    <select value={filterDifficulty} onChange={handleDifficultyChange}>
-                        {difficultyMap.map(difficulty => (
-                            <option key={difficulty} value={difficulty}>{i18n.t(difficulty)}</option>
-                        ))}
-                    </select>
+                    <FilterSelect
+                        options={difficultyOptions}
+                        value={filterDifficulty}
+                        onChange={handleDifficultyChange}
+                        placeholder={i18n.t('allDifficulties')}
+                    />
 
-                    <select value={filterMuscleGroup} onChange={handleMuscleGroupChange}>
-                        {muscleGroups.map(muscleGroup => (
-                            <option key={muscleGroup.name} value={muscleGroup.name}>{i18n.t(muscleGroup.name)}</option>
-                        ))}
-                    </select>
+                    <FilterSelect
+                        isMulti
+                        options={muscleGroupOptions}
+                        value={filterMuscleGroup}
+                        onChange={handleMuscleGroupChange}
+                        placeholder={i18n.t('allMuscleGroups')}
+                    />
+
+                    <FilterSelect
+                        options={publicOptions}
+                        value={filterPublic}
+                        onChange={handlePublicChange}
+                        placeholder={i18n.t('all')}
+                    />
 
                     <button onClick={clearFilters}>{i18n.t('clearFilters')}</button>
                 </div>
@@ -244,6 +281,9 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
                             <th data-sort-key="difficulty" onClick={handleSortClick}>
                                 {i18n.t('difficulty')}{getSortIndicator('difficulty', sortKey, sortDirection)}
                             </th>
+                            <th data-sort-key="is_public" onClick={handleSortClick}>
+                                {i18n.t('public')}{getSortIndicator('is_public', sortKey, sortDirection)}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -258,6 +298,7 @@ const ExerciseList: React.FC<ExerciseListProps> = observer(({ adminExercisesStor
                                 <td>{exercise.name}</td>
                                 <td>{i18n.t(`${exercise.category}`)}</td>
                                 <td>{i18n.t(`${exercise.difficulty}`)}</td>
+                                <td>{exercise.public ? i18n.t('yes') : i18n.t('no')}</td>
                             </tr>
                         ))}
                     </tbody>

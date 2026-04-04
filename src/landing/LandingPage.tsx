@@ -1,21 +1,126 @@
-import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useRef, useState } from 'react';
 import './LandingPage.style.scss';
 import interface_image from '../images/interface_image.webp';
 import benefits_image from '../images/benefits_image.webp';
-interface LandingPageProps {
-  onRegisterClick?: () => void;
-}
+import { inject } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
+import { TelegramRegisterButton } from '../components/Auth/TelegramRegisterButton/TelegramRegisterButton';
+import UserController from '../controllers/UserController';
 
-const LandingPage: React.FC<LandingPageProps> = ({ onRegisterClick }) => {
-    const navigate = useNavigate();
+const MIN_PASSWORD_LENGTH = 8;
+
+const validateRegForm = (password: string, confirmPassword: string): string[] => {
+    if (password.length < MIN_PASSWORD_LENGTH) {
+        return [`Пароль должен быть минимум ${MIN_PASSWORD_LENGTH} символов.`];
+    }
+    if (password !== confirmPassword) {
+        return ['Пароли не совпадают.'];
+    }
+    return [];
+};
+
+type RegisterFormProps = {
+    setToken: (token: string | null) => void;
+    userController?: UserController;
+    onBack: () => void;
+};
+
+const LandingRegisterForm = ({ setToken, userController, onBack }: RegisterFormProps): React.ReactElement => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [errors, setErrors] = useState<string[]>([]);
+
+    const handleSubmit = useCallback(async(event: React.FormEvent) => {
+        event.preventDefault();
+        setErrors([]);
+        const validationErrors = validateRegForm(password, confirmPassword);
+
+        if (validationErrors.length > 0) { setErrors(validationErrors); return; }
+
+        const result = await userController?.register({ email, password, password_confirmation: confirmPassword });
+
+        if (!result || result.errors.length > 0) {
+            if (result?.errors.length) { setErrors(result.errors); }
+            return;
+        }
+        if (result.success) {
+            const token = localStorage.getItem('token');
+
+            if (token) { setToken(token); }
+        }
+    }, [email,
+        password,
+        confirmPassword,
+        setToken,
+        userController]);
+
+    return (
+        <div className="landing__register">
+            <h2 className="landing__register-title">Создать аккаунт</h2>
+            <TelegramRegisterButton setToken={setToken} onErrors={setErrors}/>
+            {errors.length > 0 && (
+                <div className="landing__register-errors">
+                    {errors.map((e, i) => <p key={i}>{e}</p>)}
+                </div>
+            )}
+            <div className="landing__register-divider"><span>или</span></div>
+            <form onSubmit={handleSubmit}>
+                <div className="landing__register-group">
+                    <label htmlFor="lp-email" className="landing__register-label">
+                        Email
+                        <input id="lp-email" className="landing__register-input" type="email" value={email}
+                            onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value), [])}/>
+                    </label>
+                </div>
+                <div className="landing__register-group">
+                    <label htmlFor="lp-password" className="landing__register-label">
+                        {`Пароль (минимум ${MIN_PASSWORD_LENGTH} символов)`}
+                        <input id="lp-password" className="landing__register-input" type="password" value={password}
+                            onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value), [])}/>
+                    </label>
+                </div>
+                <div className="landing__register-group">
+                    <label htmlFor="lp-confirm" className="landing__register-label">
+                        Подтвердите пароль
+                        <input id="lp-confirm" className="landing__register-input" type="password" value={confirmPassword}
+                            onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value), [])}/>
+                    </label>
+                </div>
+                <button className="landing__register-submit" type="submit"
+                    disabled={!email || !password || !confirmPassword}>
+                    Зарегистрироваться
+                </button>
+            </form>
+            <p className="landing__register-legal">
+                Регистрируясь, вы принимаете{' '}
+                <a href="https://planka.tech/terms-of-use" target="_blank" rel="noreferrer">условия использования</a>{' '}и{' '}
+                <a href="https://planka.tech/privacy-policy" target="_blank" rel="noreferrer">политику конфиденциальности</a>.
+            </p>
+            <button className="landing__register-back" type="button" onClick={onBack}>
+                Уже есть аккаунт? Войти
+            </button>
+        </div>
+    );
+};
+
+const SCROLL_DELAY_MS = 50;
+
+type Props = {
+    setToken: (token: string | null) => void;
+    userController?: UserController;
+};
+
+const LandingPageComponent: React.FC<Props> = ({ setToken, userController }) => {
+    const [showRegister, setShowRegister] = useState(false);
+    const formRef = useRef<HTMLDivElement>(null);
 
     const handleRegisterClick = useCallback(() => {
-        if (onRegisterClick) {
-            onRegisterClick();
-        }
-        navigate('/');
+        setShowRegister(true);
+        setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), SCROLL_DELAY_MS);
     }, []);
+
+    const handleBack = useCallback(() => { setShowRegister(false); }, []);
 
     return (
         <div className="landing">
@@ -105,6 +210,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onRegisterClick }) => {
     Спасибо, что заглянули! Если у вас есть идеи или фидбэк — я всегда открыт. TG @ivankhoda
                 </p>
             </section>
+
+            <div ref={formRef}>
+                {showRegister && (
+                    <LandingRegisterForm
+                        setToken={setToken}
+                        userController={userController}
+                        onBack={handleBack}
+                    />
+                )}
+            </div>
+
             <footer className="landing__footer">
                 <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Политика конфиденциальности</a>
                 {' · '}
@@ -114,4 +230,4 @@ const LandingPage: React.FC<LandingPageProps> = ({ onRegisterClick }) => {
     );
 };
 
-export default LandingPage;
+export default inject('userController')(observer(LandingPageComponent));

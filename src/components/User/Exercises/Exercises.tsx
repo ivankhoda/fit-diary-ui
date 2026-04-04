@@ -1,11 +1,8 @@
-/* eslint-disable max-lines-per-function */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable max-statements */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import './Exercises.style.scss';
 import { inject, observer } from 'mobx-react';
 import ExercisesController from '../../../controllers/ExercisesController';
-import ExercisesStore, { Exercise } from '../../../store/exercisesStore';
+import ExercisesStore, { Exercise, ExerciseFormData } from '../../../store/exercisesStore';
 import ExerciseItem from './ExerciseItem/ExerciseItem';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +11,7 @@ import { muscleGroups } from '../../Admin/ExercisesManagement/maps';
 import { toJS } from 'mobx';
 import { useToken } from '../../Auth/useToken';
 import Pagination from '../../Common/Pagination/Pagination';
+import FilterSelect, { type SelectOption } from '../../Common/FilterSelect';
 
 export interface ExercisesInterface {
     exercisesStore?: ExercisesStore;
@@ -22,17 +20,47 @@ export interface ExercisesInterface {
 
 const ITEMS_PER_PAGE = 10;
 
-const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesController }) => {
-    const { t } = useTranslation();
-    const [currentPage, setCurrentPage] = useState(1);
+interface ExerciseRowProps {
+    exercise: Exercise;
+    exercisesController: ExercisesController;
+    onEdit: (exercise: Exercise) => void;
+}
+
+const ExerciseRow: React.FC<ExerciseRowProps> = ({ exercise, exercisesController, onEdit }) => {
+    const handleDelete = useCallback(() => {
+        exercisesController.deleteExercise(exercise.id);
+    }, [exercise.id, exercisesController]);
+
+    const handleEdit = useCallback(() => {
+        onEdit(exercise);
+    }, [exercise, onEdit]);
+
+    return (
+        <ExerciseItem
+            key={exercise.id}
+            exercise={exercise}
+            deleteExercise={handleDelete}
+            edit={handleEdit}
+        />
+    );
+};
+
+interface UseExerciseFiltersParams {
+    exercisesStore: ExercisesStore;
+    exercisesController: ExercisesController;
+    activeTab: 'base' | 'own';
+    currentPage: number;
+}
+
+const useExerciseFilters = ({
+    exercisesStore,
+    exercisesController,
+    activeTab,
+    currentPage,
+}: UseExerciseFiltersParams) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string | null>(null);
+    const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<string[]>([]);
     const [sortBy] = useState<'name' | 'duration' | 'category' | null>(null);
-    // COACH MODE DISABLED FOR V1.0 - Remove coach_owned tab
-    const [activeTab, setActiveTab] = useState<'base' | 'own'>('own');
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [exerciseToEdit, setExerciseToEdit] = useState(null);
-    const { token } = useToken();
 
     useEffect(() => {
         if (exercisesController && exercisesStore && !exercisesStore.generalExercises?.length) {
@@ -43,11 +71,9 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
     const filteredList = useMemo(() => {
         let exercises = toJS(exercisesStore?.generalExercises);
 
-        // COACH MODE DISABLED FOR V1.0 - Simplified filtering
         if (activeTab === 'own') {
             exercises = exercises.filter(exercise => exercise.own);
         } else {
-            // 'base' tab - show all non-owned exercises (excluding coach_owned)
             exercises = exercises.filter(exercise => !exercise.own && !exercise.coach_owned);
         }
 
@@ -56,9 +82,9 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                 exercise.name.toLowerCase().includes(searchQuery.toLowerCase()));
         }
 
-        if (selectedMuscleGroup) {
+        if (selectedMuscleGroups.length > 0) {
             exercises = exercises.filter(exercise =>
-                exercise.muscle_groups.includes(selectedMuscleGroup));
+                selectedMuscleGroups.some(group => exercise.muscle_groups.includes(group)));
         }
 
         if (sortBy) {
@@ -74,9 +100,9 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
     }, [
         exercisesStore.generalExercises,
         searchQuery,
-        selectedMuscleGroup,
+        selectedMuscleGroups,
         sortBy,
-        activeTab
+        activeTab,
     ]);
 
     const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE);
@@ -84,65 +110,118 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
     const filteredExercises = useMemo(() => {
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
         return filteredList.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-    }, [filteredList,
+    }, [
+        filteredList,
         currentPage,
-        activeTab]);
+        activeTab,
+    ]);
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
     }, []);
 
-    const handleMuscleGroupChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedMuscleGroup(e.target.value || null);
+    const handleMuscleGroupChange = useCallback((values: string[]) => {
+        setSelectedMuscleGroups(values);
     }, []);
+
+    return {
+        filteredExercises,
+        handleMuscleGroupChange,
+        handleSearchChange,
+        searchQuery,
+        selectedMuscleGroups,
+        totalPages,
+    };
+};
+
+const useExercisesState = (exercisesStore: ExercisesStore, exercisesController: ExercisesController) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [activeTab, setActiveTab] = useState<'base' | 'own'>('own');
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [exerciseToEdit, setExerciseToEdit] = useState<ExerciseFormData | null>(null);
+
+    const filters = useExerciseFilters({ activeTab, currentPage, exercisesController, exercisesStore });
 
     const handleModalClose = useCallback(() => {
         setIsModalVisible(false);
         setExerciseToEdit(null);
-    },[]);
+    }, []);
 
     const handleSaveSuccess = useCallback(() => {
         setIsModalVisible(false);
         setExerciseToEdit(null);
-    },[]);
+    }, []);
 
-    const handleOpenModal = useCallback((exercise: Exercise | null = null) => {
+    const handleOpenModal = useCallback((exercise: ExerciseFormData | null = null) => {
         setExerciseToEdit(exercise);
         setIsModalVisible(true);
     }, []);
+
+    const handleOpenNewExercise = useCallback(() => {
+        handleOpenModal(null);
+    }, [handleOpenModal]);
 
     const handlePageChange = useCallback((page: number) => {
         setCurrentPage(page);
     }, []);
 
-    const handleSortChange = useCallback((tab: 'base' | 'own') => {
-        handleTabChange(tab);
+    const handleTabChange = useCallback((tab: 'base' | 'own') => {
+        setActiveTab(tab);
+        setCurrentPage(1);
     }, []);
 
     const handleBaseClick = useCallback(() => {
-        handleSortChange('base');
-    }, []);
+        handleTabChange('base');
+    }, [handleTabChange]);
 
     const handleOwnClick = useCallback(() => {
-        handleSortChange('own');
-    },[]);
+        handleTabChange('own');
+    }, [handleTabChange]);
 
-    const handleTabChange = (tab: 'base' | 'own') => {
-        setActiveTab(tab);
-        setCurrentPage(1);
+    return {
+        activeTab,
+        currentPage,
+        exerciseToEdit,
+        handleBaseClick,
+        handleModalClose,
+        handleOpenModal,
+        handleOpenNewExercise,
+        handleOwnClick,
+        handlePageChange,
+        handleSaveSuccess,
+        isModalVisible,
+        ...filters,
     };
+};
 
-    const handleDeleteExercise = useCallback((id: number) => {
-        exercisesController.deleteExercise(id);
-    }, []);
+const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesController }) => {
+    const { t } = useTranslation();
+    const { token } = useToken();
 
-    interface HandleEditExercise {
-        (exercise: Exercise): void;
-    }
+    const {
+        activeTab,
+        currentPage,
+        exerciseToEdit,
+        filteredExercises,
+        handleBaseClick,
+        handleModalClose,
+        handleMuscleGroupChange,
+        handleOpenModal,
+        handleOpenNewExercise,
+        handleOwnClick,
+        handlePageChange,
+        handleSaveSuccess,
+        handleSearchChange,
+        isModalVisible,
+        searchQuery,
+        selectedMuscleGroups,
+        totalPages,
+    } = useExercisesState(exercisesStore, exercisesController);
 
-    const handleEditExercise: HandleEditExercise = useCallback((exercise: Exercise) => {
-        handleOpenModal(exercise);
-    }, [handleOpenModal]);
+    const muscleGroupOptions: SelectOption[] = muscleGroups.map(group => ({
+        label: t(group.name),
+        value: group.name,
+    }));
 
     return (
         <div className="container">
@@ -154,7 +233,6 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                 </button>
                 <button className={activeTab === 'own' ? 'active' : ''} onClick={handleOwnClick}>
                     {t('exercises.tabs.own')}
-
                 </button>
 
                 {/* COACH MODE DISABLED FOR V1.0 */}
@@ -162,7 +240,7 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                     {t('exercises.tabs.coach')}
                 </button> */}
                 <div>
-                    <button onClick={() => handleOpenModal()}>{t('createExercise')}</button>
+                    <button onClick={handleOpenNewExercise}>{t('createExercise')}</button>
 
                     {isModalVisible && (
                         <ExerciseModal onClose={handleModalClose} onSave={handleSaveSuccess}
@@ -181,24 +259,23 @@ const Exercises: React.FC<ExercisesInterface> = ({ exercisesStore, exercisesCont
                     value={searchQuery}
                     onChange={handleSearchChange}
                 />
-                <select onChange={handleMuscleGroupChange} value={selectedMuscleGroup || ''}>
-                    <option value="">{t('exercises.allMuscleGroups')}</option>
-                    {muscleGroups.map(group => (
-                        <option key={group.name} value={group.name}>
-                            {t(group.name)}
-                        </option>
-                    ))}
-                </select>
+                <FilterSelect
+                    isMulti
+                    options={muscleGroupOptions}
+                    value={selectedMuscleGroups}
+                    onChange={handleMuscleGroupChange}
+                    placeholder={t('exercises.allMuscleGroups')}
+                />
             </div>
             <div className="filtered-exercises">
                 {filteredExercises.length > 0
                     ? (
                         filteredExercises.map(exercise => (
-                            <ExerciseItem
+                            <ExerciseRow
                                 key={exercise.id}
                                 exercise={exercise}
-                                deleteExercise={() => handleDeleteExercise(exercise.id)}
-                                edit={() => handleEditExercise(exercise)}
+                                exercisesController={exercisesController}
+                                onEdit={handleOpenModal}
                             />
                         ))
                     )

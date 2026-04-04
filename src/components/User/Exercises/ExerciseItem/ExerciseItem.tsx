@@ -40,7 +40,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
         edit();
     }, [edit]);
     return (
-        <div className="exercise-item">
+        <div className={`exercise-item${exercise.own ? '' : ' exercise-item--auto-height'}`}>
             <div className="exercise-header">
                 <h2>{exercise.name}</h2>
             </div>

@@ -15,11 +15,30 @@
   min-height: 280px;
   max-height: 280px;
 
+  &--auto-height {
+    height: auto;
+    min-height: unset;
+    max-height: unset;
+    overflow: visible;
+
+    .exercise-summary,
+    .exercise-details {
+      flex: unset;
+      overflow: visible;
+    }
+  }
+
   @media (max-width: 1024px) {
     padding: 18px;
     height: 270px;
     min-height: 270px;
     max-height: 270px;
+
+    &--auto-height {
+      height: auto;
+      min-height: unset;
+      max-height: unset;
+    }
   }
 
   @media (max-width: 768px) {
@@ -28,6 +47,12 @@
     height: 260px;
     min-height: 260px;
     max-height: 260px;
+
+    &--auto-height {
+      height: auto;
+      min-height: unset;
+      max-height: unset;
+    }
   }
 
   @media (max-width: 480px) {
@@ -36,6 +61,12 @@
     height: 250px;
     min-height: 250px;
     max-height: 250px;
+
+    &--auto-height {
+      height: auto;
+      min-height: unset;
+      max-height: unset;
+    }
   }
 
   &:hover {

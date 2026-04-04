@@ -148,6 +148,12 @@ export default class UserController extends BaseController {
                 return { errors: data.errors || [], success: false };
             }
 
+            const userToCache = { ...data.user, jwt: data.jwt };
+            await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+            this.userStore.setUserProfile(data.user);
+            this.userStore.setCurrentUser(data.user);
+            localStorage.setItem('token', data.jwt);
+
             window.location.reload();
 
             return { errors: [], success: true };
@@ -158,7 +164,6 @@ export default class UserController extends BaseController {
 
     @action
     async registerWithTelegram(initData: string): Promise<{ errors: string[]; success: boolean }> {
-        console.log('Attempting Telegram registration with initData:', initData);
         try {
             const response = await fetch(`${getApiBaseUrl()}/users/telegram_register`, {
                 body: JSON.stringify({ init_data: initData }),

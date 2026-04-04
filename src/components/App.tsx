@@ -42,8 +42,6 @@ type AppProps = {
 
 const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
   const { token, setToken, isAdmin } = useToken();
-  const [isLogin, setIsLogin] = useState(true);
-  const [isDescriptionVisible, setIsDescriptionVisible] = useState(true);
 
   const [isTgAuthPending, setIsTgAuthPending] = useState<boolean>(() => {
     const initData = window.Telegram?.WebApp?.initData ?? '';
@@ -51,14 +49,6 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
     return Boolean(initData) && !hasToken;
   });
 
-  const proceedToAuth = () => {
-    setIsDescriptionVisible(false);
-  };
-
-  const handleClick =()=> {
-        proceedToAuth();
-        setIsLogin(false);
-  }
   useEffect(() => {
     userController?.getUserFromCache();
     }, [userController, userStore]);
@@ -109,7 +99,7 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />
         <Route path="/about-deletion" element={<AccountDeletion />} />
-        <Route path="/landing" element={token ? <Navigate to="/" replace /> : <LandingPage onRegisterClick={handleClick}/>}/>
+        <Route path="/landing" element={token ? <Navigate to="/" replace /> : <LandingPage setToken={setToken} />}/>
         <Route path="/password/reset" element={<ResetPasswordWithToken />} />
         <Route path="/password/recovery" element={<PasswordRecovery />} />
         <Route path="/common-exercises" element={<CommonExercises />} />
@@ -129,17 +119,7 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
         ) : (
           <Route
             path="/*"
-            element={
-              isDescriptionVisible ? (
-                <DescriptionScreen setToken={setToken} />
-              ) : (
-                <AuthRoutes
-                  isLogin={isLogin}
-                  setToken={setToken}
-                  isAdmin={isAdmin}
-                />
-              )
-            }
+            element={<DescriptionScreen setToken={setToken} isAdmin={isAdmin} />}
           />
         )}
       </Routes>

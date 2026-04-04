@@ -350,59 +350,45 @@
     }
   }
 
-  select {
+  .filter-select__container {
     flex: 1;
-    padding: 14px 18px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
+  }
+
+  .filter-select__control {
+    min-height: 52px !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
     font-size: 15px;
-    color: #2d3748;
-    background: #f8fafc;
-    cursor: pointer;
+    background: #f8fafc !important;
     transition: all 0.3s ease;
-    font-weight: 500;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath fill='%234a5568' d='M7 10L2 5h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 44px;
+    box-shadow: none !important;
+    cursor: pointer;
 
     @media (max-width: 768px) {
-      padding: 12px 16px;
+      min-height: 47px !important;
+      border-radius: 10px !important;
       font-size: 14px;
-      border-radius: 10px;
-      background-position: right 14px center;
-      padding-right: 40px;
     }
 
     @media (max-width: 480px) {
-      padding: 10px 14px;
+      min-height: 43px !important;
+      border-radius: 8px !important;
       font-size: 14px;
-      border-radius: 8px;
-      background-position: right 12px center;
-      padding-right: 36px;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-      background-color: #ffffff;
-
-      @media (max-width: 768px) {
-        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-      }
     }
 
     &:hover {
-      border-color: #cbd5e0;
+      border-color: #cbd5e0 !important;
     }
 
-    option {
-      padding: 10px;
-      background: #ffffff;
-      color: #2d3748;
+    &.filter-select__control--is-focused {
+      border-color: #667eea !important;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
+      background: #ffffff !important;
     }
+  }
+
+  .filter-select__value-container {
+    padding: 4px 14px;
   }
 }
 

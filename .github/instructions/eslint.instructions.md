@@ -147,3 +147,13 @@ const matchesMuscle = (e: Exercise) => !filterMuscle || e.muscle_groups.includes
 
 .filter(e => matchesSearch(e) && matchesCategory(e) && matchesDifficulty(e) && matchesMuscle(e))
 ```
+
+## After every edit — run ESLint
+
+After making any changes to `src/**/*.{ts,tsx}` files, always run:
+
+```bash
+npx eslint <changed-file-path> --format=compact
+```
+
+Fix all errors before considering the task done. Never leave lint errors unresolved.

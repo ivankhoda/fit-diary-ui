@@ -1,5 +1,6 @@
 import { action, makeObservable, observable } from 'mobx';
 import { AdminWorkoutProfile } from './AdminWorkoutsStore';
+import { WorkoutInterface } from '../../../store/workoutStore';
 
 export interface UserMeasurement {
     id: number;
@@ -45,6 +46,8 @@ export default class AdminUsersStore {
 
     @observable userWorkouts: AdminWorkoutProfile[] = [];
 
+    @observable userWorkoutsDone: WorkoutInterface[] = [];
+
     @observable permissions: AdminPermissionProfile[] =[];
 
     @action
@@ -80,6 +83,11 @@ export default class AdminUsersStore {
     @action
     setWorkouts(workouts: AdminWorkoutProfile[]): void {
         this.userWorkouts = workouts;
+    }
+
+    @action
+    setUserWorkoutsDone(workouts: WorkoutInterface[]): void {
+        this.userWorkoutsDone = workouts;
     }
 
     @action
