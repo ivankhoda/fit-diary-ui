@@ -120,21 +120,21 @@ const ExerciseList: React.FC<ExerciseListProps> = ({ exercises, onExerciseClick 
     const exercisesToDisplay = exercises.slice(startIndex, endIndex);
 
     return (
-        <div className="exercise-list-container">
-            <div className="exercise-list">
+        <div className="exercise-stats-list-container">
+            <div className="exercise-stats-list">
                 {exercisesToDisplay.map(exercise => (
 
                     <div
                         key={exercise.id}
-                        className="exercise-item"
+                        className="exercise-stats-item"
                         onClick={handleClick}
                         data-id={exercise.id}
                     >
 
-                        <div className="exercise-header">
-                            <span className="exercise-name">{exercise.name}</span>
+                        <div className="exercise-stats-header">
+                            <span className="exercise-stats-name">{exercise.name}</span>
                         </div>
-                        <div className="last-session">
+                        <div className="exercise-stats-last-session">
                             {formatExerciseDetails(exercise)}
                         </div>
                     </div>
@@ -142,7 +142,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({ exercises, onExerciseClick 
                 ))}
 
             </div>
-            <div className="pagination-controls">
+            <div className="exercise-stats-pagination-controls">
                 <button
                     onClick={handlePreviousPage}
                     disabled={currentPage === 1}

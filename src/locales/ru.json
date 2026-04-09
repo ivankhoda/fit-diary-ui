@@ -151,6 +151,22 @@
   "to": "До",
   "progress": "Прогресс",
   "date": "Дата",
+  "exerciseStats": {
+    "personalBests": {
+      "achievedOn": "Дата достижения",
+      "bestDistance": "Лучшая дистанция",
+      "bestDuration": "Лучшая длительность",
+      "bestReps": "Лучшие повторения",
+      "bestWeight": "Лучший вес",
+      "distanceUnit": "м",
+      "empty": "Лучшие показатели появятся после первых завершённых подходов.",
+      "estimatedOneRepMax": "Прогноз 1ПМ",
+      "maxSpeed": "Макс. скорость",
+      "refreshing": "Обновляем после сохранения подхода...",
+      "repsUnit": "повт",
+      "title": "Лучшие показатели"
+    }
+  },
     "workoutData": {
       "exercises": "Упражнения",
       "comment": "Комментарий",

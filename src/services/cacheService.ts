@@ -23,7 +23,7 @@ localforage.config({
 export interface CacheItem<T> {
   data: T;
   timestamp: number;
-  version?: string;
+    version?: string | null;
 }
 
 export interface OfflineAction {
@@ -81,7 +81,7 @@ export const cacheService = {
         return item.version;
     },
 
-    async set<T>(key: string, data: T, version?: string): Promise<void> {
+    async set<T>(key: string, data: T, version?: string | null): Promise<void> {
         const item: CacheItem<T> = {
             data,
             timestamp: Date.now(),

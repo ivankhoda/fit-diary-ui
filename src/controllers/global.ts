@@ -6,8 +6,12 @@ import UserController from './UserController';
 import WorkoutController from './WorkoutsController';
 
 const exercisesController = new ExercisesController(exercisesStore, workoutsStore);
-const workoutsController = new WorkoutController(workoutsStore, exercisesStore);
 const userController = new UserController(userStore);
+const workoutsController = new WorkoutController(
+    workoutsStore,
+    exercisesStore,
+    () => userController.scheduleExerciseStatsRefresh(),
+);
 const trainingGoalsController = new TrainingGoalsController(trainingGoalsStore);
 const plansController = new PlansController(plansStore);
 

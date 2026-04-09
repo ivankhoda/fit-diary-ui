@@ -3,7 +3,7 @@
 
 /* eslint-disable sort-keys */
 import { action } from 'mobx';
-import ExercisesStore, { ExerciseInterface } from '../store/exercisesStore';
+import ExercisesStore, { ExerciseInterface, SetInterface } from '../store/exercisesStore';
 import WorkoutsStore, { WorkoutInterface } from '../store/workoutStore';
 import Get from '../utils/GetRequest';
 import Post from '../utils/PostRequest';
@@ -16,6 +16,7 @@ import i18n from 'i18next';
 import { toast } from 'react-toastify';
 import { NOT_CHANGE_RESPONSE_CODE } from '../components/Common/constants';
 import { cacheService } from '../services/cacheService';
+import { handleSuccessfulSetSave } from './exerciseStatsRefresh';
 
 export interface AddExerciseParamsInterface {
     id?: number,
@@ -30,11 +31,25 @@ export default class WorkoutController extends BaseController {
     // eslint-disable-next-line max-params
     workoutsStore: WorkoutsStore;
     exerciseStore: ExercisesStore;
+    scheduleExerciseStatsRefresh?: () => void;
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    constructor(workoutsStore: WorkoutsStore, exerciseStore: ExercisesStore) {
+    constructor(
+        workoutsStore: WorkoutsStore,
+        exerciseStore: ExercisesStore,
+        scheduleExerciseStatsRefresh?: () => void,
+    ) {
         super();
         this.workoutsStore = workoutsStore;
         this.exerciseStore = exerciseStore;
+        this.scheduleExerciseStatsRefresh = scheduleExerciseStatsRefresh;
+    }
+
+    private handleSetSaveSuccess(savedSet: SetInterface): void {
+        handleSuccessfulSetSave(
+            savedSet,
+            set => this.workoutsStore.setCurrentUserWorkoutSets(set),
+            this.scheduleExerciseStatsRefresh,
+        );
     }
 
   @action
@@ -522,7 +537,7 @@ getLastUserWorkouts(limit: number): void {
           .then(r => r.json())
           .then(res => {
               if (res.status) {
-                  this.workoutsStore.setCurrentUserWorkoutSets(res.set);
+                  this.handleSetSaveSuccess(res.set);
               }
           });
   }
@@ -608,7 +623,7 @@ getLastUserWorkouts(limit: number): void {
           .then(r => r.json())
           .then(res => {
               if (res.status) {
-                  this.workoutsStore.setCurrentUserWorkoutSets(res.set);
+                  this.handleSetSaveSuccess(res.set);
               }
           });
   }

@@ -19,32 +19,25 @@ interface ExerciseRecordsStatsProps {
 }
 
 const ExerciseRecords: React.FC<ExerciseRecordsStatsProps> = observer(({ userStore, userController }) => {
-    const [exercises, setExercises] = useState<Exercise[]>([]);
-    const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+    const [selectedExerciseId, setSelectedExerciseId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [startDate, setStartDate] = useState<string | null>(null);
     const [endDate, setEndDate] = useState<string | null>(null);
-    const [consistency, setConsistency] = useState<ConsistencyMetrics | null>(null);
+
+    const exercises = userStore?.userExercisesStats ?? [];
+    const consistency = userStore?.userConsistencyStats ?? null;
+    const isRefreshingBenchmarks = userStore?.exerciseStatsRefreshState === 'refreshing';
 
     useEffect(() => {
         userController?.getUserExercisesStats();
     }, [userController]);
-
-    useEffect(() => {
-        if (userStore?.userExercisesStats) {
-            setExercises(userStore.userExercisesStats);
-        }
-        if (userStore?.userConsistencyStats) {
-            setConsistency(userStore.userConsistencyStats);
-        }
-    }, [userStore?.userExercisesStats, userStore?.userConsistencyStats]);
 
     const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
     }, []);
 
     const handleExerciseClick = useCallback((exercise: Exercise) => {
-        setSelectedExercise(exercise);
+        setSelectedExerciseId(exercise.id);
     }, []);
 
     const handleStartDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +65,11 @@ const ExerciseRecords: React.FC<ExerciseRecordsStatsProps> = observer(({ userSto
             searchTerm,
             startDate,
             endDate]
+    );
+
+    const selectedExercise = useMemo(
+        () => exercises.find(exercise => exercise.id === selectedExerciseId) ?? null,
+        [exercises, selectedExerciseId]
     );
 
     return (
@@ -114,8 +112,8 @@ const ExerciseRecords: React.FC<ExerciseRecordsStatsProps> = observer(({ userSto
                         <div className="exercise-details">
                             <h2>{selectedExercise.name}</h2>
                             <PersonalBests
+                                isRefreshing={isRefreshingBenchmarks}
                                 personalBests={selectedExercise.personal_bests}
-                                typeOfMeasurement={selectedExercise.type_of_measurement}
                             />
                         </div>
                         <ProgressTable

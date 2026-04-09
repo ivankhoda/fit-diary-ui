@@ -73,33 +73,51 @@ export interface PermissionProfile{
     to_user: string
 }
 
+export type ExerciseMeasurementType =
+    'weight_and_reps'
+    | 'reps'
+    | 'duration'
+    | 'duration_and_reps'
+    | 'cardio'
+    | 'duration_and_distance';
+
+export interface PersonalBestMetric {
+    value: number | string;
+}
+
+export interface PersonalBests {
+    [key: string]: PersonalBestMetric | undefined;
+    date?: PersonalBestMetric;
+    distance?: PersonalBestMetric;
+    duration?: PersonalBestMetric;
+    estimated_1rm?: PersonalBestMetric;
+    max_speed?: PersonalBestMetric;
+    reps?: PersonalBestMetric;
+    weight?: PersonalBestMetric;
+}
+
 export interface Exercise {
     id: number;
     name: string;
-    type_of_measurement: string;
+    type_of_measurement: ExerciseMeasurementType;
     lastSession: {
-        weight?: number;
+        date: string;
+        distance?: number;
+        duration?: number;
         reps?: number;
         sets?: number;
-        duration?: number;
-        distance?: number;
-        date: string;
+        weight?: number;
     };
     progress: {
         date: string;
         progress_data: {
-            weight?: number;
-            reps?: number;
-            duration?: number;
             distance?: number;
+            duration?: number;
+            reps?: number;
+            weight?: number;
         };
     }[];
-    personal_bests: {
-        max_weight?: number;
-        max_reps?: number;
-        max_distance?: number;
-        max_duration?: number;
-    };
+    personal_bests: PersonalBests;
 }
 
 export interface ConsistencyMetrics {
@@ -134,13 +152,15 @@ export default class UserStore {
 
     @observable userConsistencyStats: ConsistencyMetrics | null = null;
 
+    @observable exerciseStatsRefreshState: 'idle' | 'refreshing' = 'idle';
+
     @action
     setCurrentUser(profile: UserProfile): void {
         this.currentUser = profile;
     }
 
     @action
-    setUserProfile(profile: UserProfile): void {
+    setUserProfile(profile: UserProfile | null): void {
         this.userProfile = profile;
     }
 
@@ -153,6 +173,11 @@ export default class UserStore {
     setUserExerciseStats(exercises: Exercise[], consistency: ConsistencyMetrics): void {
         this.userExercisesStats = exercises;
         this.userConsistencyStats = consistency;
+    }
+
+    @action
+    setExerciseStatsRefreshState(state: 'idle' | 'refreshing'): void {
+        this.exerciseStatsRefreshState = state;
     }
 
     @action

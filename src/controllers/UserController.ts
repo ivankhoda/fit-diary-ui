@@ -15,13 +15,23 @@ import getApiBaseUrl from '../utils/apiUrl';
 import { toast } from 'react-toastify';
 
 import { cacheService } from '../services/cacheService';
+import { ExerciseStatsRefreshScheduler } from './exerciseStatsRefresh';
 
 export default class UserController extends BaseController {
     userStore: UserStore;
+    private readonly exerciseStatsRefreshScheduler = new ExerciseStatsRefreshScheduler();
 
     constructor(userStore: UserStore) {
         super();
         this.userStore = userStore;
+    }
+
+    @action
+    scheduleExerciseStatsRefresh(): void {
+        this.exerciseStatsRefreshScheduler.schedule(
+            () => this.userStore.setExerciseStatsRefreshState('refreshing'),
+            () => this.getUserExercisesStats(),
+        );
     }
 
     @action
@@ -55,7 +65,7 @@ export default class UserController extends BaseController {
 
             if (data.user && data.jwt) {
                 const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
                 this.userStore.setUserProfile(data.user);
                 this.userStore.setCurrentUser(data.user);
                 localStorage.setItem('token', data.jwt);
@@ -114,7 +124,7 @@ export default class UserController extends BaseController {
 
             if (data.user && data.jwt) {
                 const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
                 this.userStore.setUserProfile(data.user);
                 this.userStore.setCurrentUser(data.user);
                 localStorage.setItem('token', data.jwt);
@@ -149,7 +159,7 @@ export default class UserController extends BaseController {
             }
 
             const userToCache = { ...data.user, jwt: data.jwt };
-            await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+            await cacheService.set('current_user', userToCache, response.headers.get('etag'));
             this.userStore.setUserProfile(data.user);
             this.userStore.setCurrentUser(data.user);
             localStorage.setItem('token', data.jwt);
@@ -178,7 +188,7 @@ export default class UserController extends BaseController {
 
             if (data.user && data.jwt) {
                 const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
                 this.userStore.setUserProfile(data.user);
                 this.userStore.setCurrentUser(data.user);
                 localStorage.setItem('token', data.jwt);
@@ -211,7 +221,7 @@ export default class UserController extends BaseController {
 
             if (data.user && data.jwt) {
                 const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag') || null);
+                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
                 this.userStore.setUserProfile(data.user);
                 this.userStore.setCurrentUser(data.user);
                 localStorage.setItem('token', data.jwt);
@@ -244,13 +254,15 @@ export default class UserController extends BaseController {
     }
 
     @action
-    async getUserFromCache(): Promise<CachedUserProfile> {
+    async getUserFromCache(): Promise<CachedUserProfile | null> {
         const cached = await cacheService.get<CachedUserProfile>('current_user');
 
         if (cached) {
             this.userStore.setUserProfile(cached);
             this.userStore.setCurrentUser(cached);
+            return cached;
         }
+
         return null;
     }
 
@@ -324,7 +336,7 @@ export default class UserController extends BaseController {
             return result;
         } catch (error) {
             console.error('Unexpected error during user update:', error);
-            return { ok: false, errors: [error?.message] };
+            return { ok: false, errors: [error instanceof Error ? error.message : 'Unknown error'] };
         }
     }
 
@@ -371,14 +383,17 @@ export default class UserController extends BaseController {
     }
 
     @action
-    getUserExercisesStats(): void {
-        new Get({ url: `${getApiBaseUrl()}/users/exercise-statistics` }).execute()
+    getUserExercisesStats(): Promise<void> {
+        return new Get({ url: `${getApiBaseUrl()}/users/exercise-statistics` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.setUserExerciseStats(res.exercises, res.consistency);
             })
             .catch(error => {
                 console.error('Failed to fetch user exercise statistics:', error);
+            })
+            .finally(() => {
+                this.userStore.setExerciseStatsRefreshState('idle');
             });
     }
     @action

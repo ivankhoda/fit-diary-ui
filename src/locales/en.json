@@ -132,6 +132,22 @@
   "from": "From",
   "to": "To",
   "date":"Date",
+  "exerciseStats": {
+    "personalBests": {
+      "achievedOn": "Achieved on",
+      "bestDistance": "Best distance",
+      "bestDuration": "Best duration",
+      "bestReps": "Best reps",
+      "bestWeight": "Best weight",
+      "distanceUnit": "m",
+      "empty": "Personal bests will appear after your first completed sets.",
+      "estimatedOneRepMax": "Estimated 1RM",
+      "maxSpeed": "Max speed",
+      "refreshing": "Refreshing after set save...",
+      "repsUnit": "reps",
+      "title": "Personal bests"
+    }
+  },
   "workoutData": {
     "exercises": "Exercises ",
     "comment": "Comment",
