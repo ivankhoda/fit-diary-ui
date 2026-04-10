@@ -1,25 +1,30 @@
 import { useCallback } from 'react';
-import Delete from '../../utils/DeleteRequest';
 import { useNavigate } from 'react-router';
-import getApiBaseUrl from '../../utils/apiUrl';
 import { cacheService } from '../../services/cacheService';
+import getApiBaseUrl from '../../utils/apiUrl';
+import { clearAuthStorage } from '../../utils/clearAuthStorage';
 
 export const useLogout = (): (() => void) => {
     const navigate = useNavigate();
 
     return useCallback((): void => {
-        new Delete({ url: `${getApiBaseUrl()}/users/sign_out` })
-            .execute()
-            .then((r: Response) => {
-                if (r.ok) {
-                    localStorage.removeItem('token');
-                    navigate('/');
-                    cacheService.clear('current_user');
-                    window.location.reload();
-                }
-            })
-            .catch((error: Error) => {
-                console.error('Logout failed:', error);
-            });
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            fetch(`${getApiBaseUrl()}/users/sign_out`, {
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                keepalive: true,
+                method: 'DELETE',
+            }).catch(() => null);
+        }
+
+        clearAuthStorage();
+        cacheService.clear('current_user');
+        navigate('/');
+        window.location.reload();
     }, [navigate]);
 };

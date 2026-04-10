@@ -15,6 +15,7 @@ import getApiBaseUrl from '../utils/apiUrl';
 import { toast } from 'react-toastify';
 
 import { cacheService } from '../services/cacheService';
+import { clearAuthStorage } from '../utils/clearAuthStorage';
 import { ExerciseStatsRefreshScheduler } from './exerciseStatsRefresh';
 
 export default class UserController extends BaseController {
@@ -241,7 +242,7 @@ export default class UserController extends BaseController {
     logout(): void {
         this.userStore.clearUserData();
         cacheService.clear('current_user');
-        localStorage.removeItem('token');
+        clearAuthStorage();
     }
 
     @action
@@ -298,9 +299,7 @@ export default class UserController extends BaseController {
             }
 
             if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-                localStorage.removeItem('token');
-                await cacheService.clear('current_user');
-                this.userStore.setUserProfile(null);
+                this.logout();
                 return;
             }
 
@@ -351,8 +350,7 @@ export default class UserController extends BaseController {
 
             if (result.ok) {
                 toast.success('Вы успешно деактивировали профиль');
-                this.userStore.setUserProfile(null);
-                localStorage.removeItem('token');
+                this.logout();
 
                 window.location.reload();
             }

@@ -227,6 +227,7 @@ export default class UserStore {
 
     @action
     clearUserData(): void {
+        this.currentUser = null;
         this.clearUserProfile();
         this.clearMeasurements();
         this.clearExerciseStatistics();
