@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import ReactPaginate from 'react-paginate';
 
 import { useParams } from 'react-router';
@@ -17,14 +17,38 @@ export interface UserWorkoutsListProps {
 
 const ITEMS_PER_PAGE = 20;
 const SORT_BEFORE = -1;
+const UNKNOWN_DATE = 0;
+
+type UserWorkoutSortKey = '' | 'date' | 'duration' | 'id' | 'name';
+
+const getWorkoutDateLabel = (workout: WorkoutInterface): string => workout.date || workout.created_at?.split(' ')[0] || '';
+
+const getWorkoutSortValue = (workout: WorkoutInterface, sortKey: UserWorkoutSortKey): number | string => {
+    switch (sortKey) {
+    case 'date': {
+        const timestamp = Date.parse(getWorkoutDateLabel(workout));
+
+        return Number.isNaN(timestamp) ? UNKNOWN_DATE : timestamp;
+    }
+    case 'duration':
+        return workout.duration || '';
+    case 'id':
+        return workout.id ?? 0;
+    case 'name':
+        return workout.name;
+    default:
+        return '';
+    }
+};
 
 const useUserWorkoutsFilters = (workouts: WorkoutInterface[]) => {
+    const normalizedWorkouts = Array.isArray(workouts) ? workouts : [];
     const [searchName, setSearchName] = useState<string>('');
-    const [sortKey, setSortKey] = useState<string>('');
+    const [sortKey, setSortKey] = useState<UserWorkoutSortKey>('');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const [currentPage, setCurrentPage] = useState<number>(0);
 
-    const handleSort = useCallback((key: string) => {
+    const handleSort = useCallback((key: Exclude<UserWorkoutSortKey, ''>) => {
         if (sortKey === key) {
             setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
         } else {
@@ -49,18 +73,29 @@ const useUserWorkoutsFilters = (workouts: WorkoutInterface[]) => {
         setCurrentPage(0);
     }, []);
 
-    const filteredWorkouts = workouts
+    const filteredWorkouts = normalizedWorkouts
         .filter(w => w.name.toLowerCase().includes(searchName.toLowerCase()))
         .sort((a, b) => {
             if (!sortKey) { return 0; }
 
-            const aVal = a[sortKey as keyof WorkoutInterface];
-            const bVal = b[sortKey as keyof WorkoutInterface];
+            const aVal = getWorkoutSortValue(a, sortKey);
+            const bVal = getWorkoutSortValue(b, sortKey);
+
+            if (aVal === bVal) {
+                return 0;
+            }
+
+            if (typeof aVal === 'number' && typeof bVal === 'number') {
+                return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+
+            const aString = String(aVal).toLowerCase();
+            const bString = String(bVal).toLowerCase();
 
             if (sortDirection === 'asc') {
-                return aVal > bVal ? 1 : SORT_BEFORE;
+                return aString > bString ? 1 : SORT_BEFORE;
             }
-            return aVal < bVal ? 1 : SORT_BEFORE;
+            return aString < bString ? 1 : SORT_BEFORE;
         });
 
     const currentItems = filteredWorkouts.slice(
@@ -82,7 +117,11 @@ const useUserWorkoutsFilters = (workouts: WorkoutInterface[]) => {
     };
 };
 
-const UserWorkoutList: React.FC<UserWorkoutsListProps> = observer(({ adminUsersStore, adminUsersController }) => {
+const UserWorkoutList: React.FC<UserWorkoutsListProps> = ({ adminUsersStore, adminUsersController }) => {
+    if (!adminUsersStore || !adminUsersController) {
+        return null;
+    }
+
     const { userId } = useParams<{ userId: string }>();
     const { userWorkoutsDone } = adminUsersStore;
     const [expandedIds, setExpandedIds] = useState<number[]>([]);
@@ -132,28 +171,28 @@ const UserWorkoutList: React.FC<UserWorkoutsListProps> = observer(({ adminUsersS
                         type="text"
                         value={searchName}
                         onChange={handleSearch}
-                        placeholder={t('workoutList.searchPlaceholder')}
+                        placeholder={t('searchByName')}
                     />
                 </div>
 
                 <div className="filters">
-                    <button onClick={clearFilters}>{t('filters.clear')}</button>
+                    <button onClick={clearFilters}>{t('clearFilters')}</button>
                 </div>
 
                 <table className="workout-table">
                     <thead>
                         <tr>
                             <th onClick={handleSortId}>
-                                {t('workoutList.id')}{sortArrow('id')}
+                                {t('id')}{sortArrow('id')}
                             </th>
                             <th onClick={handleSortName}>
-                                {t('workoutList.name')}{sortArrow('name')}
+                                {t('workoutData.name')}{sortArrow('name')}
                             </th>
                             <th onClick={handleSortDate}>
-                                {t('workoutList.date')}{sortArrow('date')}
+                                {t('date')}{sortArrow('date')}
                             </th>
                             <th onClick={handleSortDuration}>
-                                {t('workout.duration')}{sortArrow('duration')}
+                                {t('workoutData.duration')}{sortArrow('duration')}
                             </th>
                             <th />
                         </tr>
@@ -164,8 +203,8 @@ const UserWorkoutList: React.FC<UserWorkoutsListProps> = observer(({ adminUsersS
                                 <tr style={{ cursor: 'pointer' }} onClick={handleToggle(workout.id)}>
                                     <td>{workout.id}</td>
                                     <td>{workout.name}</td>
-                                    <td>{workout.date || workout.created_at?.split(' ')[0]}</td>
-                                    <td>{workout.duration ?? '—'}</td>
+                                    <td>{getWorkoutDateLabel(workout) || t('notProvided')}</td>
+                                    <td>{workout.duration || t('notProvided')}</td>
                                     <td>{expandedIds.includes(workout.id) ? '▲' : '▼'}</td>
                                 </tr>
                                 {expandedIds.includes(workout.id) && (
@@ -204,7 +243,7 @@ const UserWorkoutList: React.FC<UserWorkoutsListProps> = observer(({ adminUsersS
                                                     ))
                                                 )
                                                 : (
-                                                    <p>{t('workouts.noExercises')}</p>
+                                                    <p>{t('workoutData.noExercises')}</p>
                                                 )}
                                         </td>
                                     </tr>
@@ -213,7 +252,7 @@ const UserWorkoutList: React.FC<UserWorkoutsListProps> = observer(({ adminUsersS
                         ))}
                         {currentItems.length === 0 && (
                             <tr>
-                                <td colSpan={5}>{t('workouts.noWorkouts')}</td>
+                                <td colSpan={5}>{t('userWorkouts.noWorkouts')}</td>
                             </tr>
                         )}
                     </tbody>
@@ -235,6 +274,6 @@ const UserWorkoutList: React.FC<UserWorkoutsListProps> = observer(({ adminUsersS
             </div>
         </AdminPanel>
     );
-});
+};
 
-export default UserWorkoutList;
+export default inject('adminUsersStore', 'adminUsersController')(observer(UserWorkoutList));

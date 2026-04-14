@@ -250,6 +250,10 @@
     "assigned": "Assigned",
     "createWorkoutButton": "Create New Workout"
   },
+    "userWorkouts": {
+      "title": "User Workouts",
+      "noWorkouts": "No completed workouts found"
+    },
   "exercise": {
     "loading": "Loading...",
     "back": "Back",
