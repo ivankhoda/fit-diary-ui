@@ -117,5 +117,5 @@ jobs:
             docker compose \
               -f docker-compose.prod.yml \
               -f docker-compose.prod.frontend-ghcr.override.yml \
-              up -d --force-recreate frontend
+              up -d --no-deps --force-recreate frontend
           EOF
