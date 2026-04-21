@@ -9,6 +9,7 @@ import { TelegramLoginButton } from '../../Auth/TelegramLoginButton/TelegramLogi
 import { TelegramRegisterButton } from '../../Auth/TelegramRegisterButton/TelegramRegisterButton';
 import UserController from '../../../controllers/UserController';
 import getApiBaseUrl from '../../../utils/apiUrl';
+import { getAccessToken } from '../../../services/authSession';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -53,9 +54,7 @@ const useRegistrationForm = ({
         }
 
         if (result.success) {
-            const token = localStorage.getItem('token');
-
-            if (token) { setToken(token); }
+            setToken(getAccessToken());
         }
     }, [email,
         password,
@@ -118,11 +117,7 @@ const useLoginForm = ({ setToken, isAdmin, userController, navigate, t }: FormDe
         const success = await userController?.login({ email, password });
 
         if (success) {
-            const token = localStorage.getItem('token');
-
-            if (token) {
-                setToken(token);
-            }
+            setToken(getAccessToken());
 
             navigate(isAdmin() ? '/admin' : '/');
         } else {

@@ -1,5 +1,12 @@
 /* eslint-disable no-undefined */
-import getToken from './getToken';
+import {
+    getAccessToken,
+    hasRefreshToken,
+    redirectToLogin,
+    refreshSession,
+} from '../services/authSession';
+
+const UNAUTHORIZED_STATUS = 401;
 
 const objectToURIComponent = data => Object.keys(data)
     .filter(key => data[key] !== undefined && data[key] !== null)
@@ -16,9 +23,11 @@ class HttpFetch {
 
     /** Динамические заголовки — всегда свежий токен */
     get defaultHeaders() {
+        const accessToken = getAccessToken();
+
         return {
             Accept: 'application/json',
-            Authorization: `Bearer ${getToken()}`,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
             'Content-Type': 'application/json'
         };
     }
@@ -34,13 +43,11 @@ class HttpFetch {
         }
     }
 
-    // eslint-disable-next-line max-params
-    request(url, method, params = null, customHeaders = {}) {
+    buildFetchParams(method, params, customHeaders) {
         const headers = {
             ...this.defaultHeaders,
             ...customHeaders
         };
-
         const fetchParams = {
             ...this.options,
             headers,
@@ -51,12 +58,55 @@ class HttpFetch {
             fetchParams.body = this.convertParamsByContentType(params);
         }
 
-        return fetch(url, fetchParams).then(response => {
-            if (!response.ok && this.errorStatusCallback) {
-                this.errorStatusCallback(response);
-            }
-            return response;
+        return { fetchParams, headers };
+    }
+
+    reportErrorStatus(response) {
+        if (!response.ok && this.errorStatusCallback) {
+            this.errorStatusCallback(response);
+        }
+    }
+
+    async retryUnauthorizedRequest(url, fetchParams, headers) {
+        const nextAccessToken = await refreshSession();
+
+        if (!nextAccessToken) {
+            redirectToLogin();
+            return null;
+        }
+
+        const retryHeaders = {
+            ...headers,
+            Authorization: `Bearer ${nextAccessToken}`,
+        };
+        const retryResponse = await fetch(url, {
+            ...fetchParams,
+            headers: retryHeaders,
         });
+
+        this.reportErrorStatus(retryResponse);
+
+        return retryResponse;
+    }
+
+    // eslint-disable-next-line max-params
+    async request(url, method, params = null, customHeaders = {}, retry = true) {
+        const { fetchParams, headers } = this.buildFetchParams(method, params, customHeaders);
+
+        const response = await fetch(url, fetchParams);
+        const hadSession = Boolean(getAccessToken()) || hasRefreshToken();
+
+        if (response.status === UNAUTHORIZED_STATUS && retry && hadSession) {
+            const retryResponse = await this.retryUnauthorizedRequest(url, fetchParams, headers);
+
+            if (retryResponse) {
+                return retryResponse;
+            }
+        }
+
+        this.reportErrorStatus(response);
+
+        return response;
     }
 
     get({ url, params = null, headers = {} }) {

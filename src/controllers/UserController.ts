@@ -15,8 +15,24 @@ import getApiBaseUrl from '../utils/apiUrl';
 import { toast } from 'react-toastify';
 
 import { cacheService } from '../services/cacheService';
-import { clearAuthStorage } from '../utils/clearAuthStorage';
+import {
+    bootstrapSession,
+    clearSession,
+    getAccessToken,
+    refreshSession,
+    setSessionTokens,
+} from '../services/authSession';
 import { ExerciseStatsRefreshScheduler } from './exerciseStatsRefresh';
+
+const AUTH_DEVICE_NAME = 'web';
+
+type AuthResponse = {
+    access_token?: string;
+    errors?: string[];
+    jwt?: string;
+    refresh_token?: string;
+    user?: CachedUserProfile;
+};
 
 export default class UserController extends BaseController {
     userStore: UserStore;
@@ -25,6 +41,37 @@ export default class UserController extends BaseController {
     constructor(userStore: UserStore) {
         super();
         this.userStore = userStore;
+    }
+
+    private async persistAuthenticatedSession(response: Response, data: AuthResponse): Promise<boolean> {
+        const accessToken = data.jwt ?? data.access_token;
+
+        if (!data.user || !accessToken || !data.refresh_token) {
+            return false;
+        }
+
+        await cacheService.set('current_user', data.user, response.headers.get('etag'));
+        this.userStore.setUserProfile(data.user);
+        this.userStore.setCurrentUser(data.user);
+        setSessionTokens({
+            accessToken,
+            refreshToken: data.refresh_token,
+        });
+
+        return true;
+    }
+
+    private clearLocalSession(): void {
+        this.userStore.clearUserData();
+        cacheService.clear('current_user');
+        clearSession();
+    }
+
+    private buildDeviceHeaders(): HeadersInit {
+        return {
+            'Content-Type': 'application/json',
+            'Device-Name': AUTH_DEVICE_NAME,
+        };
     }
 
     @action
@@ -38,105 +85,56 @@ export default class UserController extends BaseController {
     @action
     async login(credentials: { email: string; password: string }): Promise<boolean> {
         try {
-            const cachedEtag = await cacheService.getVersion('current_user');
             const response = await fetch(`${getApiBaseUrl()}/users/sign_in`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(cachedEtag ? { 'If-None-Match': cachedEtag } : {}),
-                },
                 body: JSON.stringify({ user: credentials }),
+                headers: {
+                    ...this.buildDeviceHeaders(),
+                },
+                method: 'POST',
             });
 
-            if (response.status === NOT_CHANGE_RESPONSE_CODE) {
-                const cached = await cacheService.get<CachedUserProfile>('current_user');
-
-                if (cached) {
-                    this.userStore.setUserProfile(cached);
-                    return true;
-                }
-                throw new Error('No cached user found');
-            }
-
-            const data = await response.json();
+            const data = await response.json() as AuthResponse;
 
             if (!response.ok) {
                 return false;
             }
 
-            if (data.user && data.jwt) {
-                const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
-                this.userStore.setUserProfile(data.user);
-                this.userStore.setCurrentUser(data.user);
-                localStorage.setItem('token', data.jwt);
-                localStorage.setItem('refresh_token', data.refresh_token);
-                return true;
-            }
-
-            return false;
-        } catch (error) {
-            console.error('Login error:', error);
+            return this.persistAuthenticatedSession(response, data);
+        } catch {
             return false;
         }
     }
 
     @action
     async refreshAccessToken(): Promise<boolean> {
-        const refreshToken = localStorage.getItem('refresh_token');
+        const nextAccessToken = await refreshSession();
 
-        if (!refreshToken) {return false;}
-
-        try {
-            const response = await fetch(`${getApiBaseUrl()}/users/refresh`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ refresh_token: refreshToken })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.access_token) {
-                localStorage.setItem('access_token', data.access_token);
-                return true;
-            }
+        if (!nextAccessToken) {
             this.logout();
-            return false;
-        } catch (err) {
-            console.error('Failed to refresh access token', err);
-            return false;
         }
+
+        return Boolean(nextAccessToken);
     }
 
     @action
     async loginWithTelegram(initData: string): Promise<boolean> {
         try {
             const response = await fetch(`${getApiBaseUrl()}/users/telegram_auth`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ init_data: initData }),
+                headers: {
+                    ...this.buildDeviceHeaders(),
+                },
+                method: 'POST',
             });
 
-            const data = await response.json();
+            const data = await response.json() as AuthResponse;
 
             if (!response.ok) {
                 return false;
             }
 
-            if (data.user && data.jwt) {
-                const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
-                this.userStore.setUserProfile(data.user);
-                this.userStore.setCurrentUser(data.user);
-                localStorage.setItem('token', data.jwt);
-                if (data.refresh_token) {
-                    localStorage.setItem('refresh_token', data.refresh_token);
-                }
-                return true;
-            }
-
-            return false;
-        } catch (error) {
+            return this.persistAuthenticatedSession(response, data);
+        } catch {
             return false;
         }
     }
@@ -150,24 +148,20 @@ export default class UserController extends BaseController {
         try {
             const response = await fetch(`${getApiBaseUrl()}/users`, {
                 body: JSON.stringify({ user: credentials }),
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    ...this.buildDeviceHeaders(),
+                },
                 method: 'POST',
             });
-            const data = await response.json();
+            const data = await response.json() as AuthResponse;
 
             if (!response.ok) {
                 return { errors: data.errors || [], success: false };
             }
 
-            const userToCache = { ...data.user, jwt: data.jwt };
-            await cacheService.set('current_user', userToCache, response.headers.get('etag'));
-            this.userStore.setUserProfile(data.user);
-            this.userStore.setCurrentUser(data.user);
-            localStorage.setItem('token', data.jwt);
+            const success = await this.persistAuthenticatedSession(response, data);
 
-            window.location.reload();
-
-            return { errors: [], success: true };
+            return { errors: [], success };
         } catch {
             return { errors: [], success: false };
         }
@@ -178,29 +172,20 @@ export default class UserController extends BaseController {
         try {
             const response = await fetch(`${getApiBaseUrl()}/users/telegram_register`, {
                 body: JSON.stringify({ init_data: initData }),
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    ...this.buildDeviceHeaders(),
+                },
                 method: 'POST',
             });
-            const data = await response.json();
+            const data = await response.json() as AuthResponse;
 
             if (!response.ok) {
                 return { errors: data.errors || [], success: false };
             }
 
-            if (data.user && data.jwt) {
-                const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
-                this.userStore.setUserProfile(data.user);
-                this.userStore.setCurrentUser(data.user);
-                localStorage.setItem('token', data.jwt);
-                if (data.refresh_token) {
-                    localStorage.setItem('refresh_token', data.refresh_token);
-                }
+            const success = await this.persistAuthenticatedSession(response, data);
 
-                return { errors: [], success: true };
-            }
-
-            return { errors: [], success: false };
+            return { errors: [], success };
         } catch {
             return { errors: [], success: false };
         }
@@ -211,28 +196,20 @@ export default class UserController extends BaseController {
         try {
             const response = await fetch(`${getApiBaseUrl()}/users/telegram_widget_auth`, {
                 body: JSON.stringify({ init_data: initData }),
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    ...this.buildDeviceHeaders(),
+                },
                 method: 'POST',
             });
-            const data = await response.json();
+            const data = await response.json() as AuthResponse;
 
             if (!response.ok) {
                 return { errors: data.errors || [], success: false };
             }
 
-            if (data.user && data.jwt) {
-                const userToCache = { ...data.user, jwt: data.jwt };
-                await cacheService.set('current_user', userToCache, response.headers.get('etag'));
-                this.userStore.setUserProfile(data.user);
-                this.userStore.setCurrentUser(data.user);
-                localStorage.setItem('token', data.jwt);
-                if (data.refresh_token) {
-                    localStorage.setItem('refresh_token', data.refresh_token);
-                }
-                return { errors: [], success: true };
-            }
+            const success = await this.persistAuthenticatedSession(response, data);
 
-            return { errors: [], success: false };
+            return { errors: [], success };
         } catch {
             return { errors: [], success: false };
         }
@@ -240,9 +217,7 @@ export default class UserController extends BaseController {
 
     @action
     logout(): void {
-        this.userStore.clearUserData();
-        cacheService.clear('current_user');
-        clearAuthStorage();
+        this.clearLocalSession();
     }
 
     @action
@@ -251,6 +226,7 @@ export default class UserController extends BaseController {
             .then(r => r.json())
             .then(res => {
                 this.userStore.setUserProfile(res);
+                this.userStore.setCurrentUser(res);
             });
     }
 
@@ -269,10 +245,12 @@ export default class UserController extends BaseController {
 
     @action
     async restoreCurrentUser(): Promise<void> {
-        const token = localStorage.getItem('token');
+        await bootstrapSession();
+
+        const token = getAccessToken();
 
         if (!token) {
-            this.userStore.setUserProfile(null);
+            this.userStore.clearUserData();
             return;
         }
 
@@ -285,14 +263,26 @@ export default class UserController extends BaseController {
 
         try {
             const etag = await cacheService.getVersion('current_user');
-
-            const response = await fetch(`${getApiBaseUrl()}/users/current`, {
+            const requestUser = (sessionToken: string): Promise<Response> => fetch(`${getApiBaseUrl()}/users/current`, {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                    ...(etag ? { 'If-None-Match': etag } : {})
-                }
+                    Authorization: `Bearer ${sessionToken}`,
+                    ...(etag ? { 'If-None-Match': etag } : {}),
+                },
             });
+
+            let response = await requestUser(token);
+
+            if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
+                const refreshedAccessToken = await refreshSession();
+
+                if (!refreshedAccessToken) {
+                    this.logout();
+                    return;
+                }
+
+                response = await requestUser(refreshedAccessToken);
+            }
 
             if (response.status === NOT_CHANGE_RESPONSE_CODE) {
                 return;
@@ -300,16 +290,16 @@ export default class UserController extends BaseController {
 
             if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
                 this.logout();
-                return;
             }
 
             if (response.ok) {
                 const user = await response.json();
                 await cacheService.set('current_user', user, response.headers.get('etag'));
                 this.userStore.setUserProfile(user);
+                this.userStore.setCurrentUser(user);
             }
-        } catch (err) {
-            console.error('restoreCurrentUser error', err);
+        } catch {
+            // Keep cached profile on transient restore failures.
         }
     }
 
@@ -334,7 +324,6 @@ export default class UserController extends BaseController {
 
             return result;
         } catch (error) {
-            console.error('Unexpected error during user update:', error);
             return { ok: false, errors: [error instanceof Error ? error.message : 'Unknown error'] };
         }
     }
@@ -354,19 +343,19 @@ export default class UserController extends BaseController {
 
                 window.location.reload();
             }
-        } catch (error) {
+        } catch {
             toast.error('Произошла ошибка, попробуйте позже, либо напишите нам.');
         }
     }
 
     async generateCoachLinkCode(): Promise<{ ok: boolean; code?: string; errors?: string[] }> {
         try {
-            const response = await new Post({url: `${getApiBaseUrl()}/users/generate_link_code`}).execute();
+            const response = await new Post({ url: `${getApiBaseUrl()}/users/generate_link_code` }).execute();
 
             const result = await response.json();
 
             return result;
-        } catch (error) {
+        } catch {
             return { ok: false, errors: ['Network error'] };
         }
     }
@@ -387,16 +376,15 @@ export default class UserController extends BaseController {
             .then(res => {
                 this.userStore.setUserExerciseStats(res.exercises, res.consistency);
             })
-            .catch(error => {
-                console.error('Failed to fetch user exercise statistics:', error);
-            })
+            .catch(() => Promise.resolve())
             .finally(() => {
                 this.userStore.setExerciseStatsRefreshState('idle');
             });
     }
+
     @action
     addWeightMeasurement(weight: number, recorded_at: string): void {
-        const params = { recorded_at,  weight };
+        const params = { recorded_at, weight };
         new Post({ params: { measurement: params }, url: `${getApiBaseUrl()}/users/user_measurements` }).execute()
             .then(r => r.json())
             .then(res => {
@@ -406,7 +394,7 @@ export default class UserController extends BaseController {
 
     @action
     deleteWeightMeasurement(id: number): void {
-        const params = { id};
+        const params = { id };
         new Delete({ params: { measurement: params }, url: `${getApiBaseUrl()}/users/user_measurements/${id}` }).execute()
             .then(r => r.json())
             .then(res => {
@@ -423,7 +411,6 @@ export default class UserController extends BaseController {
             });
     }
 
-    // Fetch exercise statistics
     @action
     getExerciseStatistics(): void {
         new Get({ url: `${getApiBaseUrl()}/user_exercise_statistics` }).execute()
@@ -453,7 +440,7 @@ export default class UserController extends BaseController {
 
     @action
     createPermission(permission: PermissionProfile): void {
-        new Post({ params: {permission} , url: `${getApiBaseUrl()}/permissions` }).execute()
+        new Post({ params: { permission }, url: `${getApiBaseUrl()}/permissions` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.updatePermissions(res);
@@ -463,7 +450,7 @@ export default class UserController extends BaseController {
 
     @action
     updatePermission(permission: PermissionProfile): void {
-        new Patch({ params: {permission} , url: `${getApiBaseUrl()}/permissions` }).execute()
+        new Patch({ params: { permission }, url: `${getApiBaseUrl()}/permissions` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.updatePermissions(res);
@@ -472,7 +459,7 @@ export default class UserController extends BaseController {
 
     @action
     deletePermission(permission: PermissionProfile): void {
-        new Delete({url: `${getApiBaseUrl()}/permissions/${permission.id}` }).execute()
+        new Delete({ url: `${getApiBaseUrl()}/permissions/${permission.id}` }).execute()
             .then(r => r.json())
             .then(res => {
                 this.userStore.deletePermission(res.res);

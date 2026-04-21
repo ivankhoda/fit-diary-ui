@@ -1,5 +1,15 @@
-import { useState, useCallback } from "react";
-import { jwtDecode } from "jwt-decode";
+import { useCallback, useSyncExternalStore } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import {
+  bootstrapSession,
+  clearSession,
+  getAccessToken,
+  getRefreshToken,
+  getSessionSnapshot,
+  hasRefreshToken,
+  setSessionTokens,
+  subscribeToSession,
+} from '../../services/authSession';
 
 export interface DecodedToken {
   email: string;
@@ -15,62 +25,81 @@ export interface DecodedToken {
 }
 
 export const useToken = () => {
-  const getToken = (): string | null => {
-    const tokenString = localStorage.getItem("token");
+  const sessionSnapshot = useSyncExternalStore(
+    subscribeToSession,
+    getSessionSnapshot,
+    getSessionSnapshot,
+  );
+
+  const decodeCurrentToken = (): DecodedToken | null => {
+    const currentToken = getAccessToken();
+
+    if (!currentToken) {
+      return null;
+    }
 
     try {
-      return tokenString ? tokenString : null;
-    } catch (error) {
-      console.error("Error parsing token from localStorage:", error);
+      return jwtDecode<DecodedToken>(currentToken);
+    } catch {
       return null;
     }
   };
 
-  const [token, setToken] = useState<string | null>(getToken());
+  const getToken = useCallback((): string | null => getAccessToken(), []);
 
   const decodeToken = useCallback((): DecodedToken | null => {
-    if (!token) return null;
+    return decodeCurrentToken();
+  }, []);
 
-    try {
-      const decoded: DecodedToken = jwtDecode(token);
-      return decoded;
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      return null;
-    }
-  }, [token]);
-
-  const saveToken = (userToken: string | null) => {
+  const saveToken = useCallback((userToken: string | null) => {
     if (userToken) {
-      localStorage.setItem("token", userToken);
-      setToken(userToken);
+      const currentRefreshToken = sessionSnapshot.hasRefreshToken
+        ? getRefreshToken()
+        : null;
+
+      if (currentRefreshToken) {
+        setSessionTokens({
+          accessToken: userToken,
+          refreshToken: currentRefreshToken,
+        });
+        return;
+      }
     } else {
-      console.warn("Attempted to save an undefined token:", userToken);
+      clearSession();
     }
-  };
+
+  }, [sessionSnapshot.hasRefreshToken]);
 
 
-  const isAdmin = (): boolean => {
-    const decoded = decodeToken();
+  const isAdmin = useCallback((): boolean => {
+    const decoded = decodeCurrentToken();
     return decoded?.admin || false;
-  };
+  }, []);
 
-    const isCoach = (): boolean => {
-    const decoded = decodeToken();
-    return decoded?.roles?.coach ? true : false;
-  };
+  const isCoach = useCallback((): boolean => {
+    const decoded = decodeCurrentToken();
+    return Boolean(decoded?.roles?.coach);
+  }, []);
 
-    const isVerifiedCoach = (): boolean => {
-    const decoded = decodeToken();
-    return decoded?.verified_coach;
-  };
+  const isVerifiedCoach = useCallback((): boolean => {
+    const decoded = decodeCurrentToken();
+    return Boolean(decoded?.verified_coach);
+  }, []);
+
+  const restoreSession = useCallback((): Promise<string | null> => bootstrapSession(), []);
+
+  const hasStoredRefreshToken = useCallback((): boolean => hasRefreshToken(), []);
 
   return {
-    token,
+    bootstrapSession: restoreSession,
+    hasRefreshToken: hasStoredRefreshToken,
+    isReady: sessionSnapshot.isReady,
     setToken: saveToken,
     getToken,
     isAdmin,
-    isCoach,isVerifiedCoach,
+    isCoach,
+    isVerifiedCoach,
+    token: sessionSnapshot.accessToken,
     decodeToken,
   };
 };

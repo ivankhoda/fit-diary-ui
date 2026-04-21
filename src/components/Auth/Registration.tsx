@@ -7,6 +7,7 @@ import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
 import UserController from '../../controllers/UserController';
 import { TelegramRegisterButton } from './TelegramRegisterButton/TelegramRegisterButton';
+import { getAccessToken } from '../../services/authSession';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -55,9 +56,7 @@ export const RegistrationComponent: React.FC<FormProps> = ({ setToken, userContr
         }
 
         if (result.success) {
-            const token = localStorage.getItem('token');
-
-            if (token) {setToken(token);}
+            setToken(getAccessToken());
         }
     }, [
         email,

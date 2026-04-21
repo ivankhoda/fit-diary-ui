@@ -10,6 +10,7 @@ import { observer } from 'mobx-react-lite';
 import UserController from '../../controllers/UserController';
 import UserStore from '../../store/userStore';
 import { TelegramLoginButton } from './TelegramLoginButton/TelegramLoginButton';
+import { getAccessToken } from '../../services/authSession';
 
 type FormProps = {
     setToken: (token: string | null) => void;
@@ -38,11 +39,7 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
             const success = await userController?.login({ email, password });
 
             if (success) {
-                const token = localStorage.getItem('token');
-
-                if (token) {
-                    setToken(token);
-                }
+                setToken(getAccessToken());
 
                 if (isAdmin()) {
                     navigate('/admin');

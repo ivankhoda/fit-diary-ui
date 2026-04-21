@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { inject, observer } from 'mobx-react';
 import UserController from '../../../controllers/UserController';
+import { getAccessToken } from '../../../services/authSession';
 import './TelegramLoginButton.style.scss';
 
 type Props = {
@@ -36,7 +37,6 @@ export const TelegramLoginButtonComponent: React.FC<Props> = ({
         const currentDomain = window.location.origin;
 
         if (!allowedDomains.includes(currentDomain)) {
-            console.warn('Current domain not allowed for Telegram Login Widget');
             return;
         }
 
@@ -59,14 +59,11 @@ export const TelegramLoginButtonComponent: React.FC<Props> = ({
                 const result = await userController.loginWithTelegramWidget(JSON.stringify(userObj));
 
                 if (result.success) {
-                    const token = localStorage.getItem('token');
-
-                    if (token) {setToken(token);}
+                    setToken(getAccessToken());
                 } else {
                     onErrors(result.errors.length ? result.errors : [t('something_went_wrong')]);
                 }
-            } catch (e) {
-                console.error('Telegram login error', e);
+            } catch {
                 onErrors([t('something_went_wrong')]);
             } finally {
                 setLoading(false);

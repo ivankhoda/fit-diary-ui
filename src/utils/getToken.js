@@ -1,13 +1,5 @@
+import { getAccessToken } from '../services/authSession';
 
-const getToken = () => {
-    const tokenString = localStorage.getItem('token');
-
-    if (tokenString) {
-        const token = tokenString;
-
-        return token;
-    }
-    return null;
-};
+const getToken = () => getAccessToken();
 
 export default getToken;
