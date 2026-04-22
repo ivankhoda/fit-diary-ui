@@ -1,6 +1,6 @@
 /* eslint-disable sort-keys */
 /* eslint-disable no-magic-numbers */
-import React, { useCallback } from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 import { ClientInterface } from '../../store/clientsStore';
 import { FaTrash } from 'react-icons/fa';
 import { clientsController } from '../../controllers/global';
@@ -21,16 +21,24 @@ const getActivityStatus = (lastActive: string) => {
 const ClientCard = ({ client }: { client: ClientInterface }): JSX.Element => {
     const navigate = useNavigate();
 
-    const handleDelete = useCallback(() => {
+    const handleDelete = useCallback(async(event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
         // eslint-disable-next-line no-alert
         if (confirm(`Удалить спортсмена ${client.email}?`)) {
-            clientsController.removeClient(client.id);
+            const isRemoved = await clientsController.removeClient(client.id);
+
+            if (isRemoved) {
+                navigate('/clients');
+            }
         }
-    }, [client.id, client.email]);
+    }, [client.id,
+        client.email,
+        navigate]);
 
     const handleClick = useCallback(() => {
         navigate(`/coach/clients/${client.id}`);
-    }, [client.id]);
+    }, [client.id, navigate]);
 
     const activity = getActivityStatus(client.lastActive || client.updatedAt || client.createdAt);
     return (

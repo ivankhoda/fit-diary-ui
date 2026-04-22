@@ -72,20 +72,23 @@ export default class ClientsController extends BaseController {
   }
 
   @action
-  removeClient(clientId: number): void {
-      new Delete({
+  removeClient(clientId: number): Promise<boolean> {
+      return new Delete({
           url: `${getApiBaseUrl()}/coach/clients/${clientId}`
       }).execute()
           .then(r => r.json())
           .then(res => {
               if (res.ok) {
                   this.clientsStore.removeClient(clientId);
-              } else {
-                  toast.error('Не удалось удалить клиента');
+                  return true;
               }
+
+              toast.error('Не удалось удалить клиента');
+              return false;
           })
           .catch(() => {
               toast.error('Не удалось удалить клиента');
+              return false;
           });
   }
 }

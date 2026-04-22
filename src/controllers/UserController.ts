@@ -142,6 +142,7 @@ export default class UserController extends BaseController {
     @action
     async register(credentials: {
         email: string;
+        invite_token?: string;
         password: string;
         password_confirmation: string;
     }): Promise<{ errors: string[]; success: boolean }> {

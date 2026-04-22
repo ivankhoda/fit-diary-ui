@@ -113,6 +113,11 @@
       padding: 0;
       user-select: none;
 
+      &.dropdown-submenu-left {
+        left: auto;
+        right: 100%;
+      }
+
       .dropdown-link {
         padding: 10px 5px;
         white-space: nowrap;

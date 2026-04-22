@@ -27,7 +27,15 @@
     color: #111827;
   }
 
+  .modal-description {
+    margin: 0 0 16px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
   .modal-input {
+    width: 100%;
 
     padding: 10px 12px;
 
@@ -77,6 +85,20 @@
         &:hover {
           background-color: #1d4ed8;
         }
+      }
+
+      &.secondary {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+
+        &:hover {
+          background-color: #dbeafe;
+        }
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
       }
     }
   }

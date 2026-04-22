@@ -10,6 +10,8 @@ import { useToken } from '../../../Auth/useToken';
 import './CoachDropdown.style.scss';
 import { useNavigate } from 'react-router';
 
+const VIEWPORT_PADDING = 8;
+
 export interface OptionInterface {
   linkTo?: string;
   text: string;
@@ -52,6 +54,37 @@ const options: OptionInterface[] = [
     },
 ];
 
+interface UseSubMenuPositionResult {
+    resetSubMenuPosition: () => void;
+    shouldOpenSubMenuLeft: boolean;
+    submenuRef: React.RefObject<HTMLDivElement>;
+}
+
+const useSubMenuPosition = (openSubMenu: string | null): UseSubMenuPositionResult => {
+    const [shouldOpenSubMenuLeft, setShouldOpenSubMenuLeft] = useState(false);
+    const submenuRef = useRef<HTMLDivElement>(null);
+
+    const resetSubMenuPosition = useCallback(() => {
+        setShouldOpenSubMenuLeft(false);
+    }, []);
+
+    useEffect(() => {
+        if (!openSubMenu) {
+            setShouldOpenSubMenuLeft(false);
+            return;
+        }
+
+        if (!submenuRef.current) {
+            return;
+        }
+
+        const submenuRect = submenuRef.current.getBoundingClientRect();
+        setShouldOpenSubMenuLeft(submenuRect.right > window.innerWidth - VIEWPORT_PADDING);
+    }, [openSubMenu]);
+
+    return { resetSubMenuPosition, shouldOpenSubMenuLeft, submenuRef };
+};
+
 const Dropdown = (): React.ReactElement => {
     const [isOpen, setIsOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
@@ -59,53 +92,60 @@ const Dropdown = (): React.ReactElement => {
     const { isCoach } = useToken();
     const { mode, setMode } = useCoachMode();
     const navigate = useNavigate();
+    const { resetSubMenuPosition, shouldOpenSubMenuLeft, submenuRef } = useSubMenuPosition(openSubMenu);
 
     const handleModeSwitchClick = useCallback(() => {
         const newMode = mode === 'coach' ? 'user' : 'coach';
+
         setMode(newMode);
         setIsOpen(false);
         setOpenSubMenu(null);
         navigate('/');
-    }, [setMode, mode]);
+    }, [mode,
+        navigate,
+        setMode]);
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node)
-            ) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
                 setOpenSubMenu(null);
+                resetSubMenuPosition();
             }
         };
 
         document.addEventListener('click', handleOutsideClick);
         return () => document.removeEventListener('click', handleOutsideClick);
-    }, []);
+    }, [resetSubMenuPosition]);
 
     const handleButtonClick = useCallback(() => {
         setIsOpen(prev => !prev);
         setOpenSubMenu(null);
-    }, []);
+        resetSubMenuPosition();
+    }, [resetSubMenuPosition]);
 
     const handleOptionClick = useCallback(() => {
         setIsOpen(false);
         setOpenSubMenu(null);
-    }, []);
+        resetSubMenuPosition();
+    }, [resetSubMenuPosition]);
 
-    const handleSubMenuToggle = (optionText: string) => {
+    const handleSubMenuToggle = useCallback((optionText: string) => {
+        resetSubMenuPosition();
         setOpenSubMenu(prev => (prev === optionText ? null : optionText));
-    };
+    }, [resetSubMenuPosition]);
 
     const handleSubMenuToggleHandlers = React.useMemo(() => {
         const handlers: { [key: string]: () => void } = {};
+
         options.forEach(option => {
             if (option.subOptions) {
                 handlers[option.text] = () => handleSubMenuToggle(option.text);
             }
         });
+
         return handlers;
-    }, []);
+    }, [handleSubMenuToggle]);
 
     return (
         <div className="coach-dropdown" ref={dropdownRef}>
@@ -126,16 +166,27 @@ const Dropdown = (): React.ReactElement => {
                                             {option.text}
                                         </button>
                                         {openSubMenu === option.text && (
-                                            <div className="coach-dropdown-submenu">
-                                                {option.subOptions.map(subOption => (
-                                                    <MenuLink
-                                                        key={subOption.text}
-                                                        linkTo={subOption.linkTo}
-                                                        text={subOption.text}
-                                                        onClick={handleOptionClick}
-                                                        className="coach-dropdown-link"
-                                                    />
-                                                ))}
+                                            <div
+                                                className={[
+                                                    'coach-dropdown-submenu', shouldOpenSubMenuLeft ? 'coach-dropdown-submenu-left' : '',
+                                                ].filter(Boolean).join(' ')}
+                                                ref={submenuRef}
+                                            >
+                                                {option.subOptions.map(subOption => {
+                                                    if (!subOption.linkTo) {
+                                                        return null;
+                                                    }
+
+                                                    return (
+                                                        <MenuLink
+                                                            key={subOption.text}
+                                                            linkTo={subOption.linkTo}
+                                                            text={subOption.text}
+                                                            onClick={handleOptionClick}
+                                                            className="coach-dropdown-link"
+                                                        />
+                                                    );
+                                                })}
                                             </div>
                                         )}
                                     </>
@@ -149,14 +200,16 @@ const Dropdown = (): React.ReactElement => {
                                             {mode === 'coach' ? 'Режим спортсмена' : 'Режим тренера'}
                                         </button>
                                     )
-                                    : (
-                                        <MenuLink
-                                            linkTo={option.linkTo}
-                                            text={option.text}
-                                            onClick={handleOptionClick}
-                                            className="coach-dropdown-link"
-                                        />
-                                    )}
+                                    : option.linkTo
+                                        ? (
+                                            <MenuLink
+                                                linkTo={option.linkTo}
+                                                text={option.text}
+                                                onClick={handleOptionClick}
+                                                className="coach-dropdown-link"
+                                            />
+                                        )
+                                        : null}
                         </div>
                     ))}
                 </div>

@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Login.style.scss';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import getApiBaseUrl from '../../utils/apiUrl';
 import BackButton from '../Common/BackButton/BackButton';
 import { inject } from 'mobx-react';
@@ -11,6 +11,11 @@ import UserController from '../../controllers/UserController';
 import UserStore from '../../store/userStore';
 import { TelegramLoginButton } from './TelegramLoginButton/TelegramLoginButton';
 import { getAccessToken } from '../../services/authSession';
+import {
+    buildCoachInvitationPath,
+    resolveCoachInvitationToken,
+    saveCoachInvitationToken,
+} from '../../services/coachInvitation';
 
 type FormProps = {
     setToken: (token: string | null) => void;
@@ -19,8 +24,25 @@ type FormProps = {
     userController?: UserController;
 };
 
+const getAuthRedirectPath = (path: '/login' | '/registration', invitationToken: string | null): string => {
+    if (!invitationToken) {
+        return path;
+    }
+
+    return `${path}?invite_token=${encodeURIComponent(invitationToken)}`;
+};
+
+const getPostLoginPath = (invitationToken: string | null, isAdmin: boolean): string => {
+    if (invitationToken) {
+        return buildCoachInvitationPath(invitationToken, { autoAccept: true });
+    }
+
+    return isAdmin ? '/admin' : '/';
+};
+
 export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userController  }) => {
     const { t } = useTranslation();
+    const location = useLocation();
     const navigate = useNavigate();
 
     const [email, setEmail] = useState<string>('');
@@ -29,6 +51,7 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
     const [message, setMessage] = useState<string | null>(null);
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
     const [errors, setErrors] = useState<string[]>([]);
+    const invitationToken = resolveCoachInvitationToken(location.search);
 
     const handleSubmit = useCallback(
         async(event: React.FormEvent) => {
@@ -39,13 +62,11 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
             const success = await userController?.login({ email, password });
 
             if (success) {
-                setToken(getAccessToken());
-
-                if (isAdmin()) {
-                    navigate('/admin');
-                } else {
-                    navigate('/');
+                if (invitationToken) {
+                    saveCoachInvitationToken(invitationToken);
                 }
+                setToken(getAccessToken());
+                navigate(getPostLoginPath(invitationToken, isAdmin()));
             } else {
                 setError(t('something_went_wrong'));
             }
@@ -53,6 +74,7 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
         [email,
             password,
             setToken,
+            invitationToken,
             isAdmin,
             navigate,
             userController,
@@ -96,8 +118,14 @@ export const LoginComponent: React.FC<FormProps> = ({ setToken, isAdmin,  userCo
     }, []);
 
     const toggleForm = useCallback(() => {
+        if (invitationToken) {
+            saveCoachInvitationToken(invitationToken);
+            navigate(getAuthRedirectPath('/registration', invitationToken));
+            return;
+        }
+
         navigate('/registration');
-    }, []);
+    }, [invitationToken, navigate]);
 
     const handleSetEmail = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);

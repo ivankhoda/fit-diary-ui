@@ -1,13 +1,18 @@
 import React, { ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Registration.style.scss';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import BackButton from '../Common/BackButton/BackButton';
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
 import UserController from '../../controllers/UserController';
 import { TelegramRegisterButton } from './TelegramRegisterButton/TelegramRegisterButton';
 import { getAccessToken } from '../../services/authSession';
+import {
+    buildCoachInvitationPath,
+    resolveCoachInvitationToken,
+    saveCoachInvitationToken,
+} from '../../services/coachInvitation';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -29,13 +34,60 @@ type FormProps = {
     userController?: UserController;
 };
 
+type RegistrationCredentials = {
+    email: string;
+    invite_token?: string;
+    password: string;
+    password_confirmation: string;
+};
+
+const buildRegistrationCredentials = ({
+    confirmPassword,
+    email,
+    invitationToken,
+    password,
+}: {
+    confirmPassword: string;
+    email: string;
+    invitationToken: string | null;
+    password: string;
+}): RegistrationCredentials => ({
+    email,
+    ...(invitationToken ? { invite_token: invitationToken } : {}),
+    password,
+    password_confirmation: confirmPassword,
+});
+
+const getAuthRedirectPath = (path: '/login' | '/registration', invitationToken: string | null): string => {
+    if (!invitationToken) {
+        return path;
+    }
+
+    return `${path}?invite_token=${encodeURIComponent(invitationToken)}`;
+};
+
+const handleSuccessfulRegistration = (
+    invitationToken: string | null,
+    navigate: ReturnType<typeof useNavigate>,
+    setToken: (token: string | null) => void,
+): void => {
+    if (invitationToken) {
+        saveCoachInvitationToken(invitationToken);
+        navigate(buildCoachInvitationPath(invitationToken, { autoAccept: true }));
+    }
+
+    setToken(getAccessToken());
+};
+
 export const RegistrationComponent: React.FC<FormProps> = ({ setToken, userController }): ReactNode => {
     const { t } = useTranslation();
+    const location = useLocation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState<string[]>([]);
     const navigate = useNavigate();
+    const invitationToken = resolveCoachInvitationToken(location.search);
 
     const handleSubmit = useCallback(async(event: React.FormEvent) => {
         event.preventDefault();
@@ -48,7 +100,12 @@ export const RegistrationComponent: React.FC<FormProps> = ({ setToken, userContr
             return;
         }
 
-        const result = await userController?.register({ email, password, password_confirmation: confirmPassword });
+        const result = await userController?.register(buildRegistrationCredentials({
+            confirmPassword,
+            email,
+            invitationToken,
+            password,
+        }));
 
         if (!result || result.errors.length > 0) {
             if (result?.errors.length) {setErrors(result.errors);}
@@ -56,12 +113,14 @@ export const RegistrationComponent: React.FC<FormProps> = ({ setToken, userContr
         }
 
         if (result.success) {
-            setToken(getAccessToken());
+            handleSuccessfulRegistration(invitationToken, navigate, setToken);
         }
     }, [
         email,
+        invitationToken,
         password,
         confirmPassword,
+        navigate,
         setToken,
         userController,
     ]);
@@ -79,8 +138,14 @@ export const RegistrationComponent: React.FC<FormProps> = ({ setToken, userContr
     }, []);
 
     const toggleForm = useCallback(() => {
+        if (invitationToken) {
+            saveCoachInvitationToken(invitationToken);
+            navigate(getAuthRedirectPath('/login', invitationToken));
+            return;
+        }
+
         navigate('/login');
-    }, [navigate]);
+    }, [invitationToken, navigate]);
 
     return (
         <div className="register-wrapper">

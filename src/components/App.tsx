@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom';
 import './App.style.scss';
 import { Header } from './User/Header/Header';
 import { inject, observer, Provider } from 'mobx-react';
@@ -17,7 +17,7 @@ import { adminRoutes } from './Admin/routes/routes';
 import adminStores from './Admin/store/stores';
 import adminControllers from './Admin/controllers/controllers';
 import Footer from './User/Footer/Footer';
-import { CoachModeProvider } from './Coach/CoachContext';
+import { CoachModeProvider, useCoachMode } from './Coach/CoachContext';
 import LandingPage from '../landing/LandingPage';
 import PrivacyPolicy from './privacy/PrivacyPolicy';
 import TermsOfUse from './terms/TermsOfUse';
@@ -25,14 +25,33 @@ import { ToastContainer } from 'react-toastify';
 import Modal from 'react-modal';
 import AccountDeletion from '../deletion/AccountDeletion';
 import { DescriptionScreen } from './Public/DescriprtionScreen/DescriprionScreen';
+import CoachInvitationPage from './Public/CoachInvitation/CoachInvitationPage';
 import Exercise from './User/Exercises/Exercise/Exercise';
 import CommonExercises from './Public/PublicExercises/PublicExercises';
 import AboutApp from './Public/About/AboutApp';
 import UserStore from '../store/userStore';
 import UserController from '../controllers/UserController';
+import { buildCoachInvitationPath, resolveCoachInvitationToken } from '../services/coachInvitation';
 import { cacheService } from '../services/cacheService';
+import { CoachPanel } from './Coach/CoachPanel';
 
 Modal.setAppElement('#root');
+
+const getAuthenticatedAuthRedirectPath = (search: string): string => {
+  const invitationToken = resolveCoachInvitationToken(search);
+
+  if (!invitationToken) {
+    return '/';
+  }
+
+  return buildCoachInvitationPath(invitationToken, { autoAccept: true });
+};
+
+const AuthPageRedirect = (): JSX.Element => {
+  const location = useLocation();
+
+  return <Navigate to={getAuthenticatedAuthRedirectPath(location.search)} replace />;
+};
 
 type AppProps = {
   userStore?: UserStore;
@@ -122,9 +141,10 @@ const AppComponent: React.FC<AppProps> = ({ userStore, userController }) => {
           <Route path="/password/recovery" element={<PasswordRecovery />} />
           <Route path="/common-exercises" element={<CommonExercises />} />
           <Route path="/about" element={<AboutApp />} />
+          <Route path="/coach-invitations/:token" element={<CoachInvitationPage />} />
         <Route path='/exercises/:id' element={<Exercise />} />
-        <Route path='/login' element={token ? <Navigate to="/" replace /> : <Login setToken={setToken} isAdmin={isAdmin} />}/>
-        <Route path='/registration' element={token ? <Navigate to="/" replace /> : <Registration setToken={setToken} />}/>
+          <Route path='/login' element={token ? <AuthPageRedirect /> : <Login setToken={setToken} isAdmin={isAdmin} />}/>
+          <Route path='/registration' element={token ? <AuthPageRedirect /> : <Registration setToken={setToken} />}/>
           <Route
             path="/users/confirmation/*"
             element={<ConfirmRegistrationWithToken />}
@@ -162,19 +182,27 @@ const AdminRoutes = (): JSX.Element => {
 };
 
 const MainAppRoutes = (): JSX.Element => {
+  const { isCoach } = useToken();
+  const { mode } = useCoachMode();
+  const isCoachMode = mode === 'coach' && isCoach();
+
   return (
     <>
-      <>
-        <Header />
-        <WorkingPanel>
-          <Routes>
-            {routes.map(({ path, Component }) => (
-              <Route key={path} path={path} element={Component} />
-            ))}
-          </Routes>
-        </WorkingPanel>
-        <Footer />
-      </>
+      {isCoachMode ? (
+        <CoachPanel />
+      ) : (
+        <>
+          <Header />
+          <WorkingPanel>
+            <Routes>
+              {routes.map(({ path, Component }) => (
+                <Route key={path} path={path} element={Component} />
+              ))}
+            </Routes>
+          </WorkingPanel>
+          <Footer />
+        </>
+      )}
       <ToastContainer />
     </>
   );

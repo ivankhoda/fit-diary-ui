@@ -31,4 +31,15 @@
       }
     }
   }
+
+  &__section {
+    margin-top: 24px;
+  }
+
+  &__section-title {
+    margin: 0 0 16px;
+    color: #1f2937;
+    font-size: 18px;
+    font-weight: 600;
+  }
 }

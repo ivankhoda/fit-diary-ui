@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import AddClientModal from './AddClientModal';
 import ClientList from './ClientList/ClientList';
+import InvitationList from './InvitationList';
 import './ClientManager.style.scss';
 
 const ClientManager = (): JSX.Element => {
@@ -17,11 +18,19 @@ const ClientManager = (): JSX.Element => {
                     className="client-manager__add-button"
                     onClick={handleAddClientClick}
                 >
-                    + Добавить спортсмена
+                    + Создать ссылку
                 </button>
             </div>
 
-            <ClientList />
+            <div className="client-manager__section">
+                <h3 className="client-manager__section-title">Активные приглашения</h3>
+                <InvitationList />
+            </div>
+
+            <div className="client-manager__section">
+                <h3 className="client-manager__section-title">Список спортсменов</h3>
+                <ClientList />
+            </div>
 
             <AddClientModal isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>

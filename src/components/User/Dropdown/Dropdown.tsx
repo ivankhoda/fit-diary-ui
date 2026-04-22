@@ -1,13 +1,15 @@
 /* eslint-disable max-statements */
 /* eslint-disable sort-keys */
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import DropDownIcon from '../../../icons/DropDownIcon';
-import { MenuLink } from '../Link/Link';
-import './Dropdown.style.scss';
-// Removed for v1.0: useCoachMode, useToken
-import { userStore } from '../../../store/global';
-import { observer } from 'mobx-react-lite';
 import { inject } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
+import DropDownIcon from '../../../icons/DropDownIcon';
+import { useToken } from '../../Auth/useToken';
+import { useCoachMode } from '../../Coach/CoachContext';
+import { MenuLink } from '../Link/Link';
+import { userStore } from '../../../store/global';
+import './Dropdown.style.scss';
 
 export interface OptionInterface {
   linkTo?: string;
@@ -38,12 +40,10 @@ const options: OptionInterface[] = [
     },
     { linkTo: '/profile', text: 'Профиль' },
 
-    /*
-     * COACH MODE DISABLED FOR V1.0
-     * {
-     *     Text: 'Тренерская',
-     * },
-     */
+    {
+        text: 'Тренерская',
+    },
+
     {text: 'О приложении', linkTo: '/about'},
 ];
 
@@ -67,20 +67,18 @@ const Dropdown = (): React.ReactElement => {
     const [isOpen, setIsOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    /*
-     * Removed coach mode functionality for v1.0:
-     * - useCoachMode hook
-     * - isCoach from useToken
-     * - navigate for coach mode routing
-     */
+    const navigate = useNavigate();
+    const { isCoach } = useToken();
+    const { setMode } = useCoachMode();
 
     const filteredOptions = useMemo(() => filterOptionsByVisibility(options), [userProfile]);
 
-    /*
-     * COACH MODE DISABLED FOR V1.0 - Removed coach mode click handler
-     * Const handleCoachModeClick = useCallback(...)
-     */
+    const handleCoachModeClick = useCallback(() => {
+        setMode('coach');
+        setIsOpen(false);
+        setOpenSubMenu(null);
+        navigate('/');
+    }, [navigate, setMode]);
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
@@ -138,30 +136,33 @@ const Dropdown = (): React.ReactElement => {
                                     </button>
                                     {openSubMenu === option.text && (
                                         <div className="dropdown-submenu" role="menu">
-                                            {option.subOptions.map(subOption => (
-                                                <MenuLink
-                                                    key={subOption.text}
-                                                    linkTo={subOption.linkTo}
-                                                    text={subOption.text}
-                                                    onClick={handleOptionClick}
-                                                    className="dropdown-link"
-                                                />
-                                            ))}
+                                            {option.subOptions.map(subOption => {
+                                                if (!subOption.linkTo) {
+                                                    return null;
+                                                }
+
+                                                return (
+                                                    <MenuLink
+                                                        key={subOption.text}
+                                                        linkTo={subOption.linkTo}
+                                                        text={subOption.text}
+                                                        onClick={handleOptionClick}
+                                                        className="dropdown-link"
+                                                    />
+                                                );
+                                            })}
                                         </div>
                                     )}
                                 </div>
                             );
-                        /*
-                         * COACH MODE DISABLED FOR V1.0
-                         * } else if (option.text === 'Тренерская' && isCoach()) {
-                         *     Return (
-                         *         <div key={option.text} className="dropdown-item">
-                         *             <button className="dropdown-submenu-trigger" onClick={handleCoachModeClick}>
-                         *                 {option.text}
-                         *             </button>
-                         *         </div>
-                         *     );
-                         */
+                        } else if (option.text === 'Тренерская' && isCoach()) {
+                            return (
+                                <div key={option.text} className="dropdown-item">
+                                    <button className="dropdown-submenu-trigger" onClick={handleCoachModeClick}>
+                                        {option.text}
+                                    </button>
+                                </div>
+                            );
                         } else if (option.linkTo) {
                             return (
                                 <div key={option.text} className="dropdown-item">
