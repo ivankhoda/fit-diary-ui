@@ -191,6 +191,40 @@
     "loading": "Loading..."
   },
   "permissionManagement": "Permission Management",
+  "adminUserDetails": {
+    "title": "User Details",
+    "profileInformation": "Profile information",
+    "roles": "Roles",
+    "additionalFields": "Additional fields",
+    "updateSuccess": "User details saved",
+    "updateError": "Failed to save user details",
+    "resendConfirmation": "Resend confirmation email",
+    "confirmUser": "Confirm user",
+    "userWorkouts": "User workouts",
+    "permissions": "Permissions",
+    "roleLabels": {
+      "admin": "Administrator",
+      "coach": "Coach",
+      "sportsman": "Sportsman"
+    },
+    "fieldLabels": {
+      "activePlan": "Active plan",
+      "confirmedAt": "Confirmed at",
+      "createdAt": "Created at",
+      "email": "Email",
+      "firstName": "First name",
+      "hasActiveWorkout": "Has active workout",
+      "hasCoachAssignedWorkouts": "Has coach assigned workouts",
+      "hasExercises": "Has exercises",
+      "hasWorkouts": "Has workouts",
+      "id": "ID",
+      "lastName": "Last name",
+      "phoneNumber": "Phone number",
+      "telegramUsername": "Telegram",
+      "updatedAt": "Updated at",
+      "username": "Username"
+    }
+  },
   "searchUser": "Search by user",
   "searchInstance": "Search by type (e.g., 'workout')",
   "resetFilters": "Reset filters",

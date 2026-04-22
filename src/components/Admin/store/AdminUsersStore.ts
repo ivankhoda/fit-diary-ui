@@ -1,6 +1,7 @@
 import { action, makeObservable, observable } from 'mobx';
 import { AdminWorkoutProfile } from './AdminWorkoutsStore';
 import { WorkoutInterface } from '../../../store/workoutStore';
+import { UserProfile } from '../../../store/userStore';
 
 export interface UserMeasurement {
     id: number;
@@ -16,15 +17,23 @@ export interface ExerciseStatistic {
     recordedAt: string;
 }
 
-export interface UserProfile {
+export interface AdminUserListProfile {
     id: number;
     username: string;
     email: string;
     created_at: string;
 }
 
-export interface AdminUserProfile extends UserProfile {
-    role: string;
+export interface AdminUserProfile extends Partial<UserProfile> {
+    id: number;
+    username: string;
+    email: string;
+    confirmed_at?: string | null;
+    created_at?: string;
+    role?: string;
+    roles?: string[];
+    updated_at?: string;
+    [key: string]: unknown;
 }
 
 export interface AdminPermissionProfile{
@@ -42,7 +51,7 @@ export default class AdminUsersStore {
 
     @observable userProfiles: AdminUserProfile[] = [];
 
-    @observable userProfile: AdminUserProfile = null;
+    @observable userProfile: AdminUserProfile | null = null;
 
     @observable userWorkouts: AdminWorkoutProfile[] = [];
 
@@ -56,7 +65,7 @@ export default class AdminUsersStore {
     }
 
     @action
-    setUserProfile(profile: AdminUserProfile): void {
+    setUserProfile(profile: AdminUserProfile | null): void {
         this.userProfile = profile;
     }
 

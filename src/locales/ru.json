@@ -220,6 +220,40 @@
      "saveChanges": "Сохранить"
   },
   "permissionManagement": "Управление правами",
+  "adminUserDetails": {
+    "title": "Детали пользователя",
+    "profileInformation": "Информация профиля",
+    "roles": "Роли",
+    "additionalFields": "Дополнительные поля",
+    "updateSuccess": "Данные пользователя сохранены",
+    "updateError": "Не удалось сохранить данные пользователя",
+    "resendConfirmation": "Отправить письмо с подтверждением",
+    "confirmUser": "Подтвердить пользователя",
+    "userWorkouts": "Тренировки пользователя",
+    "permissions": "Разрешения",
+    "roleLabels": {
+      "admin": "Администратор",
+      "coach": "Тренер",
+      "sportsman": "Спортсмен"
+    },
+    "fieldLabels": {
+      "activePlan": "Активный план",
+      "confirmedAt": "Дата подтверждения",
+      "createdAt": "Дата создания",
+      "email": "Почта",
+      "firstName": "Имя",
+      "hasActiveWorkout": "Есть активная тренировка",
+      "hasCoachAssignedWorkouts": "Есть тренировки от тренера",
+      "hasExercises": "Есть упражнения",
+      "hasWorkouts": "Есть тренировки",
+      "id": "ID",
+      "lastName": "Фамилия",
+      "phoneNumber": "Телефон",
+      "telegramUsername": "Telegram",
+      "updatedAt": "Дата обновления",
+      "username": "Имя пользователя"
+    }
+  },
   "searchUser": "Поиск по пользователю",
   "searchInstance": "Поиск по типу (например, 'тренировка')",
   "resetFilters": "Сбросить фильтры",

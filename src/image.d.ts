@@ -13,3 +13,5 @@ declare module '*.webp' {
   export default value;
 }
 
+declare module '*.scss';
+
