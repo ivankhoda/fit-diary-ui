@@ -12,6 +12,8 @@ import UserWorkoutsList from '../WorkoutsManagement/UserWorkouts/UserWorkoutsLis
 
 import UserPermissionsList from '../UserManagement/UserPermissonsList/UserPermissionsList';
 import AdminCreateWorkout from '../WorkoutsManagement/CreateWorkout/AdminCreateWorkout';
+import CoachApplicationData from '../CoachApplicationsManagement/CoachApplicationData';
+import CoachApplicationsList from '../CoachApplicationsManagement/CoachApplicationsList';
 
 export const adminRoutes = [
     {Component:  <AdminPanel/>, name: 'panel', path: '/'},
@@ -26,5 +28,7 @@ export const adminRoutes = [
     {Component:  <WorkoutsList/>, name: 'workouts', path: 'workouts'},
     {Component:  <WorkoutData/>, name: 'workouts/data', path: 'workouts/:workoutId'},
     {Component:  <AdminCreateWorkout />, name: 'Workout', path: 'workouts/:workoutId/edit'},
+    {Component:  <CoachApplicationsList />, name: 'coach-applications', path: '/coach-applications'},
+    {Component:  <CoachApplicationData />, name: 'coach-application', path: '/coach-applications/:applicationId'},
 
 ];

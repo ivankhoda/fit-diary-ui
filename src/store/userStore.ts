@@ -73,6 +73,23 @@ export interface PermissionProfile{
     to_user: string
 }
 
+type UserProfileLike = UserProfile | CachedUserProfile;
+
+const normalizeUserRoles = <T extends UserProfileLike>(profile: T): T => {
+    let rolesSource: unknown[] = [];
+
+    if (Array.isArray(profile.roles)) {
+        rolesSource = profile.roles;
+    } else if (typeof profile.role === 'string') {
+        rolesSource = [profile.role];
+    }
+
+    return {
+        ...profile,
+        roles: rolesSource.filter((role): role is string => typeof role === 'string' && role.length > 0),
+    };
+};
+
 export type ExerciseMeasurementType =
     'weight_and_reps'
     | 'reps'
@@ -156,12 +173,12 @@ export default class UserStore {
 
     @action
     setCurrentUser(profile: UserProfile): void {
-        this.currentUser = profile;
+        this.currentUser = normalizeUserRoles(profile);
     }
 
     @action
     setUserProfile(profile: UserProfile | null): void {
-        this.userProfile = profile;
+        this.userProfile = profile ? normalizeUserRoles(profile) : null;
     }
 
     @action

@@ -12,6 +12,7 @@ interface OptionInterface {
 
 // Define the navigation options, including sub-options
 const options: OptionInterface[] = [
+    { linkTo: '/admin/coach-applications', text: 'Заявки на тренеров' },
     { linkTo: '/admin/users', text: 'Пользователи' },
 
     { linkTo: '/admin/exercises', text: 'Упражнения' },

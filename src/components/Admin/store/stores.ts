@@ -1,5 +1,6 @@
 
-import { adminExercisesStore, adminUsersStore, adminWorkoutsStore } from './global';
-const adminStores = { adminExercisesStore,adminUsersStore, adminWorkoutsStore };
+import { adminCoachApplicationsStore, adminExercisesStore, adminUsersStore, adminWorkoutsStore } from './global';
+
+const adminStores = { adminCoachApplicationsStore, adminExercisesStore, adminUsersStore, adminWorkoutsStore };
 
 export default adminStores;

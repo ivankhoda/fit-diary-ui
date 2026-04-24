@@ -1,6 +1,11 @@
 
-import { adminExercisesController, adminUsersController, adminWorkoutsController } from './global';
+import {
+    adminCoachApplicationsController,
+    adminExercisesController,
+    adminUsersController,
+    adminWorkoutsController,
+} from './global';
 
-const adminControllers = {adminExercisesController, adminUsersController, adminWorkoutsController};
+const adminControllers = {adminCoachApplicationsController, adminExercisesController, adminUsersController, adminWorkoutsController};
 
 export default adminControllers;

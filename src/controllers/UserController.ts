@@ -5,6 +5,7 @@ import { NOT_CHANGE_RESPONSE_CODE, UNAUTHORIZED_RESPONSE_CODE } from './../compo
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CachedUserProfile, PermissionProfile } from './../store/userStore';
 import { action } from 'mobx';
+import CoachApplicationsStore from '../store/coachApplicationsStore';
 import UserStore from '../store/userStore';
 import Get from '../utils/GetRequest';
 import Patch from '../utils/PatchRequest';
@@ -36,11 +37,13 @@ type AuthResponse = {
 
 export default class UserController extends BaseController {
     userStore: UserStore;
+    coachApplicationsStore: CoachApplicationsStore;
     private readonly exerciseStatsRefreshScheduler = new ExerciseStatsRefreshScheduler();
 
-    constructor(userStore: UserStore) {
+    constructor(userStore: UserStore, coachApplicationsStore: CoachApplicationsStore) {
         super();
         this.userStore = userStore;
+        this.coachApplicationsStore = coachApplicationsStore;
     }
 
     private async persistAuthenticatedSession(response: Response, data: AuthResponse): Promise<boolean> {
@@ -63,6 +66,7 @@ export default class UserController extends BaseController {
 
     private clearLocalSession(): void {
         this.userStore.clearUserData();
+        this.coachApplicationsStore.clear();
         cacheService.clear('current_user');
         clearSession();
     }

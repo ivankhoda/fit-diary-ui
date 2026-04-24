@@ -20,6 +20,7 @@ import TrainingGoals from '../components/User/TrainingGoals/TrainingGoals';
 import TrainingGoal from '../components/User/TrainingGoals/TrainingGoal/TrainingGoal';
 import Plans from '../components/User/Plans/Plans';
 import PlanForm from '../components/User/Plans/PlanForm/PlanForm';
+import CoachApplicationPage from '../components/User/Cabinet/CoachApplicationPage';
 import UserProfile from '../components/User/Cabinet/UserProfile';
 import TermsOfUse from '../terms/TermsOfUse';
 import PrivacyPolicy from '../privacy/PrivacyPolicy';
@@ -69,6 +70,7 @@ export const routes = [
     {Component:  <ResetPasswordWithToken />, name: 'ResetPassswordWithToken', path: '/password/reset?reset_password_token=:token'},
     {Component:  <ConfirmRegistrationWithToken />, name: 'ResetPassswordWithToken', path: 'users/confirmation?confirmation_token=:token'},
     {Component:  <UserProfile />, name: 'profile', path: '/profile'},
+    {Component:  <CoachApplicationPage />, name: 'become-coach', path: '/become-coach'},
     {Component:  <PrivacyPolicy/>, name: 'privacy-policy', path: '/privacy-policy'},
     {Component:  <TermsOfUse/>, name: 'terms', path: '/terms-of-use'},
     {Component:  <AccountDeletion/>, name: 'deletion', path: '/about-deletion'},

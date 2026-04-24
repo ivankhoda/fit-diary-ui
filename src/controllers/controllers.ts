@@ -1,4 +1,11 @@
-import { exercisesController, plansController, userController, workoutsController } from './global';
-const controllers = {exercisesController, plansController, userController,  workoutsController} ;
+import {
+    coachApplicationsController,
+    exercisesController,
+    plansController,
+    userController,
+    workoutsController,
+} from './global';
+
+const controllers = {coachApplicationsController, exercisesController, plansController, userController, workoutsController} ;
 
 export default controllers;

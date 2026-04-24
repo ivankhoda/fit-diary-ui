@@ -13,6 +13,7 @@
 
 .add-client-modal {
   background-color: #fff;
+  box-sizing: border-box;
   padding: 24px 28px;
   border-radius: 10px;
   width: 100%;
@@ -58,10 +59,13 @@
 
   .modal-actions {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
     gap: 10px;
 
     .modal-button {
+      flex: 1 1 calc(50% - 5px);
+      min-width: 0;
       padding: 8px 16px;
       font-size: 14px;
       border-radius: 6px;
@@ -99,6 +103,20 @@
       &:disabled {
         cursor: not-allowed;
         opacity: 0.65;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .add-client-modal {
+    padding: 20px;
+
+    .modal-actions {
+      justify-content: stretch;
+
+      .modal-button {
+        flex-basis: 100%;
       }
     }
   }
