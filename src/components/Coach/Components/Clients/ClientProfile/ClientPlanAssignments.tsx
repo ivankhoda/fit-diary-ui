@@ -189,7 +189,13 @@ const ClientPlanAssignments = ({ client, onClientChange }: ClientPlanAssignments
     );
 
     const availablePlans = useMemo(
-        () => coachPlansStore.activePlans.filter(isPlanWithId),
+        () => coachPlansStore.activePlans
+            .filter(isPlanWithId)
+            .filter(plan => ![
+                'draft',
+                'finished',
+                'paused',
+            ].includes((plan.status ?? '').toLowerCase())),
         [coachPlansStore.activePlans],
     );
 
