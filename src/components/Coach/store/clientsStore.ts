@@ -12,6 +12,37 @@ export interface CoachAssignedPlanPreview {
     training_goal_id?: number | null;
 }
 
+export interface OverviewActivity {
+    tone: 'good' | 'idle' | 'risk';
+    label: string;
+    description: string;
+}
+
+export interface OverviewPrimaryAction {
+    label: string;
+    value: string;
+    note: string;
+}
+
+export interface OverviewMetric {
+    label: string;
+    value: string;
+    note: string;
+}
+
+export interface OverviewSignal {
+    label: string;
+    value: string;
+}
+
+export interface OverviewBlock {
+    contacts: string[];
+    activity: OverviewActivity;
+    primary_action: OverviewPrimaryAction;
+    metrics: OverviewMetric[];
+    signals: OverviewSignal[];
+}
+
 export interface ClientInterface extends UserInterface {
     id: number;
     email: string;
@@ -32,6 +63,7 @@ export interface ClientInterface extends UserInterface {
     lastWorkoutDate?: string;
     nextWorkoutDate?: string;
     assigned_plans_by_coach?: CoachAssignedPlanPreview[];
+    overview?: OverviewBlock;
 }
 
 export default class ClientsStore {
