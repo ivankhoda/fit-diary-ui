@@ -12,6 +12,41 @@ import './ClientList.style.scss';
 
 const ITEMS_PER_PAGE = 12;
 const MAX_VISIBLE_PAGES = 5;
+const CLIENT_ATTENTION_DAYS_THRESHOLD = 7;
+const MILLISECONDS_IN_SECOND = 1000;
+const SECONDS_IN_MINUTE = 60;
+const MINUTES_IN_HOUR = 60;
+const HOURS_IN_DAY = 24;
+const ONE_DAY_IN_MS = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY;
+
+type ClientListSummaryItem = {
+    label: string;
+    value: number;
+};
+
+const getClientListSummary = (clients: typeof clientsStore.clients): ClientListSummaryItem[] => {
+    const activeClientsCount = clients.filter(client => Boolean(client.lastActive)).length;
+    const noPlanClientsCount = clients.filter(client => {
+        const assignedPlansCount = client.assigned_plans_by_coach?.length || 0;
+
+        return assignedPlansCount === 0 && !client.planTitle && !client.plan?.name;
+    }).length;
+    const needsAttentionCount = clients.filter(client => {
+        if (!client.lastActive) {
+            return true;
+        }
+
+        const inactiveDays = (Date.now() - new Date(client.lastActive).getTime()) / ONE_DAY_IN_MS;
+        return inactiveDays >= CLIENT_ATTENTION_DAYS_THRESHOLD;
+    }).length;
+
+    return [
+        { label: 'Всего', value: clients.length },
+        { label: 'С активностью', value: activeClientsCount },
+        { label: 'Без плана', value: noPlanClientsCount },
+        { label: 'Требуют внимания', value: needsAttentionCount },
+    ];
+};
 
 const ClientList: React.FC = () => {
     const [search, setSearch] = useState('');
@@ -53,6 +88,11 @@ const ClientList: React.FC = () => {
         activityStatus,
         sortBy,
         clientsStore.clients]);
+
+    const listSummary = useMemo(
+        () => getClientListSummary(filteredClients),
+        [filteredClients],
+    );
 
     const totalPages = Math.ceil(filteredClients.length / ITEMS_PER_PAGE);
     const paginatedClients = filteredClients.slice(
@@ -105,11 +145,32 @@ const ClientList: React.FC = () => {
                 onSortByChange={setSortBy}
             />
 
-            <div className="client-list__grid">
-                <React.Fragment>
-                    {paginatedClients.map(client => (
-                        <ClientCard key={client.id} client={client} />
+            <div className="client-list__toolbar">
+                <p className="client-list__result-count">
+                    Показано {filteredClients.length} из {clientsStore.clients.length}
+                </p>
+                <div className="client-list__summary">
+                    {listSummary.map(summaryItem => (
+                        <div key={summaryItem.label} className="client-list__summary-item">
+                            <span className="client-list__summary-value">{summaryItem.value}</span>
+                            <span className="client-list__summary-label">{summaryItem.label}</span>
+                        </div>
                     ))}
+                </div>
+            </div>
+
+            <div className="client-list__grid">
+                {paginatedClients.length > 0
+                    ? paginatedClients.map(client => (
+                        <ClientCard key={client.id} client={client} />
+                    ))
+                    : (
+                        <div className="client-list__empty">
+                            По текущим фильтрам спортсмены не найдены. Попробуйте снять часть ограничений.
+                        </div>
+                    )}
+
+                {totalPages > 1 && (
                     <div className="client-list__pagination">
                         <button
                             className="client-list__pagination-button"
@@ -150,7 +211,7 @@ const ClientList: React.FC = () => {
                         Последняя »
                         </button>
                     </div>
-                </React.Fragment>
+                )}
             </div>
         </div>
     );

@@ -5,7 +5,7 @@ import './PlanCard.style.scss';
 
 import { PlanInterface } from '../../../store/CoachPlansStore';
 
-import { coachPlansController } from '../../../controllers/global';
+import { clientsController, coachPlansController } from '../../../controllers/global';
 import AssignPlanModal from '../../modal/AssignPlanModal/AssignPlanModal';
 import AssignedUsersList from '../AssignedUsers/AssignedUsersList';
 
@@ -27,14 +27,23 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan }) => {
 
     const handleAssign = useCallback(
         async(clientId: number, planId: number) => {
-            await coachPlansController.assignPlan(clientId, planId);
+            const wasAssigned = await coachPlansController.assignPlan(clientId, planId);
+
+            if (wasAssigned) {
+                clientsController.fetchClients();
+            }
         },
         []
     );
 
-    const handleRemoveAssignment = useCallback((userId: number) => {
+    const handleRemoveAssignment = useCallback(async(userId: number) => {
         if (!id) {return;}
-        coachPlansController.unassignPlan(userId, Number(id));
+
+        const wasUnassigned = await coachPlansController.unassignPlan(userId, Number(id));
+
+        if (wasUnassigned) {
+            clientsController.fetchClients();
+        }
     }, [id]);
 
     return (

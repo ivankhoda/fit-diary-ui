@@ -11,6 +11,25 @@ import { toast } from 'react-toastify';
 
 export type PlanFormData = Omit<PlanInterface, 'id' | 'progress_percentage' | 'created_at' | 'updated_at'>;
 
+type PlanAssignmentResponse = {
+    error?: string;
+    errors?: string[];
+    ok?: boolean;
+    plan?: PlanInterface;
+};
+
+const getAssignmentErrorMessage = (response: PlanAssignmentResponse, fallbackMessage: string): string => {
+    if (response.error) {
+        return response.error;
+    }
+
+    if (response.errors?.length) {
+        return response.errors.join(', ');
+    }
+
+    return fallbackMessage;
+};
+
 export default class CoachPlansController extends BaseController {
     coachPlansStore: CoachPlansStore;
 
@@ -28,8 +47,8 @@ export default class CoachPlansController extends BaseController {
             .then(res => {
                 this.coachPlansStore.setPlans(res.plans);
             })
-            .catch(error => {
-                console.error('Failed to fetch plans:', error);
+            .catch(() => {
+                toast.error('Не удалось загрузить планы');
             });
     }
 
@@ -44,8 +63,8 @@ export default class CoachPlansController extends BaseController {
                     this.coachPlansStore.setCurrentPlan(res.plan);
                 }
             })
-            .catch(error => {
-                console.error('Failed to fetch plan details:', error);
+            .catch(() => {
+                toast.error('Не удалось загрузить детали плана');
             });
     }
 
@@ -63,8 +82,8 @@ export default class CoachPlansController extends BaseController {
                     navigate(`/plans/${res.res.id}`);
                 }
             })
-            .catch(error => {
-                console.error('Failed to create plan:', error);
+            .catch(() => {
+                toast.error('Не удалось создать план');
             });
     }
 
@@ -81,8 +100,8 @@ export default class CoachPlansController extends BaseController {
                     toast.success('План сохранен');
                 }
             })
-            .catch(error => {
-                console.error('Failed to update plan:', error);
+            .catch(() => {
+                toast.error('Не удалось обновить план');
             });
     }
 
@@ -97,8 +116,8 @@ export default class CoachPlansController extends BaseController {
                     this.coachPlansStore.deletePlan(planId);
                 }
             })
-            .catch(error => {
-                console.error('Failed to delete plan:', error);
+            .catch(() => {
+                toast.error('Не удалось удалить план');
             });
     }
 
@@ -114,8 +133,8 @@ export default class CoachPlansController extends BaseController {
                     this.coachPlansStore.updatePlan(res.plan);
                 }
             })
-            .catch(error => {
-                console.error('Failed to complete plan:', error);
+            .catch(() => {
+                toast.error('Не удалось завершить план');
             });
     }
 
@@ -131,8 +150,8 @@ export default class CoachPlansController extends BaseController {
                     this.coachPlansStore.addWorkoutDayToPlan(planId, res.workout_day);
                 }
             })
-            .catch(error => {
-                console.error('Failed to add workout day:', error);
+            .catch(() => {
+                toast.error('Не удалось добавить тренировочный день');
             });
     }
 
@@ -147,11 +166,11 @@ export default class CoachPlansController extends BaseController {
                 if (res.ok) {
                     this.coachPlansStore.updateWorkoutDayInPlan(planId, res.workout_day);
                 } else {
-                    console.error('Failed to update workout day:', res.error || res.message);
+                    toast.error(res.error || res.message || 'Не удалось обновить тренировочный день');
                 }
             })
-            .catch(error => {
-                console.error('Failed to update workout day:', error);
+            .catch(() => {
+                toast.error('Не удалось обновить тренировочный день');
             });
     }
 
@@ -166,53 +185,63 @@ export default class CoachPlansController extends BaseController {
                     this.coachPlansStore.removeWorkoutDayFromPlan(planId, dayId);
                 }
             })
-            .catch(error => {
-                console.error('Failed to delete workout day:', error);
+            .catch(() => {
+                toast.error('Не удалось удалить тренировочный день');
             });
     }
 
     @action
-    assignPlan(clientId: number, planId: number): void {
-        new Post({
-            params: {
-                assignment: {
-                    client_id: clientId,
-                    plan_id: planId
-                }
-            },
-            url: `${getApiBaseUrl()}/coach/plan_assignments`
-        })
-            .execute()
-            .then(r => r.json())
-            .then(res => {
-                if (res.ok) {
-                    this.coachPlansStore.updatePlan(res.plan);
-                    this.coachPlansStore.addPlanForClient(res.plan);
-                } else {
-                    console.error('Ошибка назначения плана:', res.errors);
-                }
-            });
+    async assignPlan(clientId: number, planId: number): Promise<boolean> {
+        try {
+            const response = await new Post({
+                params: {
+                    assignment: {
+                        client_id: clientId,
+                        plan_id: planId
+                    }
+                },
+                url: `${getApiBaseUrl()}/coach/plan_assignments`
+            }).execute();
+            const result = await response.json() as PlanAssignmentResponse;
+
+            if (!response.ok || !result.plan) {
+                toast.error(getAssignmentErrorMessage(result, 'Не удалось назначить план'));
+                return false;
+            }
+
+            this.coachPlansStore.updatePlan(result.plan);
+            this.coachPlansStore.addPlanForClient(result.plan);
+            return true;
+        } catch {
+            toast.error('Не удалось назначить план');
+            return false;
+        }
     }
 
-    unassignPlan(clientId: number, planId: number): void {
-        new Delete({
-            params: {
-                assignment: {
-                    client_id: clientId,
-                    plan_id: planId,
-                }
-            },
-            url: `${getApiBaseUrl()}/coach/plan_assignments/destroy_by_assignment`
-        })
-            .execute()
-            .then(r => r.json())
-            .then(res => {
-                if (res.ok) {
-                    this.coachPlansStore.updatePlan(res.plan);
-                    this.coachPlansStore.removePlanForClient(planId);
-                } else {
-                    console.error('Ошибка удаления назначения:', res.errors);
-                }
-            });
+    async unassignPlan(clientId: number, planId: number): Promise<boolean> {
+        try {
+            const response = await new Delete({
+                params: {
+                    assignment: {
+                        client_id: clientId,
+                        plan_id: planId,
+                    }
+                },
+                url: `${getApiBaseUrl()}/coach/plan_assignments/destroy_by_assignment`
+            }).execute();
+            const result = await response.json() as PlanAssignmentResponse;
+
+            if (!response.ok || !result.plan) {
+                toast.error(getAssignmentErrorMessage(result, 'Не удалось удалить назначение плана'));
+                return false;
+            }
+
+            this.coachPlansStore.updatePlan(result.plan);
+            this.coachPlansStore.removePlanForClient(planId);
+            return true;
+        } catch {
+            toast.error('Не удалось удалить назначение плана');
+            return false;
+        }
     }
 }

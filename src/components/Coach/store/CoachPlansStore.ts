@@ -43,6 +43,13 @@ export interface PlanInterface {
     current_workout_day?: WorkoutDayInterface;
     assigned_users?: UserProfile[];
 }
+
+const hasPlanCoreFields = (plan: Partial<PlanInterface>): plan is PlanInterface => (
+    typeof plan.name === 'string'
+    && typeof plan.start_date === 'string'
+    && typeof plan.end_date === 'string'
+);
+
 export default class CoachPlansStore {
     constructor() {
         makeObservable(this);
@@ -75,17 +82,27 @@ export default class CoachPlansStore {
     }
 
     @action
-    updatePlan(plan: PlanInterface):void  {
+    updatePlan(plan: Partial<PlanInterface> & { id?: number }):void  {
+        if (typeof plan.id !== 'number') {
+            return;
+        }
+
         const idx = this.plans.findIndex(p => p.id === plan.id);
 
         if (idx >= 0) {
-            this.plans[idx] = plan;
-        } else {
+            this.plans[idx] = {
+                ...this.plans[idx],
+                ...plan,
+            };
+        } else if (hasPlanCoreFields(plan)) {
             this.plans.push(plan);
         }
 
         if (this.currentPlan?.id === plan.id) {
-            this.currentPlan = plan;
+            this.currentPlan = {
+                ...this.currentPlan,
+                ...plan,
+            };
         }
     }
 

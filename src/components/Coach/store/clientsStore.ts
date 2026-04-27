@@ -2,10 +2,24 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import  UserInterface  from '../../../store/userStore';
 import { PlanInterface } from '../../../store/plansStore';
+
+export interface CoachAssignedPlanPreview {
+    assigned_at?: string | null;
+    end_date: string | null;
+    id: number;
+    name: string;
+    start_date: string | null;
+    training_goal_id?: number | null;
+}
+
 export interface ClientInterface extends UserInterface {
     id: number;
     email: string;
+    goal_summary?: string;
+    last_check_in_at?: string;
     name?: string;
+    phone_number?: string;
+    telegram_username?: string;
     joined_at?: string;
     invited?: boolean;
     lastActive?: string;
@@ -17,8 +31,7 @@ export interface ClientInterface extends UserInterface {
     totalWorkouts?: number;
     lastWorkoutDate?: string;
     nextWorkoutDate?: string;
-    assigned_plans_by_coach?: PlanInterface[]
-
+    assigned_plans_by_coach?: CoachAssignedPlanPreview[];
 }
 
 export default class ClientsStore {
@@ -46,6 +59,20 @@ export default class ClientsStore {
         if (!exists) {
             this.clients = [...this.clients, client];
         }
+    }
+
+    @action
+    upsertClient(client: ClientInterface): void {
+        const clientIndex = this.clients.findIndex(existingClient => existingClient.id === client.id);
+
+        if (clientIndex < 0) {
+            this.clients = [...this.clients, client];
+            return;
+        }
+
+        this.clients = this.clients.map(existingClient => (
+            existingClient.id === client.id ? client : existingClient
+        ));
     }
 
     @action

@@ -118,12 +118,20 @@ const isPendingApplication = (application: CoachApplication | null): boolean => 
 
 const isMessageMissing = (formState: CoachApplicationFormValues): boolean => !formState.message.trim();
 
-const buildApplicationPayload = (formState: CoachApplicationFormValues) => ({
-    contacts: formState.contacts.trim(),
-    experience: formState.experience.trim(),
-    message: formState.message.trim(),
-    specialization: formState.specialization.trim(),
-});
+const getOptionalField = (value: string): string => value.trim();
+
+const buildApplicationPayload = (formState: CoachApplicationFormValues) => {
+    const contacts = getOptionalField(formState.contacts);
+    const experience = getOptionalField(formState.experience);
+    const specialization = getOptionalField(formState.specialization);
+
+    return {
+        ...(contacts ? { contacts } : {}),
+        ...(experience ? { experience } : {}),
+        message: formState.message.trim(),
+        ...(specialization ? { specialization } : {}),
+    };
+};
 
 const applyFailedSubmit = ({
     error,

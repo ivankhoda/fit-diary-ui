@@ -8,10 +8,10 @@ interface TabProps {
 }
 
 const tabs = [
-    { id: 'info', label: 'Информация' },
+    { id: 'overview', label: 'Обзор' },
     // { id: 'goals', label: 'Цели' },
     { id: 'assignWorkout', label: 'Назначенные тренировки' },
-    // { id: 'assignPlan', label: 'Назначить план' },
+    { id: 'assignPlan', label: 'Назначить план' },
     { id: 'progress', label: 'Прогресс' },
 
 ];

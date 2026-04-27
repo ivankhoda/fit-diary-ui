@@ -12,7 +12,7 @@ import WorkoutDaysSection from '../WorkoutDaysSection/WorkoutDaysSection';
 import PlanStatusSelector from './StatusSelector';
 import { PlanInterface } from '../../../store/CoachPlansStore';
 
-import { coachPlansController, coachTrainingGoalsController, coachWorkoutsController } from '../../../controllers/global';
+import { clientsController, coachPlansController, coachTrainingGoalsController, coachWorkoutsController } from '../../../controllers/global';
 import { coachPlansStore, coachTrainingGoalsStore, coachWorkoutsStore } from '../../../store/global';
 import AssignPlanInline from '../AssignPlanInline/AssignPlanInline';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -145,13 +145,24 @@ const PlanForm: React.FC = inject('coachPlansStore')(observer(() => {
         }));
     }, [coachPlansStore]);
 
-    const handleAssignPlan = useCallback((
+    const handleAssignPlan = useCallback(async(
         clientId: number, planId: number
-    )=> {coachPlansController.assignPlan(clientId, planId);}, [id]);
+    )=> {
+        const wasAssigned = await coachPlansController.assignPlan(clientId, planId);
 
-    const handleRemoveAssignment = useCallback((userId: number) => {
+        if (wasAssigned) {
+            clientsController.fetchClients();
+        }
+    }, []);
+
+    const handleRemoveAssignment = useCallback(async(userId: number) => {
         if (!id) {return;}
-        coachPlansController.unassignPlan(userId, Number(id));
+
+        const wasUnassigned = await coachPlansController.unassignPlan(userId, Number(id));
+
+        if (wasUnassigned) {
+            clientsController.fetchClients();
+        }
     }, [id]);
 
     return (

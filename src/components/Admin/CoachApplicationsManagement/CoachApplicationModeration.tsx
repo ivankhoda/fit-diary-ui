@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import i18n from 'i18next';
 
 type Props = {
@@ -22,9 +22,13 @@ const CoachApplicationModeration = ({
     onRejectSubmit,
     rejectionReason,
 }: Props): JSX.Element => {
+    const handleContainerClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+    }, []);
+
     if (isRejecting) {
         return (
-            <div className="coach-application-moderation">
+            <div className="coach-application-moderation" onClick={handleContainerClick}>
                 <textarea
                     className="coach-application-moderation__textarea"
                     onChange={onRejectChange}
@@ -49,7 +53,7 @@ const CoachApplicationModeration = ({
     }
 
     return (
-        <div className="coach-application-moderation__actions">
+        <div className="coach-application-moderation__actions" onClick={handleContainerClick}>
             <button disabled={isProcessing} onClick={onApprove} type="button">
                 {isProcessing ? i18n.t('Обновляем...') : i18n.t('Approve')}
             </button>
