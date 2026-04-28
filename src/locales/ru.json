@@ -507,7 +507,8 @@
     "current_value": "Текущее значение",
     "decision_title": "Решение",
     "action": "Действие",
-    "alerts_title": "Оповещения"
+    "alerts_title": "Оповещения",
+    "show_more_goals": "Показать больше целей {{count}}"
   }
 
 

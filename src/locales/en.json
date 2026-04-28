@@ -23,7 +23,8 @@
     "current_value": "Current value"
     ,"decision_title": "Decision"
     ,"action": "Action"
-    ,"alerts_title": "Alerts"
+    ,"alerts_title": "Alerts",
+    "show_more_goals": "Show more goals {{count}}"
   },
     "goal_types": {
       "weight_increase": "Increase weight",
