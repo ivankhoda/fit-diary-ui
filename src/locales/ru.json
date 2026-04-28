@@ -1,4 +1,17 @@
-{
+
+  {
+    "goal_types": {
+      "weight_increase": "Увеличение веса",
+      "reps_increase": "Увеличение повторений",
+      "time_improvement": "Улучшение времени",
+      "distance_increase": "Увеличение дистанции",
+      "sprint_improvement": "Улучшение спринта",
+      "weight_loss": "Похудение",
+      "mass_gain": "Набор массы",
+      "technique_improvement": "Улучшение техники",
+      "recovery": "Реабилитация",
+      "competition_ready": "Готовность к соревнованиям"
+    },
   "required": "Обязательно",
   "characters_min": "Минимум {{count}} символов",
   "buttonLabel": "Click me!",
@@ -468,7 +481,34 @@
   "thursday": "Четверг",
   "friday": "Пятница",
   "saturday": "Суббота",
-  "sunday": "Воскресение"
+  "sunday": "Воскресение",
+
+  "clientCard": {
+    "in_rhythm": "в рабочем ритме",
+    "active": "Активен",
+    "needs_soft_control": "нужен мягкий контроль",
+    "slowed_down": "Снизил темп",
+    "contact_and_return": "стоит связаться и вернуть в график",
+    "needs_attention": "Требует внимания",
+    "no_data": "нет данных",
+    "today": "сегодня",
+    "yesterday": "вчера",
+    "days_ago": "дн. назад",
+    "delete_confirm": "Удалить спортсмена {{email}}?",
+    "delete_aria": "Удалить спортсмена {{email}}",
+    "no_name": "Без имени",
+    "activity": "Активность",
+    "working_since": "В работе с",
+    "goals_title": "Цели спортсмена:",
+    "no_goal_name": "Без названия",
+    "goal_target": "Цель",
+    "deadline": "Срок",
+    "common.dash": "—",
+    "current_value": "Текущее значение",
+    "decision_title": "Решение",
+    "action": "Действие",
+    "alerts_title": "Оповещения"
+  }
 
 
 

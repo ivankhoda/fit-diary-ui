@@ -1,4 +1,42 @@
 {
+  "clientCard": {
+    "in_rhythm": "in rhythm",
+    "active": "Active",
+    "needs_soft_control": "needs soft control",
+    "slowed_down": "Slowed down",
+    "contact_and_return": "contact and return",
+    "needs_attention": "Needs attention",
+    "no_data": "no data",
+    "today": "today",
+    "yesterday": "yesterday",
+    "days_ago": "days ago",
+    "delete_confirm": "Delete client {{email}}?",
+    "delete_aria": "Delete client {{email}}",
+    "no_name": "No name",
+    "activity": "Activity",
+    "working_since": "Working since",
+    "goals_title": "Client goals:",
+    "no_goal_name": "No goal name",
+    "goal_target": "Goal",
+    "deadline": "Deadline",
+    "common.dash": "—",
+    "current_value": "Current value"
+    ,"decision_title": "Decision"
+    ,"action": "Action"
+    ,"alerts_title": "Alerts"
+  },
+    "goal_types": {
+      "weight_increase": "Increase weight",
+      "reps_increase": "Increase reps",
+      "time_improvement": "Improve time",
+      "distance_increase": "Increase distance",
+      "sprint_improvement": "Improve sprint",
+      "weight_loss": "Weight loss",
+      "mass_gain": "Mass gain",
+      "technique_improvement": "Technique improvement",
+      "recovery": "Recovery",
+      "competition_ready": "Competition ready"
+    },
   "hello": "Hello, world!",
   "buttonLabel": "Click me!",
   "characters_min": "Min {{count}} characters",
@@ -300,7 +338,8 @@
     "name": "Exercise",
     "reps": "Reps",
     "sets": "Sets",
-    "weight": "Weight",
+    "weight": "Weight"
+  },
     "kg": "kg",
     "distance": "Distance",
     "categories": {
@@ -323,8 +362,7 @@
       "back": "Back",
       "legs": "Legs",
       "shoulders": "Shoulders"
-    }
-  },
+    },
 
   "something_went_wrong": "Something went wrong",
   "loading": "Loading...",
@@ -348,13 +386,12 @@
       "balance": "Balance",
       "other": "Other"
     },
-    "difficulties": {
-      "beginner": "Beginner",
-      "intermediate": "Intermediate",
-      "advanced": "Advanced"
-    }
-
-  },
+      "difficulties": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      }
+    },
   "workout": {
     "name": "Workout Name",
     "date": "Date",

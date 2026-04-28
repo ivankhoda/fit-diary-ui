@@ -43,6 +43,8 @@ export interface OverviewBlock {
     signals: OverviewSignal[];
 }
 
+import { TrainingGoalInterface } from '../../../store/trainingGoalsStore';
+
 export interface ClientInterface extends UserInterface {
     id: number;
     email: string;
@@ -64,6 +66,8 @@ export interface ClientInterface extends UserInterface {
     nextWorkoutDate?: string;
     assigned_plans_by_coach?: CoachAssignedPlanPreview[];
     overview?: OverviewBlock;
+    progress_percentage?: number;
+    goals_summary?: TrainingGoalInterface[];
 }
 
 export default class ClientsStore {

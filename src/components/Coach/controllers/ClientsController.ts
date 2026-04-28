@@ -41,10 +41,7 @@ export default class ClientsController extends BaseController {
           .then(r => r.json())
           .then(res => {
               if (res.ok && res.client) {
-                  const client = res.client as ClientInterface;
-
-                  this.clientsStore.upsertClient(client);
-                  return client;
+                  return res.client as ClientInterface;
               }
               toast.error(res.error || 'Не удалось найти клиента');
               return null;
