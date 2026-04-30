@@ -1,15 +1,3 @@
-type Decision = {
-    action?: string;
-    alerts?: string[];
-    priority?: 'high' | 'medium' | 'low';
-    reason: string;
-    score?: number;
-};
-
-interface ClientWithDecision extends ClientInterface {
-    decision?: Decision;
-    alerts?: string[];
-}
 
 import React, { MouseEvent, useCallback } from 'react';
 
@@ -24,12 +12,7 @@ import { useNavigate } from 'react-router';
 import DecisionBlock from './DecisionBlock';
 import ClientGoalsBlock from './ClientGoalsBlock';
 
-interface ClientWithDecision extends ClientInterface {
-    decision?: Decision;
-    alerts?: string[];
-}
-
-const ClientCard = ({ client }: { client: ClientWithDecision }): JSX.Element => {
+const ClientCard = ({ client }: { client: ClientInterface }): JSX.Element => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [showConfirm, setShowConfirm] = React.useState(false);
@@ -80,9 +63,6 @@ const ClientCard = ({ client }: { client: ClientWithDecision }): JSX.Element => 
                         ))}
                         <p className="client-card__email">{client.email}</p>
                         <DecisionBlock decision={decision} alerts={alerts} t={t} />
-                        <div className="client-card__meta-row">
-
-                        </div>
 
                         {Array.isArray(client.goals_summary) && client.goals_summary.length > 0 && (
                             <ClientGoalsBlock goals={client.goals_summary} t={t} />

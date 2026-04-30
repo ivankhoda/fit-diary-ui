@@ -3,11 +3,32 @@
 import { makeObservable, observable, action } from 'mobx';
 import { UserProfile } from '../../../store/userStore';
 import { WorkoutInterface } from '../../../store/workoutStore';
+import { ExercisesInterface } from '../../User/Exercises/Exercises';
 
 export interface CoachWorkoutInterface extends WorkoutInterface {
   name: string;
   description?: string;
   users?: UserProfile[];
+}
+
+export interface ClientWorkoutSummary {
+    id: number;
+    name: string;
+    date: string;
+    state: string;
+    duration: string;
+    comment?: string;
+    user_exercises: ExercisesInterface;
+    summary: {
+        completion_percent: number;
+        estimated_rpe: number;
+        rpe: number;
+        total_volume: number;
+        exercises_count: number;
+        deviations_count: number;
+        has_comment: boolean;
+        planned_by_trainer: boolean;
+    };
 }
 
 export default class CoachWorkoutsStore {
@@ -29,6 +50,9 @@ export default class CoachWorkoutsStore {
 
   @observable
   workoutsForClient: CoachWorkoutInterface[] = [];
+
+  @observable
+  userWorkouts: ClientWorkoutSummary[] = [];
 
   @action
   setWorkouts(workouts: CoachWorkoutInterface[]): void {
@@ -57,12 +81,17 @@ export default class CoachWorkoutsStore {
      this.workoutsForClient = workouts;
  }
 
-  @action
-  addWorkoutForClient(workout: CoachWorkoutInterface): void {
-      if (!this.workoutsForClient.find(w => w.id === workout.id)) {
-          this.workoutsForClient.push(workout);
-      }
+ @action
+  setUserWorkouts(workouts: ClientWorkoutSummary[]): void {
+      this.userWorkouts = workouts;
   }
+
+  @action
+ addWorkoutForClient(workout: CoachWorkoutInterface): void {
+     if (!this.workoutsForClient.find(w => w.id === workout.id)) {
+         this.workoutsForClient.push(workout);
+     }
+ }
 
     @action
   removeWorkoutForClient(workoutId: number): void {

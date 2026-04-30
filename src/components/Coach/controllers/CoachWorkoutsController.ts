@@ -46,29 +46,44 @@ export default class CoachWorkoutController {
           });
   }
 
-  @action
-  assignWorkoutToClient(userId: number, workoutId: number, date?: string): void {
-      new Post({
-          params: {
-              assignment: {
-                  date,
-                  user_id: userId,
-                  workout_id: workoutId,
-              },
-          },
-          url: `${getApiBaseUrl()}/coach/workout_assignments`,
-      })
+   @action
+  getUserWorkouts(clientId: number): void {
+      new Get({ url: `${getApiBaseUrl()}/coach/clients/${clientId}/user_workouts` })
           .execute()
           .then(r => r.json())
           .then(res => {
               if (res.ok) {
-                  this.coachWorkoutsStore.updateWorkout(res.workout);
-              }
-              else {
-                  console.error('Не удалось назначить тренировку:', res.errors);
+                  console.log(res, 'response in get user workouts');
+                  console.log(res.user_workouts, 'user workouts in controller');
+                  // {ok: true, user_workouts: Array(128)}
+                  this.coachWorkoutsStore.setUserWorkouts(res.user_workouts);
               }
           });
   }
+
+  @action
+   assignWorkoutToClient(userId: number, workoutId: number, date?: string): void {
+       new Post({
+           params: {
+               assignment: {
+                   date,
+                   user_id: userId,
+                   workout_id: workoutId,
+               },
+           },
+           url: `${getApiBaseUrl()}/coach/workout_assignments`,
+       })
+           .execute()
+           .then(r => r.json())
+           .then(res => {
+               if (res.ok) {
+                   this.coachWorkoutsStore.updateWorkout(res.workout);
+               }
+               else {
+                   console.error('Не удалось назначить тренировку:', res.errors);
+               }
+           });
+   }
 
   @action
   getWorkout(workoutId: string): void {

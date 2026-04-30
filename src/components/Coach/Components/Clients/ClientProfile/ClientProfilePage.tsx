@@ -13,7 +13,6 @@ import Tabs from './Tabs/Tabs';
 import './ClientProfilePage.scss';
 
 import ClientPlanAssignments from './ClientPlanAssignments';
-import ClientProgress from './ClientProgress/ClientProgress';
 import ClientOverview from './ClientOverview';
 
 const DEFAULT_TAB = 'overview';
@@ -155,10 +154,10 @@ const ClientProfilePage = (): JSX.Element => {
             </header>
 
             <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
+            <ClientOverview client={client} />
+            {/* {activeTab === 'overview' && client && (
 
-            {activeTab === 'overview' && (
-                <ClientOverview client={client} />
-            )}
+            )} */}
 
             {activeTab === 'assignWorkout' && <AssignWorkoutSection clientId={Number(clientId)} />}
 
@@ -166,9 +165,9 @@ const ClientProfilePage = (): JSX.Element => {
                 <ClientPlanAssignments client={client} onClientChange={setClient} />
             )}
 
-            {activeTab === 'progress' && (
+            {/* {activeTab === 'progress' && (
                 <ClientProgress clientId={clientId} />
-            )}
+            )} */}
 
             {activeTab === 'goals' && (
                 <div className="client-profile__placeholder">

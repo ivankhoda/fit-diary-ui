@@ -1,0 +1,58 @@
+/* CTASection.style.scss */
+
+.cta-section {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem 0;
+  flex-wrap: wrap;
+}
+
+.cta-section__primary {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 2.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  transition: background 0.18s;
+}
+
+.cta-section__primary:hover,
+.cta-section__primary:focus {
+  background: #1e40af;
+}
+
+.cta-section__secondary {
+  background: #f3f4f6;
+  color: #2563eb;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1.6rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+
+.cta-section__secondary:hover,
+.cta-section__secondary:focus {
+  background: #e0e7ff;
+  color: #1e40af;
+}
+
+@media (max-width: 700px) {
+  .cta-section {
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: stretch;
+  }
+  .cta-section__primary,
+  .cta-section__secondary {
+    width: 100%;
+    padding: 0.9rem 0;
+    font-size: 1.08rem;
+  }
+}

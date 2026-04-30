@@ -45,6 +45,14 @@ export interface OverviewBlock {
 
 import { TrainingGoalInterface } from '../../../store/trainingGoalsStore';
 
+type Decision = {
+    action?: string;
+    alerts?: string[];
+    priority?: 'high' | 'medium' | 'low';
+    reason: string;
+    score?: number;
+};
+
 export interface ClientInterface extends UserInterface {
     id: number;
     email: string;
@@ -68,6 +76,9 @@ export interface ClientInterface extends UserInterface {
     overview?: OverviewBlock;
     progress_percentage?: number;
     goals_summary?: TrainingGoalInterface[];
+    avatar_url?: string;
+    decision?: Decision;
+    alerts?: string[];
 }
 
 export default class ClientsStore {
