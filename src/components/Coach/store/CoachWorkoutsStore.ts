@@ -15,19 +15,16 @@ export interface ClientWorkoutSummary {
     id: number;
     name: string;
     date: string;
-    state: string;
     duration: string;
     comment?: string;
     user_exercises: ExercisesInterface;
     summary: {
+        rpe_delta: number;
+        positive_deviations_count?: number;
+        negative_deviations_count?: number;
         completion_percent: number;
         estimated_rpe: number;
         rpe: number;
-        total_volume: number;
-        exercises_count: number;
-        deviations_count: number;
-        has_comment: boolean;
-        planned_by_trainer: boolean;
     };
 }
 
